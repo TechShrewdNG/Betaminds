@@ -1,0 +1,176 @@
+/* Sticky at top: 0 in production — the prototype's `top: 44px` sat below its
+   preview toolbar, which we don't ship. */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(251, 250, 248, 0.18);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.solid {
+  background: rgba(251, 250, 248, 0.94);
+  border-bottom-color: rgba(23, 23, 27, 0.09);
+}
+
+.bar {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 16px var(--pad-x);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  color: var(--ink);
+}
+
+.brand:hover {
+  color: var(--ink);
+}
+
+/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph. */
+.mark {
+  height: 30px;
+  aspect-ratio: 876 / 400;
+  overflow: hidden;
+  flex: none;
+  display: block;
+}
+
+.mark img {
+  width: 100%;
+  display: block;
+}
+
+.lockup {
+  line-height: 1.05;
+  display: block;
+}
+
+.wordmark {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+}
+
+.wordmarkSub {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  color: var(--accent);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 19px;
+}
+
+.navLink {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--ink-90);
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: var(--accent);
+}
+
+.navLinkActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.cta {
+  padding: 10px 19px;
+  font-size: 12.5px;
+}
+
+/* Two ink bars and one short accent bar. */
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.burger span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--ink);
+}
+
+.burger span:last-child {
+  width: 13px;
+  background: var(--accent-fill);
+}
+
+.menu {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px var(--pad-x) 22px;
+  border-top: 1px solid rgba(23, 23, 27, 0.07);
+}
+
+.menuLink {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* Below 1000px the nav collapses behind the hamburger, per the handoff. */
+@media (max-width: 1000px) {
+  .nav {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .menu[data-open="true"] {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta {
+    display: none;
+  }
+}

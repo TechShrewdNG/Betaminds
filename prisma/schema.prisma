@@ -1,0 +1,69 @@
+// Betaminds Africa — CMS + submissions store.
+//
+// Postgres, because this deploys to Vercel: serverless functions have no
+// persistent disk shared between invocations, so SQLite's `file:` datasource
+// can't work there (a different, possibly empty, database file per request).
+// For local development without a hosted database, run Postgres in Docker —
+// see README.md — or point DATABASE_URL at a free Neon/Supabase project.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A content document: one row per editable page, plus `global` for the
+/// chrome (header, footer, contact details, socials). `data` holds JSON that is
+/// deep-merged over the code-side defaults in src/lib/content/defaults.ts, so an
+/// unedited field keeps its handoff copy and new schema fields never break
+/// existing rows.
+model Document {
+  id        String   @id
+  data      String   @default("{}")
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+/// An uploaded image. `url` is public-relative (/uploads/…) for the local
+/// storage adapter, or absolute for a remote one.
+model MediaAsset {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  alt       String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// Anything submitted from the public site: contact briefs, the discovery
+/// consultation questionnaire, newsletter signups, summit interest.
+model Submission {
+  id        String   @id @default(cuid())
+  kind      String
+  name      String   @default("")
+  email     String   @default("")
+  summary   String   @default("")
+  data      String   @default("{}")
+  status    String   @default("new")
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([kind, createdAt])
+  @@index([status])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String   @default("")
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
