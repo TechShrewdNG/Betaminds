@@ -1,15 +1,17 @@
 // Betaminds Africa — CMS + submissions store.
 //
-// SQLite by default so the site runs with no external services. To move to
-// Postgres, change `provider` to "postgresql" and point DATABASE_URL at it;
-// no model changes are required.
+// Postgres, because this deploys to Vercel: serverless functions have no
+// persistent disk shared between invocations, so SQLite's `file:` datasource
+// can't work there (a different, possibly empty, database file per request).
+// For local development without a hosted database, run Postgres in Docker —
+// see README.md — or point DATABASE_URL at a free Neon/Supabase project.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

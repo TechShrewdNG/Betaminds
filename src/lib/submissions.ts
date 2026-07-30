@@ -303,10 +303,12 @@ export async function listSubmissions(filter: {
   if (filter.status && filter.status !== "all") where.status = filter.status;
   if (filter.query?.trim()) {
     const q = filter.query.trim();
+    // SQLite's `contains` is case-insensitive by default; Postgres's is not,
+    // so `mode: "insensitive"` keeps search behaving the same on both.
     where.OR = [
-      { name: { contains: q } },
-      { email: { contains: q } },
-      { summary: { contains: q } },
+      { name: { contains: q, mode: "insensitive" } },
+      { email: { contains: q, mode: "insensitive" } },
+      { summary: { contains: q, mode: "insensitive" } },
     ];
   }
 

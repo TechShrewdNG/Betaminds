@@ -10,10 +10,14 @@ is the spec — read its `README.md` before changing anything visual.
 
 ```bash
 npm install
-cp .env.example .env      # then edit AUTH_SECRET and the admin credentials
-npm run setup             # creates the SQLite database + first admin account
+cp .env.example .env      # then edit DATABASE_URL, AUTH_SECRET and the admin credentials
+npm run setup             # creates the database tables + first admin account
 npm run dev               # http://localhost:3000
 ```
+
+Needs a Postgres database — see [Deployment notes](#deployment-notes) for why.
+A free [Neon](https://neon.tech) or [Supabase](https://supabase.com) project
+works for local development; point `DATABASE_URL` at it.
 
 Sign in to the CMS at `/admin/login` with the `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 from your `.env`, then change the password under **Password**.
@@ -196,15 +200,28 @@ From the handoff, and worth not undoing:
 
 ## Deployment notes
 
-- **Database.** SQLite by default, so there's nothing to provision. For Postgres,
-  change `provider` in `prisma/schema.prisma` and point `DATABASE_URL` at it — no
-  model changes needed.
-- **Uploads need a persistent writable disk.** On a platform with an ephemeral
-  filesystem (Vercel's default), swap the body of `put`/`remove`/`read` in
-  `src/lib/storage.ts` for a blob store; nothing else in the app sees more than
-  the returned URL.
+- **Database is Postgres, not SQLite, and that's not optional on Vercel.**
+  Serverless functions have no persistent disk shared between invocations —
+  point two requests at "the same" SQLite `file:` path and they can each see a
+  different (or missing) database. Set `DATABASE_URL` to a real Postgres
+  connection string. Easiest on Vercel: dashboard → project → **Storage** →
+  **Create Database** → Postgres (Neon) — it injects the connection env vars
+  for you. After adding it (or changing any env var), **redeploy** — Vercel
+  only picks up new environment variables on the next build.
+- **First deploy needs the schema pushed and an admin seeded**, neither of
+  which happens automatically in Vercel's build (`prisma generate && next build`
+  only generates the client). Point `DATABASE_URL` at the same database
+  locally and run `npm run setup` once — it creates the tables and the first
+  admin account. Re-run just `npm run db:seed` any time to add another admin.
+- **Uploads need a persistent writable disk too, for the same reason as the
+  database.** `.data/uploads` won't survive on Vercel's ephemeral filesystem —
+  swap the body of `put`/`remove`/`read` in `src/lib/storage.ts` for a blob
+  store (e.g. Vercel Blob); nothing else in the app sees more than the
+  returned URL. Not yet done — uploaded images currently won't persist in a
+  Vercel deployment.
 - **`AUTH_SECRET` must be set** to a long random value — it signs the admin
-  session cookie.
+  session cookie. Without it, admin login silently fails (middleware treats a
+  missing secret as "not authenticated," not an error).
 - Public pages are statically rendered and revalidated when content is saved, so
   editing in the CMS updates the live site without a redeploy.
 
