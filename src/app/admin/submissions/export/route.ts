@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   const stamp = new Date().toISOString().slice(0, 10);
 
   // The BOM keeps Excel from mangling the accented characters in the copy.
-  return new NextResponse(`\uFEFF${toCsv(rows)}`, {
+  return new NextResponse(`\uFEFF${await toCsv(rows)}`, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="betaminds-submissions-${stamp}.csv"`,

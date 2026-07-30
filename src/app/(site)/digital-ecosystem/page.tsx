@@ -4,6 +4,7 @@ import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
+import { resolveForm } from "@/lib/forms/resolve";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("ecosystem");
@@ -12,7 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EcosystemPage() {
   const eco = await getContent("ecosystem");
-  const planNames = eco.plans.items.map((plan) => plan.name);
+  // The form's fields come from the CMS. The outline beside it is generated from
+  // the same definitions, so the two can't drift apart.
+  const { groups } = await resolveForm("consultation");
 
   return (
     <>
@@ -201,7 +204,7 @@ export default async function EcosystemPage() {
               </div>
 
               <div className="hairline-stack" style={{ alignSelf: "start" }}>
-                {eco.questionnaire.groups.map((group, index) => (
+                {(groups ?? []).map((group, index) => (
                   <div key={group.title} style={{ padding: "16px 20px" }}>
                     <div
                       style={{
@@ -221,7 +224,7 @@ export default async function EcosystemPage() {
                         textWrap: "pretty",
                       }}
                     >
-                      {group.fields}
+                      {group.fields.map((field) => field.label).join(" · ")}
                     </div>
                   </div>
                 ))}
@@ -232,7 +235,7 @@ export default async function EcosystemPage() {
               <Suspense fallback={null}>
                 <ConsultationForm
                   questionnaire={eco.questionnaire}
-                  planNames={planNames}
+                  groups={groups ?? []}
                 />
               </Suspense>
             </div>

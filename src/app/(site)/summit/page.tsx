@@ -7,6 +7,7 @@ import {
   SummitInterestForm,
   NewsletterForm,
 } from "@/components/forms/SummitForms";
+import { resolveForm } from "@/lib/forms/resolve";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("summit");
@@ -15,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function SummitPage() {
   const summit = await getContent("summit");
+  const { fields: interestFields } = await resolveForm("summit");
 
   return (
     <>
@@ -525,7 +527,10 @@ export default async function SummitPage() {
           <p className="body" style={{ fontSize: 15.5, marginBottom: 28 }}>
             {summit.interest.body}
           </p>
-          <SummitInterestForm interest={summit.interest} />
+          <SummitInterestForm
+            interest={summit.interest}
+            fields={interestFields}
+          />
         </div>
       </section>
     </>

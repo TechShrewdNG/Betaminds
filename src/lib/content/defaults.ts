@@ -17,6 +17,72 @@
 const IMG = (id: number, w = 900) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
 
+/**
+ * Shorthand for a form-field definition, so the defaults below stay readable.
+ * See src/lib/forms/definition.ts for what each property does.
+ */
+const f = (
+  key: string,
+  label: string,
+  type:
+    | "text"
+    | "email"
+    | "tel"
+    | "date"
+    | "url"
+    | "textarea"
+    | "select" = "text",
+  extra: {
+    required?: boolean;
+    half?: boolean;
+    options?: string[];
+    placeholder?: string;
+  } = {},
+) => ({
+  key,
+  label,
+  type,
+  options: extra.options ?? [],
+  required: extra.required ?? false,
+  placeholder: extra.placeholder ?? "",
+  width: (extra.half ? "half" : "full") as "full" | "half",
+});
+
+/**
+ * Shorthand for a portfolio project.
+ *
+ * The structure is real; the narrative copy is placeholder, and `results` is left
+ * empty on purpose. Inventing performance figures for a client's case study would
+ * put fabricated claims on a live marketing site — the editor fills those in with
+ * numbers they can stand behind.
+ */
+const proj = (
+  slug: string,
+  name: string,
+  industry: string,
+  service: string,
+  thumb: string,
+  hero: string,
+) => ({
+  slug,
+  name,
+  industry,
+  service,
+  year: "",
+  client: name,
+  image: thumb,
+  heroImage: hero,
+  summary: `A ${service.toLowerCase()} engagement for ${name}. Replace this with the real project summary.`,
+  challenge: "What the brand was up against when they came to us.",
+  approach: "What we did, in the order we did it, and why.",
+  outcome: "What changed for the business afterwards.",
+  results: [] as { n: string; label: string }[],
+  gallery: [] as string[],
+  quote: "",
+  quoteAuthor: "",
+  published: true,
+});
+
 export const defaults = {
   global: {
     brand: {
@@ -28,6 +94,7 @@ export const defaults = {
     nav: {
       items: [
         { label: "Home", href: "/" },
+        { label: "Portfolio", href: "/portfolio" },
         { label: "Digital Ecosystem", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
         { label: "Academy", href: "/academy" },
@@ -75,7 +142,7 @@ export const defaults = {
           title: "Connect",
           links: [
             { label: "Let's work", href: "/lets-work" },
-            { label: "Portfolio", href: "/#portfolio" },
+            { label: "Portfolio", href: "/portfolio" },
             { label: "Book a discovery call", href: "/digital-ecosystem#book" },
           ],
         },
@@ -227,44 +294,9 @@ export const defaults = {
       heading: "Selected work.",
       note: "Hover for industry & service.",
       viewLabel: "View project",
-      items: [
-        {
-          name: "Sunset Hospitality",
-          meta: "Hospitality · Brand identity",
-          image: IMG(9490631, 800),
-          href: "",
-        },
-        {
-          name: "Nourish Med",
-          meta: "Healthcare · Content & ads",
-          image: IMG(8730849, 800),
-          href: "",
-        },
-        {
-          name: "Charoite Homes",
-          meta: "Real estate · Property film",
-          image: IMG(12179670, 800),
-          href: "",
-        },
-        {
-          name: "Mama Africa Foods",
-          meta: "FMCG · Commerce ecosystem",
-          image: IMG(9301528, 800),
-          href: "",
-        },
-        {
-          name: "MKR Logistics",
-          meta: "Logistics · Website design",
-          image: IMG(5058927, 800),
-          href: "",
-        },
-        {
-          name: "Glams Beauty",
-          meta: "Beauty · Social management",
-          image: IMG(4183516, 800),
-          href: "",
-        },
-      ],
+      /** How many of the projects to show on the homepage grid. */
+      limit: 6,
+      allLinkLabel: "All work →",
     },
     testimonials: {
       label: "What clients say",
@@ -312,6 +344,44 @@ export const defaults = {
       ctaHref: "/lets-work",
       image: IMG(8761735, 1800),
       imageAlt: "Client strategy session",
+    },
+  },
+
+  projects: {
+    seo: {
+      title: "Selected work — Betaminds Africa",
+      description:
+        "Brand identity, commerce ecosystems, content and property film for brands across Africa.",
+    },
+    index: {
+      eyebrow: "Portfolio",
+      heading: "Selected work",
+      accentTail: ".",
+      lead: "Identity, commerce, content and film. A few of the engagements we can talk about.",
+      emptyMessage: "Case studies are on their way. In the meantime, tell us what you're building.",
+      readLabel: "Read the case study →",
+    },
+    detail: {
+      briefLabel: "The brief",
+      challengeLabel: "The challenge",
+      approachLabel: "What we did",
+      outcomeLabel: "The outcome",
+      resultsLabel: "Results",
+      galleryLabel: "From the work",
+      nextLabel: "Next project",
+      ctaHeading: "Something like this in mind?",
+      ctaLabel: "Let's work →",
+      ctaHref: "/lets-work",
+    },
+    list: {
+      items: [
+        proj("sunset-hospitality", "Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
+        proj("nourish-med", "Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
+        proj("charoite-homes", "Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
+        proj("mama-africa-foods", "Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
+        proj("mkr-logistics", "MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
+        proj("glams-beauty", "Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
+      ],
     },
   },
 
@@ -461,39 +531,143 @@ export const defaults = {
       successHeading: "Thank you. We have your answers.",
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
+      /**
+       * The eight parts from structure.txt, as editable field definitions.
+       * Starred fields in the brief are the `required: true` ones here. The
+       * outline shown beside the form is derived from these labels, so there is
+       * one source of truth.
+       */
       groups: [
         {
           title: "Contact & brand",
-          fields: "Email · Brand name · Phone · Website or social",
+          fields: [
+            f("email", "Email", "email", { required: true, half: true, placeholder: "you@brand.com" }),
+            f("brandName", "Brand name", "text", { required: true, half: true }),
+            f("phone", "Phone", "tel", { required: true, half: true }),
+            f("website", "Website / social media", "text", {
+              required: true,
+              half: true,
+              placeholder: "brand.com or @brand",
+            }),
+          ],
         },
         {
           title: "Where is your brand based?",
-          fields: "Address · City · State or region · Country",
+          fields: [
+            f("address1", "Address line 1", "text", { half: true }),
+            f("city", "City", "text", { half: true }),
+            f("region", "State / province / region", "text", { half: true }),
+            f("country", "Country", "text", { required: true, half: true }),
+          ],
         },
         {
           title: "About your business",
-          fields:
-            "Products, services or both · Industry · Years trading · Online, offline or both · Local, national or cross-border",
+          fields: [
+            f("sells", "What does your brand sell?", "select", {
+              half: true,
+              options: ["Products", "Services", "Both"],
+            }),
+            f("industry", "Industry / category", "text", { half: true }),
+            f("yearsTrading", "How long have you been in business?", "text", {
+              required: true,
+              half: true,
+              placeholder: "e.g. 3 years",
+            }),
+            f("channel", "Do you sell online, offline, or both?", "select", {
+              half: true,
+              options: ["Online", "Offline", "Both"],
+            }),
+            f(
+              "reach",
+              "Do you sell locally, nationally, or across borders?",
+              "select",
+              { half: true, options: ["Locally", "Nationally", "Across borders"] },
+            ),
+          ],
         },
         {
           title: "Current digital presence",
-          fields:
-            "Marketplaces you sell on · Paid ads running · Existing brand assets",
+          fields: [
+            f("marketplaces", "Marketplaces you currently sell through", "textarea", {
+              placeholder: "Jumia, Instagram Shop, WhatsApp Business…",
+            }),
+            f("paidAds", "Do you currently run paid ads anywhere?", "textarea"),
+            f("brandAssets", "Existing brand assets", "textarea", {
+              placeholder: "Logo, guidelines, product photos…",
+            }),
+          ],
         },
         {
           title: "Team & decision-making",
-          fields:
-            "Team structure · Internal team or full outsource · Who else decides · Budget authority",
+          fields: [
+            f("teamStructure", "What is your team's structure?", "textarea", {
+              required: true,
+            }),
+            f(
+              "internalOrOutsource",
+              "Internal team we'd work alongside, or fully outsourcing?",
+              "select",
+              {
+                options: [
+                  "We have an internal team",
+                  "Fully outsourcing to you",
+                  "A mix of both",
+                ],
+              },
+            ),
+            f("whoElseDecides", "Who else is involved in this decision?", "text", {
+              half: true,
+              placeholder: "Just me / a co-founder / a team",
+            }),
+            f(
+              "budgetAuthority",
+              "Are you the sole decision-maker for budget approval?",
+              "select",
+              { half: true, options: ["Yes", "No", "Shared"] },
+            ),
+          ],
         },
         {
           title: "Why now?",
-          fields: "The trigger: launch, rebrand, stalled sales",
+          fields: [
+            f("whyNow", "What's prompting you to reach out now?", "textarea", {
+              required: true,
+              placeholder: "A launch, a rebrand, stalled sales…",
+            }),
+          ],
         },
         {
           title: "Engagement details",
-          fields: "Preferred partnership plan · Ideal start date · Budget",
+          fields: [
+            f(
+              "plan",
+              "What partnership plan are you interested in?",
+              "select",
+              {
+                required: true,
+                options: [
+                  "Starter Partnership",
+                  "Growth Partnership",
+                  "Strategic Partnership",
+                  "Not sure yet. Recommend one.",
+                ],
+              },
+            ),
+            f("startDate", "Ideal services start date", "date", {
+              required: true,
+              half: true,
+            }),
+            f("budget", "What is your budget?", "text", {
+              required: true,
+              half: true,
+              placeholder: "Range is fine",
+            }),
+          ],
         },
-        { title: "Just one more", fields: "How did you hear about us?" },
+        {
+          title: "Just one more",
+          fields: [f("howHeard", "How did you hear about us?", "text")],
+        },
       ],
     },
   },
@@ -754,6 +928,20 @@ export const defaults = {
       successHeading: "Application received.",
       successBody:
         "Our admissions team will be in touch within one working day with next steps, fees and start dates.",
+      /**
+       * The course dropdown is filled from the schools above at render time, so
+       * adding a course makes it applicable for without touching this list.
+       */
+      fields: [
+        f("name", "Your name", "text", { required: true, half: true }),
+        f("email", "Email", "email", { required: true, half: true }),
+        f("phone", "Phone", "tel", { half: true }),
+        f("format", "Preferred format", "select", { half: true }),
+        f("course", "Which course?", "select", { required: true }),
+        f("background", "Tell us about your background", "textarea", {
+          placeholder: "Where you are now, and what you want to be doing.",
+        }),
+      ],
     },
   },
 
@@ -933,6 +1121,23 @@ export const defaults = {
       successHeading: "You're registered.",
       successBody:
         "We'll email you as soon as registration for the next edition opens.",
+      fields: [
+        f("name", "Your name", "text", { required: true, half: true }),
+        f("email", "Email", "email", { required: true, half: true }),
+        f("organisation", "Organisation", "text", { half: true }),
+        f("role", "Role", "text", { half: true }),
+        f("interest", "How would you like to take part?", "select", {
+          required: true,
+          options: [
+            "Attend",
+            "Speak",
+            "Sponsor or partner",
+            "Volunteer",
+            "Exhibit",
+          ],
+        }),
+        f("message", "Anything else?", "textarea"),
+      ],
     },
   },
 

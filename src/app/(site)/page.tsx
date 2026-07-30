@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
+import { publishedProjects, projectMeta } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
@@ -15,11 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   // Plans, media packages and summit stats are edited on their own pages; the
   // homepage renders them so there is only ever one place to change them.
-  const [home, ecosystem, media, summit] = await Promise.all([
+  const [home, ecosystem, media, summit, projects] = await Promise.all([
     getContent("home"),
     getContent("ecosystem"),
     getContent("media"),
     getContent("summit"),
+    publishedProjects(),
   ]);
 
   const plans = ecosystem.plans.items;
@@ -407,43 +409,38 @@ export default async function HomePage() {
         <div className="eyebrow mb-18">{home.portfolio.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2">{home.portfolio.heading}</h2>
-          <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
-            {home.portfolio.note}
+          <div className="row-wrap" style={{ gap: 20, alignItems: "baseline" }}>
+            <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
+              {home.portfolio.note}
+            </div>
+            <Link href="/portfolio" className="link-underline">
+              {home.portfolio.allLinkLabel}
+            </Link>
           </div>
         </div>
         <div className="grid col3">
-          {home.portfolio.items.map((item) => {
-            const inner = (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className={`${styles.tileImg} ratio-4-3`}
-                  loading="lazy"
-                />
-                <div className={styles.workHover}>
-                  <div className={styles.workMeta}>{item.meta}</div>
-                  <div className={styles.workName}>{item.name}</div>
-                  {item.href ? (
-                    <span className={styles.workView}>
-                      {home.portfolio.viewLabel}
-                    </span>
-                  ) : null}
-                </div>
-              </>
-            );
-
-            return item.href ? (
-              <a key={item.name} href={item.href} className={styles.tile}>
-                {inner}
-              </a>
-            ) : (
-              <div key={item.name} className={styles.tile}>
-                {inner}
+          {projects.slice(0, home.portfolio.limit).map((project) => (
+            <Link
+              key={project.slug}
+              href={`/portfolio/${project.slug}`}
+              className={styles.tile}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={project.image}
+                alt={project.name}
+                className={`${styles.tileImg} ratio-4-3`}
+                loading="lazy"
+              />
+              <div className={styles.workHover}>
+                <div className={styles.workMeta}>{projectMeta(project)}</div>
+                <div className={styles.workName}>{project.name}</div>
+                <span className={styles.workView}>
+                  {home.portfolio.viewLabel}
+                </span>
               </div>
-            );
-          })}
+            </Link>
+          ))}
         </div>
       </section>
 

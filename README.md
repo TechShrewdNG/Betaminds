@@ -33,13 +33,16 @@ npm run icons                # regenerate the favicon + OG card from the logo
 | `/media-services`    | Media Services                             |
 | `/academy`           | Betaminds Academy                          |
 | `/summit`            | Creative Empowerment Summit                |
+| `/portfolio`         | Case-study index                           |
+| `/portfolio/[slug]`  | One case study, pre-rendered per project   |
 | `/lets-work`         | Contact                                    |
 | `/admin`             | CMS (gated by `src/middleware.ts`)         |
 | `/uploads/*`         | Serves CMS-uploaded images                 |
 
-The prototype faked these six pages with client-side page state. Here each one
-is a real route, and the prototype's preview toolbar and `device` switcher are
-deliberately not shipped — real CSS media queries do that job.
+The prototype faked its six pages with client-side page state. Here each one is a
+real route, and the prototype's preview toolbar and `device` switcher are
+deliberately not shipped — real CSS media queries do that job. `/portfolio` is an
+addition: the brief asked for a "View project" CTA, which needs somewhere to go.
 
 ## How content works
 
@@ -63,9 +66,13 @@ src/lib/content/
 - **Adding a field means editing both `defaults.ts` and `schema.ts`** — same
   document id, same section key, same field key.
 
-Field kinds available to `schema.ts`: `text`, `textarea`, `number`, `select`,
-`image`, `images` (gallery), `list` (strings), `group`, and `repeater` (which
-nests, so a footer column can hold its own list of links).
+Field kinds available to `schema.ts`: `text`, `textarea`, `number`, `boolean`,
+`select`, `image`, `images` (gallery), `list` (strings), `group`, and `repeater`
+(which nests, so a footer column can hold its own list of links).
+
+One gotcha: a section key must not match a field key inside it. The editor reads
+`doc[sectionKey][fieldKey]`, so a section called `items` holding a field called
+`items` would look for `doc.items.items` and silently render an empty list.
 
 Shared content lives in one place and is read wherever it appears: engagement
 plans on Digital Ecosystem also render on the homepage, media packages drive the
@@ -84,18 +91,61 @@ landing in `/admin/submissions`:
 | Summit interest           | `/summit#interest`                      |
 | Newsletter                | `/summit` (deduplicates by email)       |
 
-Each has inline field errors, a pending state and a success panel. Values are
-echoed back on a validation error — React 19 resets uncontrolled inputs once an
-action settles, so without that the eight-part questionnaire would wipe itself.
+**The discovery questionnaire, Academy application and Summit interest form have
+CMS-defined fields.** Label, type, dropdown options, required-ness and width are
+all content (`src/lib/forms/definition.ts`), so the studio can rename a question,
+add an option or add a whole field without a developer. One renderer
+(`DynamicForm.tsx`) draws them and `lib/forms/validate.ts` builds the Zod schema
+from the same definitions, resolved once in `lib/forms/resolve.ts` — so rendering
+and validation can never disagree. Options that come from elsewhere (Academy
+courses, learning formats, engagement plans) are injected there rather than typed
+twice. The `key` is what answers are stored under: renaming a label is free,
+changing a key orphans answers already collected.
+
+Each form has inline field errors, a pending state and a success panel. Two
+React 19 behaviours are worked around in `Field.tsx`, both of which silently ate
+input before being fixed:
+
+- React resets the form once its action settles, and only re-writes a `value`
+  prop that *changed* — so a controlled `<select>` kept the browser's reset value.
+  A small effect re-asserts it.
+- A `<select>` whose only selected option is `disabled` has no selection at all,
+  so the browser omits it from the submission entirely. The placeholder option
+  stays selectable and emptiness is rejected server-side instead.
+
 Every form carries an off-screen honeypot field; anything submitted in it is
 silently dropped.
 
 In the inbox you can filter by type, status and free text, set a status
 (new / read / replied / archived), keep internal notes, and export the current
-filter to CSV.
+filter to CSV. Field labels there come from the live form definitions, so
+renaming a question renames it in the inbox and the CSV too; answers stored under
+a key that no longer exists still show, under a humanised version of the key.
+
+**Notification email.** Every submission emails `NOTIFY_EMAILS`, with `Reply-To`
+set to the enquirer and a deep link to the admin record. Transport is Resend
+(over REST, no SDK) or any SMTP server, picked up from whichever credentials are
+present; with none set the intended mail is logged instead and the dashboard says
+so plainly. Sending is best-effort and deliberately cannot fail a submission — a
+provider outage logs and moves on. An optional confirmation to the sender is off
+by default (`EMAIL_AUTOREPLY`), because it needs a verified sending domain or it
+lands in spam.
 
 Deep links prefill: `/lets-work?need=Brand%20identity` (the media cards and
 homepage tabs use this) and `/academy?course=UI%2FUX%20Design`.
+
+## Portfolio
+
+Projects live in the **Portfolio** document. Each entry has a slug, a thumbnail
+and hero, challenge/approach/outcome narrative, an optional results row, gallery
+and client quote, plus a **Published** tick so a case study can be written before
+it goes live. `/portfolio/[slug]` is pre-rendered per published project, and the
+homepage grid, the portfolio index and the sitemap all read the same list.
+
+The six seeded projects carry the prototype's names and placeholder photography
+with **structural** narrative copy. `results` is deliberately empty: inventing
+performance figures for a client's case study would put fabricated claims on a
+live marketing site. Fill those in with numbers the client will stand behind.
 
 ## Images
 
@@ -168,10 +218,32 @@ Called out in the handoff and left as explicit hooks rather than guesses:
   provider.
 - **Sponsorship deck.** Summit → Hero → *Sponsorship deck URL*; the deck buttons
   stay hidden while it's empty.
-- **Notification emails.** Submissions are stored but nobody is emailed. Add a
-  send in `submit()` (`src/lib/submissions.ts`).
-- **Real assets**: photography, client logos, team photos, portfolio thumbnails,
-  press clippings, and an SVG logo.
+- **Real assets**: photography, client logos, team photos and names, press
+  clippings, real case-study copy and figures, and an SVG logo.
 - **Accent vs. logo palette.** The gold accent is a deliberate neighbour to the
   logo's orange, not a match. If brand guidelines specify the exact orange,
   it's a one-token change (`--accent-fill` in `globals.css`).
+
+Known gaps, in the order worth closing:
+
+1. **Rate limiting.** The honeypot catches naive bots and nothing else.
+2. **Responsive images.** Every `<img>` serves one size to every viewport — an
+   1800px hero goes to a 390px phone. `sharp` is already a dependency, so
+   variants could be generated on upload and emitted as `srcset`.
+3. **One admin account, no reset.** The account is seeded from `.env`; there is
+   no UI to add a colleague and no password recovery.
+4. **No draft/preview for page content.** Saving is immediately live, with no
+   version history to roll back to. (Portfolio projects do have a Published
+   tick.)
+5. **Blog and Talent Hub.** `structure.txt` lists both in the Academy nav; the
+   prototype dropped them. Everything needed to add them exists.
+
+## A note on testing
+
+There is no test suite in the repo. Changes were verified by driving a real
+browser (Playwright) against a production build: the six pages and their
+interactions, all five forms including validation round trips, the CMS editing a
+page and a form definition and seeing it reach the live site, image upload,
+notification email against a local SMTP sink, the inbox and CSV export, the
+portfolio publish/unpublish flow, and mobile layout at 390px. Worth turning into
+committed tests before the next round of changes.

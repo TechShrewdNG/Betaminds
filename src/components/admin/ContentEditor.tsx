@@ -55,6 +55,9 @@ function blankItem(fields: Fields): Data {
       case "number":
         item[key] = 0;
         break;
+      case "boolean":
+        item[key] = false;
+        break;
       case "select":
         item[key] = field.options[0] ?? "";
         break;
@@ -258,6 +261,29 @@ function FieldView({
             value={typeof raw === "number" ? raw : 0}
             onChange={(event) => update(path, Number(event.target.value))}
           />
+          {field.help ? <p className="a-help">{field.help}</p> : null}
+        </div>
+      );
+
+    case "boolean":
+      return (
+        <div className="a-field">
+          <label
+            className="a-label"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={raw === true}
+              onChange={(event) => update(path, event.target.checked)}
+            />
+            {field.label}
+          </label>
           {field.help ? <p className="a-help">{field.help}</p> : null}
         </div>
       );

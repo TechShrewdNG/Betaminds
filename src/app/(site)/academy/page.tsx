@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { SchoolTabs } from "@/components/ui/SchoolTabs";
 import { Accordion } from "@/components/ui/Accordion";
 import { AcademyForm } from "@/components/forms/AcademyForm";
+import { resolveForm } from "@/lib/forms/resolve";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("academy");
@@ -13,9 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AcademyPage() {
   const academy = await getContent("academy");
-  const courseNames = academy.courses.schools.flatMap((school) =>
-    school.courses.map((course) => course.name),
-  );
+  const { fields: applyFields } = await resolveForm("academy");
 
   return (
     <>
@@ -404,11 +403,7 @@ export default async function AcademyPage() {
             {academy.apply.body}
           </p>
           <Suspense fallback={null}>
-            <AcademyForm
-              apply={academy.apply}
-              courses={courseNames}
-              formats={academy.hero.formats}
-            />
+            <AcademyForm apply={academy.apply} fields={applyFields} />
           </Suspense>
         </div>
       </section>

@@ -11,6 +11,7 @@ export type Field =
   | { kind: "text"; label: string; help?: string; mono?: boolean }
   | { kind: "textarea"; label: string; rows?: number; help?: string }
   | { kind: "number"; label: string; help?: string }
+  | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
   | { kind: "images"; label: string; help?: string }
   | { kind: "list"; label: string; help?: string; placeholder?: string }
@@ -59,6 +60,47 @@ const linkFields: Fields = {
   label: { kind: "text", label: "Label" },
   href: { kind: "text", label: "Link" },
 };
+
+/**
+ * The editable definition of one form field. Reused by every form so the studio
+ * meets the same controls wherever they are.
+ */
+const formFieldSchema: Fields = {
+  label: { kind: "text", label: "Question / label" },
+  key: {
+    kind: "text",
+    label: "Field key",
+    mono: true,
+    help: "The stable name this answer is stored under. Renaming the label is free; changing the key orphans answers already collected under the old one.",
+  },
+  type: {
+    kind: "select",
+    label: "Type",
+    options: ["text", "email", "tel", "date", "url", "textarea", "select"],
+  },
+  options: {
+    kind: "list",
+    label: "Dropdown options",
+    help: "Only used when the type is 'select'. A select with no options falls back to a text box.",
+  },
+  required: { kind: "boolean", label: "Required" },
+  placeholder: { kind: "text", label: "Placeholder" },
+  width: {
+    kind: "select",
+    label: "Width",
+    options: ["full", "half"],
+    help: "Two consecutive half-width fields sit side by side on desktop.",
+  },
+};
+
+const formFieldsRepeater = (label: string, help?: string): Field => ({
+  kind: "repeater",
+  label,
+  itemLabel: "Field",
+  titleKey: "label",
+  fields: formFieldSchema,
+  help,
+});
 
 const faqSection = (note: string): SectionSchema => ({
   key: "faq",
@@ -344,32 +386,18 @@ export const schemas: DocSchema[] = [
       {
         key: "portfolio",
         title: "06 / Portfolio",
-        note: "Hovering a tile reveals industry, service and the project link.",
+        note: "The tiles come from the Portfolio document, so each one links to its own case study. This section only controls the heading and how many are shown.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
           note: { kind: "text", label: "Aside" },
           viewLabel: { kind: "text", label: "Hover button label" },
-          items: {
-            kind: "repeater",
-            label: "Projects",
-            itemLabel: "Project",
-            titleKey: "name",
-            fields: {
-              name: { kind: "text", label: "Project" },
-              meta: {
-                kind: "text",
-                label: "Industry · service",
-                mono: true,
-              },
-              image: { kind: "image", label: "Thumbnail", ratio: "4 / 3" },
-              href: {
-                kind: "text",
-                label: "Case-study link",
-                help: "Leave empty and the tile is not clickable.",
-              },
-            },
+          limit: {
+            kind: "number",
+            label: "How many to show",
+            help: "The rest are still on /portfolio.",
           },
+          allLinkLabel: { kind: "text", label: "Link to all work" },
         },
       },
       {
@@ -421,6 +449,102 @@ export const schemas: DocSchema[] = [
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
           ...heroImage("16 / 9"),
+        },
+      },
+    ],
+  },
+
+  {
+    id: "projects",
+    title: "Portfolio",
+    route: "/portfolio",
+    blurb:
+      "Case studies. Each project gets its own page at /portfolio/<slug>, and the homepage grid is drawn from this list.",
+    sections: [
+      seo,
+      {
+        key: "index",
+        title: "Portfolio index page",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          accentTail: { kind: "text", label: "Heading accent tail" },
+          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
+          readLabel: { kind: "text", label: "Card link label" },
+          emptyMessage: {
+            kind: "textarea",
+            label: "Shown when nothing is published",
+            rows: 2,
+          },
+        },
+      },
+      {
+        key: "detail",
+        title: "Case-study page labels",
+        note: "Section headings used on every project page.",
+        fields: {
+          briefLabel: { kind: "text", label: "Brief label", mono: true },
+          challengeLabel: { kind: "text", label: "Challenge heading" },
+          approachLabel: { kind: "text", label: "Approach heading" },
+          outcomeLabel: { kind: "text", label: "Outcome heading" },
+          resultsLabel: { kind: "text", label: "Results heading" },
+          galleryLabel: { kind: "text", label: "Gallery heading" },
+          nextLabel: { kind: "text", label: "Next-project label", mono: true },
+          ctaHeading: { kind: "text", label: "Closing CTA heading" },
+          ctaLabel: { kind: "text", label: "Closing CTA button" },
+          ctaHref: { kind: "text", label: "Closing CTA link" },
+        },
+      },
+      {
+        key: "list",
+        title: "Projects",
+        note: "Untick Published to keep a project off the site while you write it.",
+        fields: {
+          items: {
+            kind: "repeater",
+            label: "Projects",
+            itemLabel: "Project",
+            titleKey: "name",
+            fields: {
+              name: { kind: "text", label: "Project / client name" },
+              slug: {
+                kind: "text",
+                label: "URL slug",
+                mono: true,
+                help: "Lowercase words separated by hyphens — this becomes /portfolio/<slug>. Changing it breaks any link already shared.",
+              },
+              published: { kind: "boolean", label: "Published" },
+              industry: { kind: "text", label: "Industry" },
+              service: { kind: "text", label: "Service" },
+              year: { kind: "text", label: "Year" },
+              client: { kind: "text", label: "Client (if different)" },
+              image: { kind: "image", label: "Grid thumbnail", ratio: "4 / 3" },
+              heroImage: {
+                kind: "image",
+                label: "Case-study hero",
+                ratio: "16 / 9",
+                help: "Falls back to the thumbnail if empty.",
+              },
+              summary: { kind: "textarea", label: "Summary", rows: 3 },
+              challenge: { kind: "textarea", label: "The challenge", rows: 5 },
+              approach: { kind: "textarea", label: "What we did", rows: 5 },
+              outcome: { kind: "textarea", label: "The outcome", rows: 5 },
+              results: {
+                kind: "repeater",
+                label: "Results",
+                itemLabel: "Result",
+                titleKey: "label",
+                help: "Only add figures the client is happy to publish.",
+                fields: {
+                  n: { kind: "text", label: "Figure" },
+                  label: { kind: "text", label: "Label" },
+                },
+              },
+              gallery: { kind: "images", label: "Gallery" },
+              quote: { kind: "textarea", label: "Client quote", rows: 3 },
+              quoteAuthor: { kind: "text", label: "Quote attribution" },
+            },
+          },
         },
       },
     ],
@@ -525,12 +649,13 @@ export const schemas: DocSchema[] = [
           successBody: { kind: "textarea", label: "Success body", rows: 4 },
           groups: {
             kind: "repeater",
-            label: "Outline shown beside the form",
-            itemLabel: "Group",
+            label: "Form sections",
+            itemLabel: "Section",
             titleKey: "title",
+            help: "These are the actual form fields. The outline shown beside the form is generated from them, so there is nothing to keep in sync.",
             fields: {
-              title: { kind: "text", label: "Group title" },
-              fields: { kind: "textarea", label: "Fields summary", rows: 2 },
+              title: { kind: "text", label: "Section title" },
+              fields: formFieldsRepeater("Fields"),
             },
           },
         },
@@ -730,6 +855,10 @@ export const schemas: DocSchema[] = [
           submitLabel: { kind: "text", label: "Submit button label" },
           successHeading: { kind: "text", label: "Success heading" },
           successBody: { kind: "textarea", label: "Success body", rows: 3 },
+          fields: formFieldsRepeater(
+            "Fields",
+            "The 'course' and 'format' dropdowns are filled from the Courses section and the hero's learning formats, so you don't list them twice.",
+          ),
         },
       },
     ],
@@ -911,6 +1040,7 @@ export const schemas: DocSchema[] = [
           submitLabel: { kind: "text", label: "Submit button label" },
           successHeading: { kind: "text", label: "Success heading" },
           successBody: { kind: "textarea", label: "Success body", rows: 3 },
+          fields: formFieldsRepeater("Fields"),
         },
       },
     ],

@@ -2,26 +2,22 @@
 
 import { useActionState } from "react";
 import styles from "./form.module.css";
-import { Field, Honeypot, SelectField, TextareaField } from "./Field";
+import { Honeypot } from "./Field";
 import { SubmitButton, FormNotice, SuccessPanel } from "./parts";
+import { DynamicFields } from "./DynamicForm";
 import { submitSummitInterest, submitNewsletter } from "@/app/actions/forms";
 import { emptyFormState, held } from "@/lib/form-state";
+import type { FormField } from "@/lib/forms/definition";
 import type { ContentDefaults } from "@/lib/content/defaults";
 
 type Summit = ContentDefaults["summit"];
 
-const INTERESTS = [
-  "Attend",
-  "Speak",
-  "Sponsor or partner",
-  "Volunteer",
-  "Exhibit",
-];
-
 export function SummitInterestForm({
   interest,
+  fields,
 }: {
   interest: Summit["interest"];
+  fields: FormField[];
 }) {
   const [state, action] = useActionState(submitSummitInterest, emptyFormState);
 
@@ -37,64 +33,17 @@ export function SummitInterestForm({
   return (
     <form action={action} className={styles.form} noValidate>
       <FormNotice message={state.message} />
-      <Honeypot />
-
-      <div className={styles.pair}>
-        <Field
-          name="name"
-          label="Your name"
-          autoComplete="name"
-          required
-          error={state.errors.name}
-          defaultValue={held(state, "name")}
-        />
-        <Field
-          name="email"
-          type="email"
-          label="Email"
-          autoComplete="email"
-          required
-          error={state.errors.email}
-          defaultValue={held(state, "email")}
-        />
-        <Field
-          name="organisation"
-          label="Organisation"
-          autoComplete="organization"
-          error={state.errors.organisation}
-          defaultValue={held(state, "organisation")}
-        />
-        <Field
-          name="role"
-          label="Role"
-          autoComplete="organization-title"
-          error={state.errors.role}
-          defaultValue={held(state, "role")}
-        />
-      </div>
-
-      <SelectField
-        name="interest"
-        label="How would you like to take part?"
-        options={INTERESTS}
-        required
-        error={state.errors.interest}
-        defaultValue={held(state, "interest")}
-      />
-
-      <TextareaField
-        name="message"
-        label="Anything else?"
-        rows={3}
-        error={state.errors.message}
-        defaultValue={held(state, "message")}
-      />
-
+      <DynamicFields fields={fields} state={state} />
       <SubmitButton label={interest.submitLabel} pendingLabel="Registering…" />
     </form>
   );
 }
 
+/**
+ * Newsletter signup. Stays a hand-written single field rather than going through
+ * the dynamic renderer: it's one input inline with its button, and there is
+ * nothing about it an editor would want to restructure.
+ */
 export function NewsletterForm({
   newsletter,
 }: {
@@ -143,20 +92,14 @@ export function NewsletterForm({
             </span>
           ) : null}
         </div>
-        <SubmitNewsletter label={newsletter.ctaLabel} />
+        <button
+          type="submit"
+          className="pill pill--accent pill--sm"
+          style={{ padding: "13px 24px" }}
+        >
+          {newsletter.ctaLabel}
+        </button>
       </div>
     </form>
-  );
-}
-
-function SubmitNewsletter({ label }: { label: string }) {
-  return (
-    <button
-      type="submit"
-      className="pill pill--accent pill--sm"
-      style={{ padding: "13px 24px" }}
-    >
-      {label}
-    </button>
   );
 }

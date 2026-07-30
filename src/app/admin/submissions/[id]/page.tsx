@@ -4,6 +4,7 @@ import {
   getSubmission,
   orderedEntries,
   fieldLabel,
+  displaySchema,
   KIND_LABEL,
   STATUSES,
   type SubmissionKind,
@@ -20,7 +21,10 @@ export default async function SubmissionPage({
   const submission = await getSubmission(id);
   if (!submission) notFound();
 
-  const entries = orderedEntries(submission.kind, submission.data);
+  // Field order and labels come from the current form definition, so renaming a
+  // question in the CMS renames it here too.
+  const { order, labels } = await displaySchema(submission.kind);
+  const entries = orderedEntries(submission.data, order);
   const label = KIND_LABEL[submission.kind as SubmissionKind] ?? submission.kind;
 
   return (
@@ -83,7 +87,7 @@ export default async function SubmissionPage({
             {entries.map(([key, value]) => (
               <tr key={key}>
                 <th style={{ width: 240, verticalAlign: "top" }}>
-                  {fieldLabel(key)}
+                  {fieldLabel(key, labels)}
                 </th>
                 <td style={{ whiteSpace: "pre-wrap" }}>
                   {value ? (

@@ -9,6 +9,7 @@ import {
   type SubmissionKind,
 } from "@/lib/submissions";
 import { schemas } from "@/lib/content/schema";
+import { describeTransport, isConfigured } from "@/lib/email";
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("en-GB", {
@@ -30,6 +31,7 @@ export default async function DashboardPage() {
   ]);
 
   const total = Object.values(kinds).reduce((sum, n) => sum + n, 0);
+  const emailReady = isConfigured();
 
   return (
     <>
@@ -63,7 +65,7 @@ export default async function DashboardPage() {
       </div>
 
       {mediaCount === 0 ? (
-        <div className="a-notice" style={{ marginBottom: 22 }}>
+        <div className="a-notice" style={{ marginBottom: 14 }}>
           <strong>Photography is still placeholder.</strong> Every image on the
           site comes from the design handoff&rsquo;s stock stand-ins. Upload the
           real assets in the{" "}
@@ -71,6 +73,25 @@ export default async function DashboardPage() {
           page&rsquo;s image field at them.
         </div>
       ) : null}
+
+      {/* Silent notifications are worse than none, so say plainly whether mail
+          is actually going anywhere. */}
+      <div
+        className="a-notice"
+        data-tone={emailReady ? undefined : "error"}
+        style={{ marginBottom: 22 }}
+      >
+        <strong>Email notifications:</strong> {describeTransport()}.{" "}
+        {emailReady ? (
+          <>Every submission is emailed as it arrives.</>
+        ) : (
+          <>
+            Nobody is being emailed when a submission arrives — set
+            <code> RESEND_API_KEY</code> or <code> SMTP_HOST</code> in the
+            environment to turn this on.
+          </>
+        )}
+      </div>
 
       <div className="a-grid" style={{ gridTemplateColumns: "1.6fr 1fr" }}>
         <div>
