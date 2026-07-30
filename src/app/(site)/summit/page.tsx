@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { Accordion } from "@/components/ui/Accordion";
 import {
   SummitInterestForm,
@@ -9,7 +10,7 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("summit");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/summit");
 }
 
 export default async function SummitPage() {

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { SchoolTabs } from "@/components/ui/SchoolTabs";
 import { Accordion } from "@/components/ui/Accordion";
 import { AcademyForm } from "@/components/forms/AcademyForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("academy");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/academy");
 }
 
 export default async function AcademyPage() {

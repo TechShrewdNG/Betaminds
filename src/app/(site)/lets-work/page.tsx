@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getContent, getGlobal } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { BriefForm } from "@/components/forms/BriefForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("work");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/lets-work");
 }
 
 export default async function LetsWorkPage() {

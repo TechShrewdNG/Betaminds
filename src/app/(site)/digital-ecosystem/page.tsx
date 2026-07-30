@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("ecosystem");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/digital-ecosystem");
 }
 
 export default async function EcosystemPage() {

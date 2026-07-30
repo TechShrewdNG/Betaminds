@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
@@ -8,7 +9,7 @@ import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("home");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/");
 }
 
 export default async function HomePage() {

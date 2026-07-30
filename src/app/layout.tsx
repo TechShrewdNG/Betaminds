@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, DM_Sans } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
+import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
 // next/font downloads and self-hosts these at build time, which is what the
@@ -19,14 +21,7 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Betaminds Africa",
-    template: "%s · Betaminds Africa",
-  },
-  description:
-    "A Lagos creative and digital commerce agency. We add the spark that makes brands move.",
-};
+export const metadata: Metadata = rootMetadata(SITE_URL);
 
 export default function RootLayout({
   children,

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { PackageCards } from "@/components/ui/PackageCards";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("media");
-  return { title: seo.title, description: seo.description };
+  return pageMetadata(seo, "/media-services");
 }
 
 export default async function MediaServicesPage() {

@@ -21,6 +21,7 @@ from your `.env`, then change the password under **Password**.
 ```bash
 npm run build && npm start   # production
 npm run typecheck            # tsc --noEmit
+npm run icons                # regenerate the favicon + OG card from the logo
 ```
 
 ## Routes
@@ -122,6 +123,26 @@ From the handoff, and worth not undoing:
 - `prefers-reduced-motion` kills the marquee and the rise animation.
 - Breakpoints match the prototype's measured widths: desktop > 1000px,
   tablet 640–1000px, mobile < 640px.
+
+## SEO and launch chrome
+
+- `sitemap.xml` lists the six routes, with `lastModified` taken from when each
+  page's content was last saved in the CMS — so editing copy updates the sitemap
+  without a redeploy.
+- `robots.txt` allows everything except `/admin`, and points at the sitemap.
+- Titles, descriptions, canonical URLs and Open Graph/Twitter cards are driven by
+  each page's **Search & social** fields in the CMS. Note that Next does *not*
+  merge `openGraph`/`twitter` from a parent layout, so every card field is built
+  in `src/lib/seo.ts` — add fields there, not in individual pages, or they'll
+  ship without an `og:image`.
+- The favicon, Apple touch icon and the 1200×630 share card are generated from
+  the logo by `npm run icons`. The card is composed from the logo artwork rather
+  than rendered type, so no font has to be fetched at build time. Re-run it after
+  replacing the logo.
+- Branded 404 (with the header, footer and all six routes), an error boundary,
+  and a `global-error` fallback for failures in the root layout itself.
+- Set `SITE_URL` per deployment; it drives `metadataBase`, the sitemap and robots.
+  On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is picked up automatically.
 
 ## Deployment notes
 
