@@ -21,7 +21,7 @@ export function ImagePickerModal({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [manual, setManual] = useState(
-    current && !current.startsWith("/uploads/") ? current : "",
+    current && !assets.some((asset) => asset.url === current) ? current : "",
   );
   const fileInput = useRef<HTMLInputElement>(null);
 

@@ -153,12 +153,15 @@ live marketing site. Fill those in with numbers the client will stand behind.
 
 ## Images
 
-Uploads go through `/admin/media` and are written to `UPLOAD_DIR`
-(`.data/uploads` by default), then served by `src/app/uploads/[...path]/route.ts`.
+Uploads go through `/admin/media` and are stored in Vercel Blob
+(`src/lib/storage.ts`), not local disk — Vercel's filesystem is ephemeral per
+invocation, so anything written to disk vanishes on the next deploy or even the
+next request. `MediaAsset.url` stores Blob's public URL as-is; nothing else in
+the app knows storage is Blob rather than anything else.
 
-They are **not** in `public/` on purpose: `next start` reads that directory once
-at boot, so an image uploaded after a build would 404 until a restart. A route
-handler reads from disk per request, so a new upload is live immediately.
+Needs a Blob store connected to the project: dashboard → project → **Storage**
+→ **Create Database** → **Blob** — it injects `BLOB_READ_WRITE_TOKEN` the same
+way the Postgres integration injects `DATABASE_URL`. Redeploy after adding it.
 
 Every photograph currently on the site is a Pexels placeholder from the handoff.
 Replace them by uploading the real assets and repointing each field, keeping the
@@ -213,12 +216,9 @@ From the handoff, and worth not undoing:
   only generates the client). Point `DATABASE_URL` at the same database
   locally and run `npm run setup` once — it creates the tables and the first
   admin account. Re-run just `npm run db:seed` any time to add another admin.
-- **Uploads need a persistent writable disk too, for the same reason as the
-  database.** `.data/uploads` won't survive on Vercel's ephemeral filesystem —
-  swap the body of `put`/`remove`/`read` in `src/lib/storage.ts` for a blob
-  store (e.g. Vercel Blob); nothing else in the app sees more than the
-  returned URL. Not yet done — uploaded images currently won't persist in a
-  Vercel deployment.
+- **Uploads use Vercel Blob**, for the same reason the database can't be
+  SQLite — see [Images](#images) above. Needs a Blob store connected via the
+  **Storage** tab, same as Postgres.
 - **`AUTH_SECRET` must be set** to a long random value — it signs the admin
   session cookie. Without it, admin login silently fails (middleware treats a
   missing secret as "not authenticated," not an error).

@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // The CMS is behind auth anyway, but there's no reason to have crawlers
-      // knocking on it. /uploads stays crawlable so photography can be indexed.
+      // knocking on it.
       disallow: ["/admin", "/admin/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,

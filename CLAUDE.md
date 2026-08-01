@@ -30,13 +30,13 @@ can stay static.
 
 ## Where the build is now
 The site is built: Next.js App Router + TypeScript, vanilla CSS driven by the
-handoff's tokens, Prisma/SQLite, and a schema-driven CMS at `/admin`. See
+handoff's tokens, Prisma/Postgres, and a schema-driven CMS at `/admin`. See
 `README.md` for setup and architecture. Two things to know before editing:
 
 - **Content is schema-driven.** `src/lib/content/defaults.ts` holds every page's
   copy and `src/lib/content/schema.ts` describes the editable fields. Saved edits
   deep-merge over the defaults, so adding a field means touching both files —
   same document id, section key and field key. There are no bespoke admin forms.
-- **Uploads live outside `public/`** (`.data/uploads`, served by
-  `src/app/uploads/[...path]/route.ts`). `next start` snapshots `public/` at boot,
-  so anything written there post-build 404s until a restart. Don't move them back.
+- **Uploads go straight to Vercel Blob** (`src/lib/storage.ts`), not local disk —
+  Vercel's filesystem is ephemeral per-invocation, so anything written to disk
+  vanishes on the next deploy. `MediaAsset.url` stores Blob's public URL as-is.
