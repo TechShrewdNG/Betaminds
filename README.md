@@ -200,8 +200,17 @@ Needs a Blob store connected to the project: dashboard → project → **Storage
 way the Postgres integration injects `DATABASE_URL`. Redeploy after adding it.
 
 The library takes video as well as stills (MP4, WebM, OGG, MOV, up to 64 MB),
-for the opening slider's backgrounds. Anything longer than a few seconds of
+for the splash screen's backgrounds. Anything longer than a few seconds of
 compressed footage belongs on a CDN with its URL pasted in instead.
+
+**Uploads go browser → Blob directly**, not through a server action. A Vercel
+serverless function caps its request body at ~4.5 MB and `bodySizeLimit` can't
+raise it, so no background video could ever have fitted through one.
+`src/app/api/media/upload/route.ts` issues a short-lived, session-gated token
+scoped to the file's type and size; the browser uploads against it and then
+calls `registerUpload` to write the row. Video uses multipart so a dropped
+connection retries a part rather than the whole file. Image dimensions are
+measured in the browser, since the bytes no longer reach us.
 
 Every photograph currently on the site is a Pexels placeholder from the handoff.
 Replace them by uploading the real assets and repointing each field, keeping the

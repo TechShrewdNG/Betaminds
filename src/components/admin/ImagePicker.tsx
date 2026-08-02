@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMedia } from "./media-context";
-import { isVideoUrl } from "@/lib/media";
+import { ACCEPT_ATTR, isVideoUrl } from "@/lib/media";
 
 export type MediaKind = "image" | "video";
 
 /** Wording and file-input filter, so one picker serves both media kinds. */
 const COPY = {
-  image: { noun: "image", accept: "image/*", empty: "No image" },
-  video: { noun: "video", accept: "video/*", empty: "No video" },
+  image: { noun: "image", accept: ACCEPT_ATTR.image, empty: "No image" },
+  video: { noun: "video", accept: ACCEPT_ATTR.video, empty: "No video" },
 } as const;
 
 /**
@@ -32,6 +32,7 @@ export function ImagePickerModal({
   const { assets: allAssets, upload } = useMedia();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [manual, setManual] = useState(
     current && !allAssets.some((asset) => asset.url === current) ? current : "",
   );
@@ -56,7 +57,8 @@ export function ImagePickerModal({
     if (!file) return;
     setBusy(true);
     setError("");
-    const result = await upload(file);
+    setProgress(0);
+    const result = await upload(file, setProgress);
     setBusy(false);
     if ("error" in result) {
       setError(result.error);
@@ -88,7 +90,11 @@ export function ImagePickerModal({
               onClick={() => fileInput.current?.click()}
               disabled={busy}
             >
-              {busy ? "Uploading…" : "Upload new"}
+              {busy
+                ? progress > 0 && progress < 100
+                  ? `Uploading… ${Math.round(progress)}%`
+                  : "Uploading…"
+                : "Upload new"}
             </button>
             <button type="button" className="a-btn a-btn--ghost" onClick={onClose}>
               Close
