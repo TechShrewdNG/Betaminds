@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { upload as blobUpload } from "@vercel/blob/client";
+import { uploadPresigned as blobUpload } from "@vercel/blob/client";
 import { registerUpload } from "@/app/admin/actions";
 import {
   extensionFor,
@@ -94,6 +94,8 @@ export function MediaProvider({
     try {
       // Straight from the browser to Blob: a serverless function can only
       // accept ~4.5 MB of request body, which no background video fits in.
+      // Presigned rather than client-token, because our store authenticates
+      // with OIDC and has no read-write token to mint tokens from.
       const blob = await blobUpload(filename, file, {
         access: "public",
         handleUploadUrl: "/api/media/upload",

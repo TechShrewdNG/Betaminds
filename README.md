@@ -206,11 +206,20 @@ compressed footage belongs on a CDN with its URL pasted in instead.
 **Uploads go browser → Blob directly**, not through a server action. A Vercel
 serverless function caps its request body at ~4.5 MB and `bodySizeLimit` can't
 raise it, so no background video could ever have fitted through one.
-`src/app/api/media/upload/route.ts` issues a short-lived, session-gated token
-scoped to the file's type and size; the browser uploads against it and then
-calls `registerUpload` to write the row. Video uses multipart so a dropped
-connection retries a part rather than the whole file. Image dimensions are
-measured in the browser, since the bytes no longer reach us.
+`src/app/api/media/upload/route.ts` issues a short-lived, session-gated
+presigned URL scoped to the file's pathname, type and size; the browser uploads
+against it and then calls `registerUpload` to write the row. Video uses
+multipart so a dropped connection retries a part rather than the whole file.
+Image dimensions are measured in the browser, since the bytes no longer reach
+us.
+
+It uses the **presigned** flow rather than Blob's client-token one on purpose.
+Our store authenticates with OIDC — connecting it injects `BLOB_STORE_ID` and
+`BLOB_WEBHOOK_PUBLIC_KEY`, not a read-write token — and the SDK will only mint
+client tokens from a read-write token. `issueSignedToken` resolves credentials
+the general way, so it works with the deployment's OIDC identity and there's no
+long-lived secret to store. Uploads therefore only work where an OIDC identity
+exists: on Vercel, not against a local `next start`.
 
 Every photograph currently on the site is a Pexels placeholder from the handoff.
 Replace them by uploading the real assets and repointing each field, keeping the
