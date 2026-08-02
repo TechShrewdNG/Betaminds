@@ -255,12 +255,21 @@ Known gaps, in the order worth closing:
 5. **Blog and Talent Hub.** `structure.txt` lists both in the Academy nav; the
    prototype dropped them. Everything needed to add them exists.
 
-## A note on testing
+## Testing
 
-There is no test suite in the repo. Changes were verified by driving a real
-browser (Playwright) against a production build: the six pages and their
-interactions, all five forms including validation round trips, the CMS editing a
-page and a form definition and seeing it reach the live site, image upload,
-notification email against a local SMTP sink, the inbox and CSV export, the
-portfolio publish/unpublish flow, and mobile layout at 390px. Worth turning into
-committed tests before the next round of changes.
+Playwright, driving a real browser against a production build (`next build &&
+next start`) rather than `next dev` — see `tests/README.md` for what's covered
+and what isn't. Run it with:
+
+```bash
+npm run setup   # once: schema + seeded admin, against DATABASE_URL
+npm test
+```
+
+CI runs the same suite on every push and pull request
+(`.github/workflows/test.yml`), against a Postgres service container.
+
+The suite covers the public routes, the project brief form's validation round
+trip, and admin auth. Plenty is still verified only by hand — the CMS content
+editor, media uploads, the three CMS-defined forms, the inbox and CSV export,
+and notification email. Those are the obvious next additions.
