@@ -99,7 +99,13 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
             <div className="a-card" key={asset.id} style={{ padding: 12 }}>
               <div className="a-thumb" style={{ cursor: "default" }}>
                 {isVideoUrl(asset.url) ? (
-                  <video src={asset.url} muted playsInline preload="metadata" />
+                  <video
+                    src={asset.url}
+                    controls
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={asset.url} alt={asset.alt || asset.filename} />

@@ -219,7 +219,13 @@ export function ImageField({
         >
           {value ? (
             isVideoUrl(value) ? (
-              <video src={value} muted playsInline preload="metadata" />
+              <video
+                src={value}
+                controls
+                muted
+                playsInline
+                preload="metadata"
+              />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={value} alt="" />
