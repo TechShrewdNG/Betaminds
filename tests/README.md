@@ -39,7 +39,7 @@ set in the environment `npm test` runs in.
 
 ## What's not covered yet
 
-The CMS content editor, media library upload (needs a Blob token), the
+The CMS content editor, media library upload (needs a deployment: uploads authenticate via OIDC), the
 discovery questionnaire / Academy / Summit forms (CMS-defined fields, more
 setup to drive generically), and the submissions inbox. Worth adding as this
 suite grows, not required for it to be useful today.

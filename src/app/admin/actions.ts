@@ -157,9 +157,23 @@ export async function registerUpload(input: {
   if (input.size > maxBytesFor(input.mimeType)) {
     return { ok: false, message: "That file is too large." };
   }
-  // Only ever our own store, so this can't be pointed at somewhere arbitrary.
-  if (!/^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//i.test(input.url)) {
-    return { ok: false, message: "That upload URL isn't recognised." };
+  // Only ever Blob, so this can't be pointed at somewhere arbitrary. Matched
+  // on the host suffix rather than a full pattern: the subdomain differs
+  // between public and private stores, and hard-coding ".public." here
+  // rejected every upload from a private one.
+  let host: string;
+  try {
+    const parsed = new URL(input.url);
+    if (parsed.protocol !== "https:") throw new Error("not https");
+    host = parsed.hostname.toLowerCase();
+  } catch {
+    return { ok: false, message: "That upload URL isn't a valid https URL." };
+  }
+  if (!host.endsWith(".blob.vercel-storage.com")) {
+    return {
+      ok: false,
+      message: `That upload URL isn't recognised (host: ${host}).`,
+    };
   }
 
   try {
