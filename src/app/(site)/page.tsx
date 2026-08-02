@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { publishedProjects, projectMeta } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
+import { HeroSlider } from "@/components/ui/HeroSlider";
 import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
@@ -27,9 +28,21 @@ export default async function HomePage() {
   const plans = ecosystem.plans.items;
   const featured = ecosystem.plans.featuredIndex;
 
+  const slider = home.heroSlider;
+  // The slider is the opening screen when it's on and has something to show;
+  // otherwise the static hero below takes over, so the page is never headless.
+  const showSlider = slider?.enabled && slider.slides.length > 0;
+
   return (
     <>
-      {/* 1 — Hero. Full height, content bottom-anchored and centred. */}
+      {showSlider ? (
+        <HeroSlider
+          slides={slider.slides}
+          autoplay={slider.autoplay}
+          interval={slider.interval}
+        />
+      ) : (
+      /* 1 — Hero. Full height, content bottom-anchored and centred. */
       <section className="hero" style={{ minHeight: "100vh", display: "flex" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -105,6 +118,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 2 — Trusted by. */}
       <section className="tint-band" style={{ padding: "34px 0" }}>

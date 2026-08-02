@@ -13,6 +13,7 @@ export type Field =
   | { kind: "number"; label: string; help?: string }
   | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
+  | { kind: "video"; label: string; help?: string }
   | { kind: "images"; label: string; help?: string }
   | { kind: "list"; label: string; help?: string; placeholder?: string }
   | { kind: "select"; label: string; options: string[]; help?: string }
@@ -249,9 +250,62 @@ export const schemas: DocSchema[] = [
     sections: [
       seo,
       {
+        key: "heroSlider",
+        title: "Opening slider",
+        note: "The full-screen slider visitors land on. Switch it off to fall back to the static Hero below.",
+        fields: {
+          enabled: {
+            kind: "boolean",
+            label: "Show the slider",
+            help: "Off falls back to the static Hero section below, so the homepage always has an opening screen.",
+          },
+          autoplay: {
+            kind: "boolean",
+            label: "Advance automatically",
+            help: "Visitors who ask their device to reduce motion never get autoplay, whatever this is set to.",
+          },
+          interval: {
+            kind: "number",
+            label: "Seconds per slide",
+            help: "Only used when advancing automatically. Below 2 is ignored.",
+          },
+          slides: {
+            kind: "repeater",
+            label: "Slides",
+            itemLabel: "Slide",
+            titleKey: "heading",
+            fields: {
+              eyebrow: { kind: "text", label: "Pill label", mono: true },
+              heading: { kind: "textarea", label: "Headline", rows: 2 },
+              body: { kind: "textarea", label: "Body", rows: 3 },
+              video: {
+                kind: "video",
+                label: "Background video",
+                help: "Plays muted and looping, cropped to cover. Leave empty to use the picture instead. Keep it short and compressed — visitors download it before they see anything.",
+              },
+              image: {
+                kind: "image",
+                label: "Background picture",
+                ratio: "16 / 9",
+                help: "Shown while the video loads, when there's no video, and on devices that won't autoplay it. Always set one.",
+              },
+              imageAlt: { kind: "text", label: "Picture alt text" },
+              primaryLabel: { kind: "text", label: "Button label" },
+              primaryHref: { kind: "text", label: "Button link" },
+              secondaryLabel: {
+                kind: "text",
+                label: "Second button label",
+                help: "Leave empty for a single button.",
+              },
+              secondaryHref: { kind: "text", label: "Second button link" },
+            },
+          },
+        },
+      },
+      {
         key: "hero",
         title: "Hero",
-        note: "Full-height photograph with bottom-anchored, centred content.",
+        note: "Full-height photograph with bottom-anchored, centred content. Only shown when the opening slider above is switched off.",
         fields: {
           ...heroImage("16 / 9", "Cropped to cover. Landscape works best."),
           eyebrow: { kind: "text", label: "Pill label", mono: true },

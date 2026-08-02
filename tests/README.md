@@ -26,6 +26,10 @@ set in the environment `npm test` runs in.
   errors, values surviving a failed submit, and a successful submission.
 - `admin-auth.spec.ts` — unauthenticated redirect to `/admin/login`, a wrong
   password rejected, correct credentials reaching the dashboard.
+- `hero-slider.spec.ts` — the homepage's opening slider: it opens the page and
+  fills the screen with its controls in view, one slide shows at a time, the
+  arrows move between them, inactive slides are out of the tab order, and
+  autoplay stops for `prefers-reduced-motion`.
 
 ## What's not covered yet
 

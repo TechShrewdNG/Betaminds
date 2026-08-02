@@ -20,9 +20,20 @@ const ACCEPTED = new Set([
   "image/avif",
   "image/svg+xml",
   "image/gif",
+  // Video, for the homepage hero slider's backgrounds.
+  "video/mp4",
+  "video/webm",
+  "video/ogg",
+  "video/quicktime",
 ]);
 
-const MAX_BYTES = 10 * 1024 * 1024;
+/**
+ * Video gets a bigger allowance than stills — a few seconds of background
+ * footage doesn't fit in 10 MB. Keep it well under Vercel's request limit;
+ * anything longer belongs on a CDN with its URL pasted in instead.
+ */
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
 
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -31,7 +42,13 @@ const EXT: Record<string, string> = {
   "image/avif": "avif",
   "image/svg+xml": "svg",
   "image/gif": "gif",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/ogg": "ogv",
+  "video/quicktime": "mov",
 };
+
+export const isVideo = (mimeType: string) => mimeType.startsWith("video/");
 
 export type StoredImage = {
   url: string;
@@ -59,11 +76,18 @@ export class UploadError extends Error {}
 export async function put(file: File): Promise<StoredImage> {
   if (!ACCEPTED.has(file.type)) {
     throw new UploadError(
-      `${file.type || "That file type"} isn't supported. Use JPEG, PNG, WebP, AVIF, GIF or SVG.`,
+      `${file.type || "That file type"} isn't supported. Use JPEG, PNG, WebP, AVIF, GIF or SVG for pictures, or MP4, WebM, OGG or MOV for video.`,
     );
   }
-  if (file.size > MAX_BYTES) {
-    throw new UploadError("That image is over 10 MB. Please compress it first.");
+
+  const video = isVideo(file.type);
+  const limit = video ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  if (file.size > limit) {
+    throw new UploadError(
+      video
+        ? "That video is over 64 MB. Compress it, or host it elsewhere and paste the URL instead."
+        : "That image is over 10 MB. Please compress it first.",
+    );
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -72,7 +96,9 @@ export async function put(file: File): Promise<StoredImage> {
 
   let width: number | null = null;
   let height: number | null = null;
-  if (file.type !== "image/svg+xml") {
+  // sharp reads stills only; video dimensions would need a demuxer, and they're
+  // only ever a nicety in the media library.
+  if (!video && file.type !== "image/svg+xml") {
     try {
       const meta = await sharp(buffer).metadata();
       width = meta.width ?? null;

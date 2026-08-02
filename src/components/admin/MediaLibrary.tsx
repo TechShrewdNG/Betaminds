@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMedia } from "./media-context";
+import { isVideoUrl } from "@/lib/media";
 import { deleteImage, updateImageAlt } from "@/app/admin/actions";
 
 type Row = {
@@ -88,8 +89,12 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
           {assets.map((asset) => (
             <div className="a-card" key={asset.id} style={{ padding: 12 }}>
               <div className="a-thumb" style={{ cursor: "default" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={asset.url} alt={asset.alt || asset.filename} />
+                {isVideoUrl(asset.url) ? (
+                  <video src={asset.url} muted playsInline preload="metadata" />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={asset.url} alt={asset.alt || asset.filename} />
+                )}
               </div>
 
               <div className="a-thumb-meta" style={{ marginTop: 8 }}>

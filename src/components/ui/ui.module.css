@@ -584,3 +584,143 @@
     background: var(--surface);
   }
 }
+
+/* --- Opening hero slider -------------------------------------------------- */
+
+.slider {
+  position: relative;
+  /* svh, not vh: mobile browsers include the collapsing toolbar in vh, which
+     pushes the buttons under the fold on first paint. The header is sticky and
+     sits in flow above this, so its height comes off the top — without that the
+     arrows and counter land just past the bottom of the screen. */
+  height: calc(100svh - var(--header-h));
+  min-height: 520px;
+  overflow: hidden;
+  background: var(--surface-deep);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 700ms ease,
+    visibility 0s linear 700ms;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 700ms ease,
+    visibility 0s;
+}
+
+.slideMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slideBody {
+  position: relative;
+  align-self: flex-end;
+  max-width: 1180px;
+  text-align: center;
+  padding-top: 120px;
+  /* Clears the controls sitting along the bottom edge. */
+  padding-bottom: 132px;
+}
+
+.slideEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: var(--r-pill);
+  margin-bottom: 24px;
+}
+
+.slideDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+}
+
+.sliderControls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.sliderArrow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border: 1px solid var(--line-outline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.sliderArrow:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.sliderCount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-55);
+  margin: 0;
+  min-width: 68px;
+  text-align: center;
+}
+
+.sliderCountNow {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .slideBody {
+    padding-top: 104px;
+    padding-bottom: 116px;
+  }
+
+  .sliderControls {
+    bottom: 32px;
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .slide[data-active="true"] {
+    transition: none;
+  }
+
+  .sliderArrow {
+    transition: none;
+  }
+}

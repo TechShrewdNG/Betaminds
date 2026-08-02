@@ -60,6 +60,13 @@
   --r-panel: 18px;
   --r-card: 14px;
 
+  /* The sticky header's height. It sits in flow rather than over the page, so
+     anything meant to fill the screen below it has to subtract this. Tracks
+     .bar's padding plus its content in Header.module.css — keep them in step,
+     and round up: over-subtracting leaves a hairline gap, under-subtracting
+     pushes the slider's controls off the bottom of the screen. */
+  --header-h: 68px;
+
   /* Type */
   --font-display: var(--font-sora), "Sora", system-ui, sans-serif;
   --font-body: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
@@ -88,6 +95,8 @@
     --h2: 29px;
     --quote: 22px;
     --section-y: 72px;
+    /* The bar's contents are smaller here, so it sits shorter than desktop. */
+    --header-h: 63px;
   }
 }
 

@@ -41,7 +41,6 @@ npm run icons                # regenerate the favicon + OG card from the logo
 | `/portfolio/[slug]`  | One case study, pre-rendered per project   |
 | `/lets-work`         | Contact                                    |
 | `/admin`             | CMS (gated by `src/middleware.ts`)         |
-| `/uploads/*`         | Serves CMS-uploaded images                 |
 
 The prototype faked its six pages with client-side page state. Here each one is a
 real route, and the prototype's preview toolbar and `device` switcher are
@@ -71,8 +70,8 @@ src/lib/content/
   document id, same section key, same field key.
 
 Field kinds available to `schema.ts`: `text`, `textarea`, `number`, `boolean`,
-`select`, `image`, `images` (gallery), `list` (strings), `group`, and `repeater`
-(which nests, so a footer column can hold its own list of links).
+`select`, `image`, `video`, `images` (gallery), `list` (strings), `group`, and
+`repeater` (which nests, so a footer column can hold its own list of links).
 
 One gotcha: a section key must not match a field key inside it. The editor reads
 `doc[sectionKey][fieldKey]`, so a section called `items` holding a field called
@@ -151,6 +150,28 @@ with **structural** narrative copy. `results` is deliberately empty: inventing
 performance figures for a client's case study would put fabricated claims on a
 live marketing site. Fill those in with numbers the client will stand behind.
 
+## Opening slider
+
+The homepage opens on a full-screen slider, edited under **Home → Opening
+slider**. Each slide carries its own background video, background picture,
+headline, body and up to two buttons; the section also holds the autoplay
+toggle and seconds-per-slide.
+
+- **Video is optional per slide.** A slide with no video falls back to its
+  picture, so always set a picture — it's also the poster while the video
+  loads, and what visitors on data-saver or reduced-motion settings get.
+- **Switching the slider off** falls back to the static **Hero** section below
+  it, so the homepage always has an opening screen.
+- Autoplay never runs for visitors who ask their device to reduce motion, and
+  the background video doesn't play for them either — a looping background is
+  exactly the movement that setting is asking us to stop.
+- Only the first slide's headline is the page's `<h1>`; the rest are styled
+  paragraphs, so the homepage keeps a single, stable main heading.
+
+The slider fills the viewport minus the sticky header, via the `--header-h`
+token in `globals.css`. If you change the header's height, change that token
+too or the slider's controls drift off the bottom of the screen.
+
 ## Images
 
 Uploads go through `/admin/media` and are stored in Vercel Blob
@@ -162,6 +183,10 @@ the app knows storage is Blob rather than anything else.
 Needs a Blob store connected to the project: dashboard → project → **Storage**
 → **Create Database** → **Blob** — it injects `BLOB_READ_WRITE_TOKEN` the same
 way the Postgres integration injects `DATABASE_URL`. Redeploy after adding it.
+
+The library takes video as well as stills (MP4, WebM, OGG, MOV, up to 64 MB),
+for the opening slider's backgrounds. Anything longer than a few seconds of
+compressed footage belongs on a CDN with its URL pasted in instead.
 
 Every photograph currently on the site is a Pexels placeholder from the handoff.
 Replace them by uploading the real assets and repointing each field, keeping the

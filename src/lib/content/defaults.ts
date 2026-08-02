@@ -168,6 +168,58 @@ export const defaults = {
       description:
         "A Lagos creative and digital commerce agency. We build brands, the digital commerce systems behind them, and the people who run both.",
     },
+    /**
+     * Full-viewport opening slider. When `enabled` is off the static hero
+     * below takes over, so the homepage always has an opening screen — turning
+     * the slider off can never leave the page headless.
+     *
+     * `video` is empty on every seeded slide on purpose: there is no stock
+     * footage to ship, and an empty value falls back to the slide's still. Upload
+     * real footage in the CMS (Home → Opening slider) to switch each one over.
+     */
+    heroSlider: {
+      enabled: true,
+      autoplay: true,
+      interval: 7,
+      slides: [
+        {
+          eyebrow: "Creative × Digital × Commerce",
+          heading: "We add the spark that makes brands move",
+          body: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
+          video: "",
+          image: IMG(5466279, 1800),
+          imageAlt: "Betaminds creative team in session",
+          primaryLabel: "Explore digital ecosystem",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "Explore media services",
+          secondaryHref: "/media-services",
+        },
+        {
+          eyebrow: "Digital ecosystem",
+          heading: "Commerce systems that actually convert",
+          body: "Storefronts, payments and the operations behind them — built to be measured, and rebuilt when the numbers say so.",
+          video: "",
+          image: IMG(3184292, 1800),
+          imageAlt: "Team reviewing analytics on a screen",
+          primaryLabel: "See how we build",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "View our work",
+          secondaryHref: "/portfolio",
+        },
+        {
+          eyebrow: "Betaminds Academy",
+          heading: "And the people who run both",
+          body: "We train the creatives and operators African brands are short of — practical, cohort-based, taught by people still doing the work.",
+          video: "",
+          image: IMG(7683740, 1800),
+          imageAlt: "Academy cohort in a workshop",
+          primaryLabel: "Explore the Academy",
+          primaryHref: "/academy",
+          secondaryLabel: "Talk to us",
+          secondaryHref: "/lets-work",
+        },
+      ],
+    },
     hero: {
       image: IMG(5466279, 1800),
       imageAlt: "Betaminds creative team in session",
