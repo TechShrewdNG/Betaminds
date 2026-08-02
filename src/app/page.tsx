@@ -52,6 +52,7 @@ export default async function SplashPage() {
         slides={slider.slides}
         autoplay={slider.autoplay}
         interval={slider.interval}
+        overlay={slider.overlay}
         fullViewport
       />
     </main>

@@ -179,6 +179,10 @@ makes `/` redirect to `/home`, so visitors go straight to the site.
 - Autoplay never runs for visitors who ask their device to reduce motion, and
   the background video doesn't play for them either — a looping background is
   exactly the movement that setting is asking us to stop.
+- **Background tint (0-100)** controls how far the picture or video is faded
+  behind the words. The tint is weighted to the bottom, where the copy sits, so
+  the top of the frame stays close to clear. Lower it to show more of the
+  footage; raise it if a headline gets hard to read against something busy.
 - Only the first slide's headline is the page's `<h1>`; the rest are styled
   paragraphs, so the homepage keeps a single, stable main heading.
 

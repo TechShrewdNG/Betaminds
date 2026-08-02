@@ -269,6 +269,11 @@ export const schemas: DocSchema[] = [
             label: "Seconds per slide",
             help: "Only used when advancing automatically. Below 2 is ignored.",
           },
+          overlay: {
+            kind: "number",
+            label: "Background tint (0-100)",
+            help: "How much the picture or video is faded behind the words. Lower shows more of it; raise it if a headline gets hard to read against busy footage. The tint is weighted to the bottom, so the top of the frame always stays clearer.",
+          },
           slides: {
             kind: "repeater",
             label: "Slides",

@@ -182,6 +182,7 @@ export const defaults = {
       enabled: true,
       autoplay: true,
       interval: 7,
+      overlay: 45,
       slides: [
         {
           eyebrow: "Creative × Digital × Commerce",

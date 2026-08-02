@@ -37,6 +37,8 @@ export function HeroSlider({
   slides,
   autoplay,
   interval,
+  /** 0-100. How strongly the wash tints the picture or video behind the copy. */
+  overlay = 50,
   /**
    * True on the splash screen, which has no site header above it, so the
    * slider gets the whole viewport rather than what's left under one.
@@ -46,6 +48,7 @@ export function HeroSlider({
   slides: HeroSlide[];
   autoplay: boolean;
   interval: number;
+  overlay?: number;
   fullViewport?: boolean;
 }) {
   const [index, setIndex] = useState(0);
@@ -97,6 +100,11 @@ export function HeroSlider({
       ref={region}
       className={styles.slider}
       data-full={fullViewport ? "true" : "false"}
+      style={
+        {
+          "--wash": Math.min(100, Math.max(0, overlay)) / 100,
+        } as React.CSSProperties
+      }
       aria-roledescription="carousel"
       aria-label="Featured"
       tabIndex={-1}
@@ -144,7 +152,7 @@ export function HeroSlider({
               />
             ) : null}
 
-            <div className="hero__wash hero__wash--up" />
+            <div className={styles.slideWash} />
 
             <div className={`shell ${styles.slideBody}`}>
               {slide.eyebrow ? (

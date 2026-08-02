@@ -599,6 +599,30 @@
   background: var(--surface-deep);
 }
 
+/*
+ * Wash over the slide's picture or video.
+ *
+ * Weighted to the bottom, where the copy sits: the top of the frame stays
+ * close to clear so the footage is actually visible, and the tint only builds
+ * up behind the headline and buttons, which are dark text and need it. The
+ * previous flat 0.72-0.97 wash was legible but left the background barely
+ * perceptible.
+ *
+ * `--wash` is set per slider from the CMS, so the studio can dial this without
+ * a developer. Alphas over 1 clamp, which is what makes the high end opaque.
+ */
+.slideWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
+  );
+}
+
 /* The splash screen has no header above it, so it takes the whole viewport. */
 .slider[data-full="true"] {
   height: 100svh;
