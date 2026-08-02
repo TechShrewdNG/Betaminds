@@ -22,6 +22,9 @@ works for local development; point `DATABASE_URL` at it.
 Sign in to the CMS at `/admin/login` with the `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 from your `.env`, then change the password under **Password**.
 
+The CMS is usable on a phone: below 900px the sidebar becomes a drawer behind
+a hamburger in a top bar, and the editor's grids collapse to one column.
+
 ```bash
 npm run build && npm start   # production
 npm run typecheck            # tsc --noEmit

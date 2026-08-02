@@ -27,6 +27,10 @@ set in the environment `npm test` runs in.
   errors, values surviving a failed submit, and a successful submission.
 - `admin-auth.spec.ts` — unauthenticated redirect to `/admin/login`, a wrong
   password rejected, correct credentials reaching the dashboard.
+- `admin-mobile.spec.ts` — the CMS at 390px: the nav sits behind a hamburger,
+  the toggle stays reachable over the open drawer and closes it, choosing a
+  page dismisses it, no admin page overflows sideways, and the sidebar is
+  simply present on desktop with no hamburger.
 - `hero-slider.spec.ts` — the splash screen at `/`: it fills the viewport with
   its controls in view and no site chrome, the logo sits top right and leads to
   `/home`, one slide shows at a time, the arrows move between them, inactive
