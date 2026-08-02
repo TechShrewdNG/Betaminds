@@ -41,7 +41,7 @@ export function Header({
       onMouseLeave={() => setSolid(false)}
     >
       <div className={styles.bar}>
-        <Link href="/" className={styles.brand} aria-label="Betaminds Africa, home">
+        <Link href="/home" className={styles.brand} aria-label="Betaminds Africa, home">
           <span className={styles.mark}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={brand.logo} alt="" />

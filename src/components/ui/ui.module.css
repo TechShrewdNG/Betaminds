@@ -599,6 +599,11 @@
   background: var(--surface-deep);
 }
 
+/* The splash screen has no header above it, so it takes the whole viewport. */
+.slider[data-full="true"] {
+  height: 100svh;
+}
+
 .slide {
   position: absolute;
   inset: 0;

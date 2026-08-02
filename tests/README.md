@@ -20,16 +20,18 @@ set in the environment `npm test` runs in.
 
 ## What's covered
 
-- `public-pages.spec.ts` — every public route renders, no horizontal overflow
-  at 390px, unknown routes 404, `robots.txt`/`sitemap.xml` are served.
+- `public-pages.spec.ts` — every content page renders with exactly one visible
+  `h1`, no horizontal overflow at 390px, unknown routes 404, and
+  `robots.txt`/`sitemap.xml` are served.
 - `brief-form.spec.ts` — the `/lets-work` project brief form: validation
   errors, values surviving a failed submit, and a successful submission.
 - `admin-auth.spec.ts` — unauthenticated redirect to `/admin/login`, a wrong
   password rejected, correct credentials reaching the dashboard.
-- `hero-slider.spec.ts` — the homepage's opening slider: it opens the page and
-  fills the screen with its controls in view, one slide shows at a time, the
-  arrows move between them, inactive slides are out of the tab order, and
-  autoplay stops for `prefers-reduced-motion`.
+- `hero-slider.spec.ts` — the splash screen at `/`: it fills the viewport with
+  its controls in view and no site chrome, the logo sits top right and leads to
+  `/home`, one slide shows at a time, the arrows move between them, inactive
+  slides are out of the tab order, and autoplay stops for
+  `prefers-reduced-motion`.
 
 ## What's not covered yet
 

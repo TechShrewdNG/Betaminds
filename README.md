@@ -32,7 +32,8 @@ npm run icons                # regenerate the favicon + OG card from the logo
 
 | Route                | Page                                       |
 | -------------------- | ------------------------------------------ |
-| `/`                  | Homepage                                   |
+| `/`                  | Splash screen — logo + full-screen slider  |
+| `/home`              | Homepage                                   |
 | `/digital-ecosystem` | Digital Commerce & Marketplace Solutions   |
 | `/media-services`    | Media Services                             |
 | `/academy`           | Betaminds Academy                          |
@@ -150,27 +151,38 @@ with **structural** narrative copy. `results` is deliberately empty: inventing
 performance figures for a client's case study would put fabricated claims on a
 live marketing site. Fill those in with numbers the client will stand behind.
 
-## Opening slider
+## Splash screen
 
-The homepage opens on a full-screen slider, edited under **Home → Opening
-slider**. Each slide carries its own background video, background picture,
-headline, body and up to two buttons; the section also holds the autoplay
-toggle and seconds-per-slide.
+`/` is a splash screen: the logo top right, a full-screen slider, and nothing
+else — no header, nav or footer. It lives at `src/app/page.tsx`, deliberately
+outside the `(site)` route group so it inherits none of that chrome. The
+homepage proper is `/home`.
+
+It's edited under **Home → Splash screen**. Each slide carries its own
+background video, background picture, headline, body and up to two buttons; the
+section also holds the autoplay toggle and seconds-per-slide.
+
+Every way out of the splash is a link on it: the logo goes to `/home`, and each
+slide's buttons go wherever you point them. There's no separate "skip" control,
+because a slide with no buttons would otherwise be a dead end — the logo always
+is one.
+
+**Switching the splash off** (Home → Splash screen → Show the splash screen)
+makes `/` redirect to `/home`, so visitors go straight to the site.
 
 - **Video is optional per slide.** A slide with no video falls back to its
   picture, so always set a picture — it's also the poster while the video
   loads, and what visitors on data-saver or reduced-motion settings get.
-- **Switching the slider off** falls back to the static **Hero** section below
-  it, so the homepage always has an opening screen.
 - Autoplay never runs for visitors who ask their device to reduce motion, and
   the background video doesn't play for them either — a looping background is
   exactly the movement that setting is asking us to stop.
 - Only the first slide's headline is the page's `<h1>`; the rest are styled
   paragraphs, so the homepage keeps a single, stable main heading.
 
-The slider fills the viewport minus the sticky header, via the `--header-h`
-token in `globals.css`. If you change the header's height, change that token
-too or the slider's controls drift off the bottom of the screen.
+On the splash the slider takes the whole viewport. The same component is
+sized to the viewport *minus* the sticky header when used inside the site, via
+the `--header-h` token in `globals.css` — if you change the header's height,
+change that token too or the controls drift off the bottom of the screen.
 
 ## Images
 

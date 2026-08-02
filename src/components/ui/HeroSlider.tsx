@@ -37,10 +37,16 @@ export function HeroSlider({
   slides,
   autoplay,
   interval,
+  /**
+   * True on the splash screen, which has no site header above it, so the
+   * slider gets the whole viewport rather than what's left under one.
+   */
+  fullViewport = false,
 }: {
   slides: HeroSlide[];
   autoplay: boolean;
   interval: number;
+  fullViewport?: boolean;
 }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -90,6 +96,7 @@ export function HeroSlider({
     <section
       ref={region}
       className={styles.slider}
+      data-full={fullViewport ? "true" : "false"}
       aria-roledescription="carousel"
       aria-label="Featured"
       tabIndex={-1}

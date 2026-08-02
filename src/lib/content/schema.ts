@@ -251,13 +251,13 @@ export const schemas: DocSchema[] = [
       seo,
       {
         key: "heroSlider",
-        title: "Opening slider",
-        note: "The full-screen slider visitors land on. Switch it off to fall back to the static Hero below.",
+        title: "Splash screen",
+        note: "The full-screen slider visitors land on at betaminds.africa, before the site itself. Switch it off and visitors go straight to the homepage.",
         fields: {
           enabled: {
             kind: "boolean",
-            label: "Show the slider",
-            help: "Off falls back to the static Hero section below, so the homepage always has an opening screen.",
+            label: "Show the splash screen",
+            help: "Off sends visitors straight to the homepage — nobody sees the slider.",
           },
           autoplay: {
             kind: "boolean",
@@ -305,7 +305,7 @@ export const schemas: DocSchema[] = [
       {
         key: "hero",
         title: "Hero",
-        note: "Full-height photograph with bottom-anchored, centred content. Only shown when the opening slider above is switched off.",
+        note: "Full-height photograph with bottom-anchored, centred content. Opens the homepage itself, after the splash screen.",
         fields: {
           ...heroImage("16 / 9", "Cropped to cover. Landscape works best."),
           eyebrow: { kind: "text", label: "Pill label", mono: true },

@@ -11,8 +11,9 @@ tokens, per-screen layout, interactions, state model, assets.
 - The `.dc.html` file is a **reference prototype on a proprietary runtime**.
   Do not try to run, port, or copy its template syntax. Read it for values.
 - Each of the six pages is a **separate route** in production:
-  `/`, `/digital-ecosystem`, `/media-services`, `/academy`, `/summit`,
-  `/lets-work`. The prototype fakes them with client-side page state.
+  `/home`, `/digital-ecosystem`, `/media-services`, `/academy`, `/summit`,
+  `/lets-work`. The prototype fakes them with client-side page state. `/` is a
+  splash screen added later — logo plus a full-screen slider, no site chrome.
 - The prototype's top toolbar and `device` state are preview controls.
   Do not ship them — use real CSS media queries.
 - **No shadows anywhere.** Depth comes from hairline borders and surface tints.

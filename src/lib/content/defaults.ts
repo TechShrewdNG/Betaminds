@@ -93,7 +93,7 @@ export const defaults = {
     },
     nav: {
       items: [
-        { label: "Home", href: "/" },
+        { label: "Home", href: "/home" },
         { label: "Portfolio", href: "/portfolio" },
         { label: "Digital Ecosystem", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
@@ -125,7 +125,7 @@ export const defaults = {
         {
           title: "Explore",
           links: [
-            { label: "Home", href: "/" },
+            { label: "Home", href: "/home" },
             { label: "Digital marketplace", href: "/digital-ecosystem" },
             { label: "Media services", href: "/media-services" },
           ],
@@ -169,9 +169,10 @@ export const defaults = {
         "A Lagos creative and digital commerce agency. We build brands, the digital commerce systems behind them, and the people who run both.",
     },
     /**
-     * Full-viewport opening slider. When `enabled` is off the static hero
-     * below takes over, so the homepage always has an opening screen — turning
-     * the slider off can never leave the page headless.
+     * The splash screen at `/` — the full-screen slider a visitor lands on
+     * before the site itself. Switching `enabled` off removes the splash
+     * entirely: `/` then serves the homepage, which has its own static hero
+     * below, so turning this off can never leave the site headless.
      *
      * `video` is empty on every seeded slide on purpose: there is no stock
      * footage to ship, and an empty value falls back to the slide's still. Upload

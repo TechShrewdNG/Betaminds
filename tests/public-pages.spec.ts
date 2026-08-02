@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
 
+// `/` is the splash screen and gets its own spec; these are the content pages.
 const ROUTES = [
-  "/",
+  "/home",
   "/digital-ecosystem",
   "/media-services",
   "/academy",
@@ -18,11 +19,8 @@ for (const route of ROUTES) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
 
-    // Exactly one h1 per page. Deliberately a count rather than a visibility
-    // check: the homepage's opening slider rotates, so its h1 — the first
-    // slide's — is only on screen some of the time.
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.locator("main, body").first()).toBeVisible();
+    await expect(page.locator("h1").first()).toBeVisible();
 
     const overflow = await page.evaluate(() => {
       const { scrollWidth, clientWidth } = document.documentElement;

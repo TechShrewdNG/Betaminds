@@ -20,7 +20,10 @@ export const SITE_URL = resolveSiteUrl();
 
 /** The public routes, in navigation order. */
 export const PUBLIC_ROUTES = [
+  // `/` is the splash screen and `/home` the homepage proper. Both are
+  // indexable: the splash is the entry point, the homepage carries the copy.
   { path: "/", doc: "home", priority: 1 },
+  { path: "/home", doc: "home", priority: 0.9 },
   { path: "/digital-ecosystem", doc: "ecosystem", priority: 0.9 },
   { path: "/media-services", doc: "media", priority: 0.9 },
   { path: "/academy", doc: "academy", priority: 0.9 },
