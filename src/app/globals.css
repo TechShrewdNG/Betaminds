@@ -641,23 +641,58 @@ button {
   object-fit: cover;
 }
 
+/*
+ * Wash over a hero's photograph.
+ *
+ * Weighted towards wherever the copy sits rather than flat across the frame:
+ * the old 0.62-0.97 tint kept text legible but left the photography barely
+ * perceptible. Strong behind the words, opening up to near-clear elsewhere.
+ *
+ * `--wash` scales the whole thing, so a page can dial it without new rules —
+ * the splash screen sets it from the CMS. Alphas over 1 clamp, which is what
+ * gives the strong end its opacity.
+ */
+.hero {
+  --wash: 0.5;
+}
+
+/* Inner heroes: copy is a left-aligned column, so the tint falls away to the
+   right and lets the photograph through there. */
 .hero__wash {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    115deg,
-    rgba(251, 250, 248, 0.95),
-    rgba(251, 250, 248, 0.62)
+    105deg,
+    rgba(251, 250, 248, calc(var(--wash) * 1.8)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.5)) 38%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.66)) 70%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.26)) 100%
   );
 }
 
+/* The homepage hero centres its copy along the bottom edge, so the tint
+   builds from the bottom instead. */
 .hero__wash--up {
   background: linear-gradient(
     to top,
-    rgba(251, 250, 248, 0.97) 0%,
-    rgba(251, 250, 248, 0.86) 42%,
-    rgba(251, 250, 248, 0.72) 100%
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
   );
+}
+
+/* On a phone the copy spans the full width, so there's no clear side to open
+   up — go bottom-weighted there too rather than leaving text over bare photo. */
+@media (max-width: 640px) {
+  .hero__wash {
+    background: linear-gradient(
+      to top,
+      rgba(251, 250, 248, calc(var(--wash) * 1.75)) 0%,
+      rgba(251, 250, 248, calc(var(--wash) * 1.4)) 45%,
+      rgba(251, 250, 248, calc(var(--wash) * 0.8)) 100%
+    );
+  }
 }
 
 .hero__body {
