@@ -29,7 +29,7 @@ export async function generateMetadata({
       title: `${project.name} — ${projectMeta(project)}`,
       description: project.summary,
     },
-    `/portfolio/${project.slug}`,
+    `/projects/${project.slug}`,
   );
 }
 
@@ -198,7 +198,7 @@ export default async function ProjectPage({
         <div className="grid col2 col2--tight">
           {next && next.slug !== project.slug ? (
             <Link
-              href={`/portfolio/${next.slug}`}
+              href={`/projects/${next.slug}`}
               className="panel"
               style={{ display: "block", color: "var(--ink)" }}
             >

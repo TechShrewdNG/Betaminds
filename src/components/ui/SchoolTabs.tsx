@@ -1,25 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { Suspense, useEffect, useState } from "react";
 import styles from "./ui.module.css";
+import { AcademyForm } from "@/components/forms/AcademyForm";
+import type { FormField } from "@/lib/forms/definition";
+import type { ContentDefaults } from "@/lib/content/defaults";
 
-export type Course = { name: string; weeks: string; mode: string };
+export type Course = {
+  name: string;
+  weeks: string;
+  mode: string;
+  description?: string;
+};
 export type School = { name: string; courses: Course[] };
+type Apply = ContentDefaults["academy"]["apply"];
 
 export function SchoolTabs({
   heading,
   schools,
   certificateLabel,
   enrolLabel,
+  apply,
+  fields,
 }: {
   heading: string;
   schools: School[];
   certificateLabel: string;
   enrolLabel: string;
+  apply: Apply;
+  fields: FormField[];
 }) {
   const [active, setActive] = useState(0);
+  const [openCourse, setOpenCourse] = useState<Course | null>(null);
   const current = schools[active] ?? schools[0];
+
+  useEffect(() => {
+    if (!openCourse) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenCourse(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openCourse]);
 
   return (
     <>
@@ -44,42 +66,69 @@ export function SchoolTabs({
 
       <div id="courses-panel" role="tabpanel" className="grid col3">
         {(current?.courses ?? []).map((course) => (
-          <div
+          <button
             key={course.name}
-            className="card"
-            style={{
-              borderRadius: 16,
-              padding: "26px 26px 24px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-            }}
+            type="button"
+            className={styles.courseCard}
+            onClick={() => setOpenCourse(course)}
           >
-            <div
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 600,
-                fontSize: 19,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {course.name}
-            </div>
+            <div className={styles.courseCardName}>{course.name}</div>
             <div className="row-wrap" style={{ gap: 6 }}>
               <Chip>{course.weeks}</Chip>
               <Chip>{course.mode}</Chip>
               <Chip accent>{certificateLabel}</Chip>
             </div>
-            <Link
-              href={`/academy?course=${encodeURIComponent(course.name)}#apply`}
-              className="pill pill--accent-outline pill--sm"
-              style={{ alignSelf: "flex-start" }}
-            >
-              {enrolLabel}
-            </Link>
-          </div>
+            <span className={styles.courseCardCta}>{enrolLabel} →</span>
+          </button>
         ))}
       </div>
+
+      {openCourse ? (
+        <div
+          className={styles.modalBack}
+          role="dialog"
+          aria-modal="true"
+          aria-label={openCourse.name}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setOpenCourse(null);
+          }}
+        >
+          <div className={styles.modal}>
+            <button
+              type="button"
+              className={styles.modalClose}
+              aria-label="Close"
+              onClick={() => setOpenCourse(null)}
+            >
+              ×
+            </button>
+
+            <div className={styles.modalName}>{openCourse.name}</div>
+            {openCourse.description ? (
+              <p className={styles.modalDescription}>
+                {openCourse.description}
+              </p>
+            ) : null}
+            <div className="row-wrap" style={{ gap: 6, marginBottom: 28 }}>
+              <Chip>{openCourse.weeks}</Chip>
+              <Chip>{openCourse.mode}</Chip>
+              <Chip accent>{certificateLabel}</Chip>
+            </div>
+
+            <div className={styles.modalDivider} />
+
+            <h3 className={styles.modalFormHeading}>{apply.heading}</h3>
+            <p className={styles.modalFormBody}>{apply.body}</p>
+            <Suspense fallback={null}>
+              <AcademyForm
+                apply={apply}
+                fields={fields}
+                presetCourse={openCourse.name}
+              />
+            </Suspense>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

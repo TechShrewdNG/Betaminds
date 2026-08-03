@@ -372,6 +372,21 @@ button {
   text-wrap: balance;
 }
 
+/* Homepage section names: the label above each section's headline (e.g.
+   "Who we are", "Digital marketplace"). Sized and weighted like .h1 rather
+   than the small mono eyebrow style, per the brief. */
+.section-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--h1);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-transform: none;
+  margin: 0;
+  text-wrap: balance;
+}
+
 .h3 {
   font-family: var(--font-display);
   font-weight: 700;

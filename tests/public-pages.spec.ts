@@ -8,7 +8,8 @@ const ROUTES = [
   "/academy",
   "/summit",
   "/lets-work",
-  "/portfolio",
+  "/projects",
+  "/blog",
 ];
 
 for (const route of ROUTES) {

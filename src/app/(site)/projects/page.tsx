@@ -7,10 +7,10 @@ import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("projects");
-  return pageMetadata(seo, "/portfolio");
+  return pageMetadata(seo, "/projects");
 }
 
-export default async function PortfolioPage() {
+export default async function ProjectsPage() {
   const [doc, projects] = await Promise.all([
     getContent("projects"),
     publishedProjects(),
@@ -53,7 +53,7 @@ export default async function PortfolioPage() {
             {projects.map((project) => (
               <Link
                 key={project.slug}
-                href={`/portfolio/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 className={styles.tile}
               >
                 {project.image ? (

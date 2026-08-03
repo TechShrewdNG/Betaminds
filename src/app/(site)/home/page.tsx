@@ -121,7 +121,7 @@ export default async function HomePage() {
       <section className="shell section">
         <div className="grid col2" style={{ alignItems: "start" }}>
           <div>
-            <div className="eyebrow mb-22">{home.about.eyebrow}</div>
+            <div className="section-name mb-22">{home.about.eyebrow}</div>
             <h2 className="h2" style={{ marginBottom: 24 }}>
               {home.about.heading}
             </h2>
@@ -208,7 +208,7 @@ export default async function HomePage() {
       <section className="shell section section--tight-top">
         <div className="split mb-34">
           <div>
-            <div className="eyebrow mb-18">{home.team.eyebrow}</div>
+            <div className="section-name mb-18">{home.team.eyebrow}</div>
             <h2 className="h2">{home.team.heading}</h2>
           </div>
           <div
@@ -267,7 +267,7 @@ export default async function HomePage() {
         <div className="panel--feature panel">
           <div className="grid col2 col2--mid" style={{ alignItems: "center" }}>
             <div>
-              <div className="eyebrow mb-18">{home.marketplace.eyebrow}</div>
+              <div className="section-name mb-18">{home.marketplace.eyebrow}</div>
               <h2 className="h2" style={{ marginBottom: 20 }}>
                 {home.marketplace.heading}
               </h2>
@@ -333,7 +333,7 @@ export default async function HomePage() {
 
       {/* 6 — 04 / Media services. */}
       <section className="shell section section--tight-top">
-        <div className="eyebrow mb-18">{home.media.eyebrow}</div>
+        <div className="section-name mb-18">{home.media.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2 measure-620">{home.media.heading}</h2>
           <Link href="/media-services" className="link-underline">
@@ -370,7 +370,7 @@ export default async function HomePage() {
           style={{ position: "relative", paddingTop: 92, paddingBottom: 92 }}
         >
           <div className="measure-660">
-            <div className="eyebrow mb-18">{home.summit.eyebrow}</div>
+            <div className="section-name mb-18">{home.summit.eyebrow}</div>
             <h2 className="h2" style={{ marginBottom: 18 }}>
               {home.summit.heading}
             </h2>
@@ -404,16 +404,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8 — 06 / Portfolio. */}
-      <section id="portfolio" className="shell section section--tight-top">
-        <div className="eyebrow mb-18">{home.portfolio.eyebrow}</div>
+      {/* 8 — Projects. */}
+      <section id="projects" className="shell section section--tight-top">
+        <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2">{home.portfolio.heading}</h2>
           <div className="row-wrap" style={{ gap: 20, alignItems: "baseline" }}>
             <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
               {home.portfolio.note}
             </div>
-            <Link href="/portfolio" className="link-underline">
+            <Link href="/projects" className="link-underline">
               {home.portfolio.allLinkLabel}
             </Link>
           </div>
@@ -422,7 +422,7 @@ export default async function HomePage() {
           {projects.slice(0, home.portfolio.limit).map((project) => (
             <Link
               key={project.slug}
-              href={`/portfolio/${project.slug}`}
+              href={`/projects/${project.slug}`}
               className={styles.tile}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -454,7 +454,7 @@ export default async function HomePage() {
 
       {/* 10 — 07 / Betaminds Academy. */}
       <section className="shell section section--tight-top">
-        <div className="eyebrow mb-18">{home.academy.eyebrow}</div>
+        <div className="section-name mb-18">{home.academy.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2 measure-620">{home.academy.heading}</h2>
           <Link href={home.academy.ctaHref} className="pill pill--accent">
@@ -528,7 +528,7 @@ export default async function HomePage() {
               textAlign: "center",
             }}
           >
-            <div className="eyebrow mb-22">{home.finalCta.eyebrow}</div>
+            <div className="section-name mb-22">{home.finalCta.eyebrow}</div>
             <h2
               className="h2 measure-740"
               style={{ margin: "0 auto 26px" }}

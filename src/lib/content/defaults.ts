@@ -49,7 +49,7 @@ const f = (
 });
 
 /**
- * Shorthand for a portfolio project.
+ * Shorthand for a case-study project.
  *
  * The structure is real; the narrative copy is placeholder, and `results` is left
  * empty on purpose. Inventing performance figures for a client's case study would
@@ -83,22 +83,46 @@ const proj = (
   published: true,
 });
 
+/**
+ * Shorthand for a blog post.
+ *
+ * The structure is real; the body copy is placeholder. The editor replaces it
+ * with the actual post before publishing.
+ */
+const post = (
+  slug: string,
+  title: string,
+  author: string,
+  date: string,
+  cover: string,
+) => ({
+  slug,
+  title,
+  excerpt: `Replace this with a one- or two-line summary of "${title}".`,
+  coverImage: cover,
+  body: "Replace this with the full post. A blank line starts a new paragraph.",
+  author,
+  date,
+  published: true,
+});
+
 export const defaults = {
   global: {
     brand: {
       logo: "/BETAMINDS-AFRICA.png",
-      wordmark: "BETAMINDS",
-      wordmarkSub: "AFRICA",
+      wordmark: "Betaminds",
+      wordmarkSub: "Africa",
       tagline: "We add the spark that makes brands move.",
     },
     nav: {
       items: [
         { label: "Home", href: "/home" },
-        { label: "Portfolio", href: "/portfolio" },
+        { label: "Projects", href: "/projects" },
         { label: "Digital Ecosystem", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
         { label: "Academy", href: "/academy" },
         { label: "Summit", href: "/summit" },
+        { label: "Blog", href: "/blog" },
         { label: "Let's Work", href: "/lets-work" },
       ],
       ctaLabel: "Let's Work",
@@ -142,7 +166,8 @@ export const defaults = {
           title: "Connect",
           links: [
             { label: "Let's work", href: "/lets-work" },
-            { label: "Portfolio", href: "/portfolio" },
+            { label: "Projects", href: "/projects" },
+            { label: "Blog", href: "/blog" },
             { label: "Book a discovery call", href: "/digital-ecosystem#book" },
           ],
         },
@@ -206,7 +231,7 @@ export const defaults = {
           primaryLabel: "See how we build",
           primaryHref: "/digital-ecosystem",
           secondaryLabel: "View our work",
-          secondaryHref: "/portfolio",
+          secondaryHref: "/projects",
         },
         {
           eyebrow: "Betaminds Academy",
@@ -256,7 +281,7 @@ export const defaults = {
       ],
     },
     about: {
-      eyebrow: "01 / Who we are",
+      eyebrow: "Who we are",
       heading: "We take the idea all the way, not just the pretty part.",
       body1:
         "Creativity meets strategy. We help brands establish a distinct identity and connect with their audience in ways that actually convert. Identity, content, commerce, and the systems that keep all of it running.",
@@ -287,7 +312,7 @@ export const defaults = {
       ],
     },
     team: {
-      eyebrow: "02 / Meet the spark",
+      eyebrow: "Meet the spark",
       heading: "The people behind the work.",
       note: "Hover a portrait for socials.",
       members: [
@@ -322,20 +347,20 @@ export const defaults = {
       ],
     },
     marketplace: {
-      eyebrow: "03 / Digital marketplace",
+      eyebrow: "Digital marketplace",
       heading: "Build. Scale. Sell. Grow.",
       body: "Not a pile of standalone services. One commerce ecosystem: branding, content, website, ads, customer experience and analytics, planned and run together.",
       ctaLabel: "Book a discovery call",
       ctaHref: "/digital-ecosystem",
     },
     media: {
-      eyebrow: "04 / Media services",
+      eyebrow: "Media services",
       heading: "Seven packages. Click one to see the deliverables.",
       linkLabel: "All media services →",
       enquireLabel: "Enquire",
     },
     summit: {
-      eyebrow: "05 / The Summit",
+      eyebrow: "The Summit",
       heading: "Betaminds Africa Creative Empowerment Summit",
       body: "More than an annual event. It's a movement turning creative talent into careers and businesses that last.",
       image: IMG(8761808, 1800),
@@ -344,7 +369,7 @@ export const defaults = {
       ctaHref: "/summit",
     },
     portfolio: {
-      eyebrow: "06 / Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work.",
       note: "Hover for industry & service.",
       viewLabel: "View project",
@@ -379,7 +404,7 @@ export const defaults = {
       ],
     },
     academy: {
-      eyebrow: "07 / Betaminds Academy",
+      eyebrow: "Betaminds Academy",
       heading: "Learn. Build. Earn.",
       ctaLabel: "Visit academy →",
       ctaHref: "/academy",
@@ -392,7 +417,7 @@ export const defaults = {
       ],
     },
     finalCta: {
-      eyebrow: "08 / Let's work",
+      eyebrow: "Let's work",
       heading: "Let's add the spark to your vision.",
       ctaLabel: "Let's work →",
       ctaHref: "/lets-work",
@@ -408,7 +433,7 @@ export const defaults = {
         "Brand identity, commerce ecosystems, content and property film for brands across Africa.",
     },
     index: {
-      eyebrow: "Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work",
       accentTail: ".",
       lead: "Identity, commerce, content and film. A few of the engagements we can talk about.",
@@ -435,6 +460,54 @@ export const defaults = {
         proj("mama-africa-foods", "Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
         proj("mkr-logistics", "MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
         proj("glams-beauty", "Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
+      ],
+    },
+  },
+
+  blog: {
+    seo: {
+      title: "Blog — Betaminds Africa",
+      description:
+        "Notes on brand, content, commerce and craft from the Betaminds Africa studio.",
+    },
+    index: {
+      eyebrow: "Blog",
+      heading: "From the studio",
+      accentTail: ".",
+      lead: "Field notes on brand, content, commerce and craft — from the team building it.",
+      emptyMessage: "Nothing published yet. Check back soon.",
+      readLabel: "Read the post →",
+    },
+    detail: {
+      backLabel: "All posts",
+      nextLabel: "Next post",
+      ctaHeading: "Got a project in mind?",
+      ctaLabel: "Let's work →",
+      ctaHref: "/lets-work",
+    },
+    list: {
+      items: [
+        post(
+          "building-brands-that-travel",
+          "Building brands that travel across African markets",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(3869639, 1200),
+        ),
+        post(
+          "content-that-converts",
+          "Content that converts: what we learned from a year of campaigns",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(8761735, 1200),
+        ),
+        post(
+          "why-commerce-ecosystems-beat-standalone-sites",
+          "Why commerce ecosystems beat standalone websites",
+          "Betaminds Studio",
+          "December 2025",
+          IMG(8761808, 1200),
+        ),
       ],
     },
   },
@@ -858,21 +931,81 @@ export const defaults = {
         {
           name: "School of Creative Media",
           courses: [
-            { name: "Photography", weeks: "10 weeks", mode: "Hybrid" },
-            { name: "Videography", weeks: "12 weeks", mode: "Physical" },
-            { name: "Content Creation", weeks: "8 weeks", mode: "Hybrid" },
-            { name: "Animation", weeks: "12 weeks", mode: "Virtual" },
-            { name: "Motion Graphics", weeks: "10 weeks", mode: "Hybrid" },
+            {
+              name: "Photography",
+              weeks: "10 weeks",
+              mode: "Hybrid",
+              description:
+                "Camera fundamentals, lighting and composition through to a portfolio-ready editorial shoot.",
+            },
+            {
+              name: "Videography",
+              weeks: "12 weeks",
+              mode: "Physical",
+              description:
+                "Camera operation, shot-listing and on-set craft for narrative, commercial and event film.",
+            },
+            {
+              name: "Content Creation",
+              weeks: "8 weeks",
+              mode: "Hybrid",
+              description:
+                "Planning, filming and editing short-form content for brands and personal platforms.",
+            },
+            {
+              name: "Animation",
+              weeks: "12 weeks",
+              mode: "Virtual",
+              description:
+                "2D animation principles, storyboarding and production workflow from concept to render.",
+            },
+            {
+              name: "Motion Graphics",
+              weeks: "10 weeks",
+              mode: "Hybrid",
+              description:
+                "Typography, compositing and animation for title sequences, ads and social content.",
+            },
           ],
         },
         {
           name: "School of Digital Technology",
           courses: [
-            { name: "Digital Marketing", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "UI/UX Design", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "Website Development", weeks: "16 weeks", mode: "Hybrid" },
-            { name: "AI Productivity", weeks: "6 weeks", mode: "Virtual" },
-            { name: "SEO", weeks: "6 weeks", mode: "Virtual" },
+            {
+              name: "Digital Marketing",
+              weeks: "12 weeks",
+              mode: "Hybrid",
+              description:
+                "Strategy, paid media, social and analytics for running campaigns that convert.",
+            },
+            {
+              name: "UI/UX Design",
+              weeks: "12 weeks",
+              mode: "Hybrid",
+              description:
+                "Research, wireframing and prototyping toward a shippable, user-tested product design.",
+            },
+            {
+              name: "Website Development",
+              weeks: "16 weeks",
+              mode: "Hybrid",
+              description:
+                "Front-end and back-end fundamentals through to a deployed, full-stack project.",
+            },
+            {
+              name: "AI Productivity",
+              weeks: "6 weeks",
+              mode: "Virtual",
+              description:
+                "Practical AI tooling for research, writing, design and workflow automation.",
+            },
+            {
+              name: "SEO",
+              weeks: "6 weeks",
+              mode: "Virtual",
+              description:
+                "Technical, on-page and content SEO to grow organic search visibility.",
+            },
           ],
         },
       ],

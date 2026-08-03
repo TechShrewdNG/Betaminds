@@ -15,9 +15,13 @@ type Apply = ContentDefaults["academy"]["apply"];
 export function AcademyForm({
   apply,
   fields,
+  presetCourse,
 }: {
   apply: Apply;
   fields: FormField[];
+  /** Forces the course selection, bypassing the ?course= query param — used
+   *  when the form is embedded in a course's own detail modal. */
+  presetCourse?: string;
 }) {
   const [state, action] = useActionState(
     submitAcademyApplication,
@@ -28,7 +32,10 @@ export function AcademyForm({
   // actually one of the offered options.
   const requested = useSearchParams().get("course") ?? "";
   const courseField = fields.find((field) => field.key === "course");
-  const preselect = courseField?.options.includes(requested) ? requested : "";
+  const queryPreselect = courseField?.options.includes(requested)
+    ? requested
+    : "";
+  const preselect = presetCourse ?? queryPreselect;
 
   if (state.status === "ok") {
     return (

@@ -26,6 +26,24 @@ export function Footer({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={brand.logo} alt="Betaminds Africa" className={styles.logo} />
           <p className={styles.tagline}>{brand.tagline}</p>
+
+          {contact.socials.length > 0 ? (
+            <div className={styles.socialsBlock}>
+              <div className={styles.socialsLabel}>{contact.socialsLabel}</div>
+              <div className={styles.socials}>
+                {contact.socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    className={styles.socialLink}
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <div className={styles.columns}>

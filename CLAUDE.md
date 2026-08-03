@@ -26,8 +26,8 @@ tokens, per-screen layout, interactions, state model, assets.
 - Honour `prefers-reduced-motion`: kill the marquee and rise animations.
 
 ## Content that likely wants a CMS
-Academy courses, Summit editions/galleries, portfolio entries. Everything else
-can stay static.
+Academy courses, Summit editions/galleries, project entries, blog posts.
+Everything else can stay static.
 
 ## Where the build is now
 The site is built: Next.js App Router + TypeScript, vanilla CSS driven by the

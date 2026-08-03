@@ -441,7 +441,7 @@
   background: var(--surface);
 }
 
-/* --- Hover-reveal tiles (team, portfolio) -------------------------------- */
+/* --- Hover-reveal tiles (team, projects) --------------------------------- */
 
 .tile {
   position: relative;
@@ -517,7 +517,7 @@
   color: var(--accent-fill);
 }
 
-/* Portfolio overlay: canvas wash, meta, name, view pill. */
+/* Project tile overlay: canvas wash, meta, name, view pill. */
 .workHover {
   position: absolute;
   inset: 0;
@@ -751,5 +751,141 @@
 
   .sliderArrow {
     transition: none;
+  }
+}
+
+/* --- Course cards + detail modal ------------------------------------------ */
+
+.courseCard {
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 26px 26px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.courseCard:hover {
+  border-color: var(--accent-line-strong);
+  background: linear-gradient(150deg, var(--surface), var(--surface-alt));
+}
+
+.courseCardName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.courseCardCta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.modalBack {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 23, 27, 0.55);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 64px 20px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  padding: 44px 40px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-outline);
+  background: transparent;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.modalClose:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.modalName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  padding-right: 40px;
+  text-wrap: balance;
+}
+
+.modalDescription {
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--ink-82);
+  margin: 0 0 20px;
+  text-wrap: pretty;
+}
+
+.modalDivider {
+  height: 1px;
+  background: var(--line);
+  margin: 28px 0;
+}
+
+.modalFormHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.modalFormBody {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-74);
+  margin: 0 0 24px;
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  .modalBack {
+    padding: 32px 14px;
+  }
+
+  .modal {
+    padding: 32px 24px;
+  }
+
+  .modalName {
+    font-size: 23px;
   }
 }

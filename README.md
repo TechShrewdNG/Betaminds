@@ -41,14 +41,16 @@ npm run icons                # regenerate the favicon + OG card from the logo
 | `/media-services`    | Media Services                             |
 | `/academy`           | Betaminds Academy                          |
 | `/summit`            | Creative Empowerment Summit                |
-| `/portfolio`         | Case-study index                           |
-| `/portfolio/[slug]`  | One case study, pre-rendered per project   |
+| `/projects`          | Case-study index                           |
+| `/projects/[slug]`   | One case study, pre-rendered per project   |
+| `/blog`              | Blog index                                 |
+| `/blog/[slug]`       | One post, pre-rendered per published post  |
 | `/lets-work`         | Contact                                    |
 | `/admin`             | CMS (gated by `src/middleware.ts`)         |
 
 The prototype faked its six pages with client-side page state. Here each one is a
 real route, and the prototype's preview toolbar and `device` switcher are
-deliberately not shipped — real CSS media queries do that job. `/portfolio` is an
+deliberately not shipped — real CSS media queries do that job. `/projects` is an
 addition: the brief asked for a "View project" CTA, which needs somewhere to go.
 
 ## How content works
@@ -141,18 +143,28 @@ lands in spam.
 Deep links prefill: `/lets-work?need=Brand%20identity` (the media cards and
 homepage tabs use this) and `/academy?course=UI%2FUX%20Design`.
 
-## Portfolio
+## Projects
 
-Projects live in the **Portfolio** document. Each entry has a slug, a thumbnail
+Projects live in the **Projects** document. Each entry has a slug, a thumbnail
 and hero, challenge/approach/outcome narrative, an optional results row, gallery
 and client quote, plus a **Published** tick so a case study can be written before
-it goes live. `/portfolio/[slug]` is pre-rendered per published project, and the
-homepage grid, the portfolio index and the sitemap all read the same list.
+it goes live. `/projects/[slug]` is pre-rendered per published project, and the
+homepage grid, the projects index and the sitemap all read the same list.
 
 The six seeded projects carry the prototype's names and placeholder photography
 with **structural** narrative copy. `results` is deliberately empty: inventing
 performance figures for a client's case study would put fabricated claims on a
 live marketing site. Fill those in with numbers the client will stand behind.
+
+## Blog
+
+Posts live in the **Blog** document, the same repeater-in-a-document pattern as
+Projects — add, edit, reorder or delete a row in `/admin/content/blog` and the
+site updates with no redeploy. Each entry has a title, slug, author, date,
+cover image, excerpt and body, plus a **Published** tick so a post can be
+drafted before it goes live. New rows start unpublished until ticked, same as
+a new Project row. `/blog/[slug]` is pre-rendered per published post, and the
+blog index and the sitemap read the same list.
 
 ## Splash screen
 
@@ -312,10 +324,9 @@ Known gaps, in the order worth closing:
 3. **One admin account, no reset.** The account is seeded from `.env`; there is
    no UI to add a colleague and no password recovery.
 4. **No draft/preview for page content.** Saving is immediately live, with no
-   version history to roll back to. (Portfolio projects do have a Published
-   tick.)
-5. **Blog and Talent Hub.** `structure.txt` lists both in the Academy nav; the
-   prototype dropped them. Everything needed to add them exists.
+   version history to roll back to. (Projects do have a Published tick.)
+5. **Talent Hub.** `structure.txt` lists it in the Academy nav; the prototype
+   dropped it. Everything needed to add it exists.
 
 ## Testing
 

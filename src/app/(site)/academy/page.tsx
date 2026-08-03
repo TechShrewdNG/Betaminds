@@ -104,6 +104,8 @@ export default async function AcademyPage() {
           schools={academy.courses.schools}
           certificateLabel={academy.courses.certificateLabel}
           enrolLabel={academy.courses.enrolLabel}
+          apply={academy.apply}
+          fields={applyFields}
         />
       </section>
 

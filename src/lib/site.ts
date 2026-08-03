@@ -28,6 +28,7 @@ export const PUBLIC_ROUTES = [
   { path: "/media-services", doc: "media", priority: 0.9 },
   { path: "/academy", doc: "academy", priority: 0.9 },
   { path: "/summit", doc: "summit", priority: 0.8 },
-  { path: "/portfolio", doc: "projects", priority: 0.8 },
+  { path: "/projects", doc: "projects", priority: 0.8 },
+  { path: "/blog", doc: "blog", priority: 0.8 },
   { path: "/lets-work", doc: "work", priority: 0.8 },
 ] as const;

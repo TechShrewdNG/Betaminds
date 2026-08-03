@@ -444,8 +444,8 @@ export const schemas: DocSchema[] = [
       },
       {
         key: "portfolio",
-        title: "06 / Portfolio",
-        note: "The tiles come from the Portfolio document, so each one links to its own case study. This section only controls the heading and how many are shown.",
+        title: "Projects",
+        note: "The tiles come from the Projects document, so each one links to its own case study. This section only controls the heading and how many are shown.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -454,7 +454,7 @@ export const schemas: DocSchema[] = [
           limit: {
             kind: "number",
             label: "How many to show",
-            help: "The rest are still on /portfolio.",
+            help: "The rest are still on /projects.",
           },
           allLinkLabel: { kind: "text", label: "Link to all work" },
         },
@@ -515,15 +515,15 @@ export const schemas: DocSchema[] = [
 
   {
     id: "projects",
-    title: "Portfolio",
-    route: "/portfolio",
+    title: "Projects",
+    route: "/projects",
     blurb:
-      "Case studies. Each project gets its own page at /portfolio/<slug>, and the homepage grid is drawn from this list.",
+      "Case studies. Each project gets its own page at /projects/<slug>, and the homepage grid is drawn from this list.",
     sections: [
       seo,
       {
         key: "index",
-        title: "Portfolio index page",
+        title: "Projects index page",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -570,7 +570,7 @@ export const schemas: DocSchema[] = [
                 kind: "text",
                 label: "URL slug",
                 mono: true,
-                help: "Lowercase words separated by hyphens — this becomes /portfolio/<slug>. Changing it breaks any link already shared.",
+                help: "Lowercase words separated by hyphens — this becomes /projects/<slug>. Changing it breaks any link already shared.",
               },
               published: { kind: "boolean", label: "Published" },
               industry: { kind: "text", label: "Industry" },
@@ -602,6 +602,82 @@ export const schemas: DocSchema[] = [
               gallery: { kind: "images", label: "Gallery" },
               quote: { kind: "textarea", label: "Client quote", rows: 3 },
               quoteAuthor: { kind: "text", label: "Quote attribution" },
+            },
+          },
+        },
+      },
+    ],
+  },
+
+  {
+    id: "blog",
+    title: "Blog",
+    route: "/blog",
+    blurb:
+      "Posts. Each one gets its own page at /blog/<slug>, listed newest-first as added below.",
+    sections: [
+      seo,
+      {
+        key: "index",
+        title: "Blog index page",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          accentTail: { kind: "text", label: "Heading accent tail" },
+          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
+          readLabel: { kind: "text", label: "Card link label" },
+          emptyMessage: {
+            kind: "textarea",
+            label: "Shown when nothing is published",
+            rows: 2,
+          },
+        },
+      },
+      {
+        key: "detail",
+        title: "Post page labels",
+        note: "Section labels used on every post page.",
+        fields: {
+          backLabel: { kind: "text", label: "Back-to-index label", mono: true },
+          nextLabel: { kind: "text", label: "Next-post label", mono: true },
+          ctaHeading: { kind: "text", label: "Closing CTA heading" },
+          ctaLabel: { kind: "text", label: "Closing CTA button" },
+          ctaHref: { kind: "text", label: "Closing CTA link" },
+        },
+      },
+      {
+        key: "list",
+        title: "Posts",
+        note: "Untick Published to keep a post off the site while you write it. New posts add to the end of this list — reorder rows to change display order.",
+        fields: {
+          items: {
+            kind: "repeater",
+            label: "Posts",
+            itemLabel: "Post",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Title" },
+              slug: {
+                kind: "text",
+                label: "URL slug",
+                mono: true,
+                help: "Lowercase words separated by hyphens — this becomes /blog/<slug>. Changing it breaks any link already shared.",
+              },
+              published: { kind: "boolean", label: "Published" },
+              author: { kind: "text", label: "Author" },
+              date: {
+                kind: "text",
+                label: "Date",
+                help: "Free text, e.g. \"January 2026\" — shown as written.",
+              },
+              coverImage: { kind: "image", label: "Cover image", ratio: "16 / 9" },
+              excerpt: { kind: "textarea", label: "Excerpt", rows: 3 },
+              body: {
+                kind: "textarea",
+                label: "Post body",
+                rows: 12,
+                help: "A blank line starts a new paragraph.",
+              },
             },
           },
         },
@@ -818,6 +894,11 @@ export const schemas: DocSchema[] = [
                   name: { kind: "text", label: "Course" },
                   weeks: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
+                  description: {
+                    kind: "textarea",
+                    label: "Description",
+                    help: "Shown in the course's detail pop-up.",
+                  },
                 },
               },
             },
