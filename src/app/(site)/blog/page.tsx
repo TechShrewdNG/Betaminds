@@ -49,7 +49,7 @@ export default async function BlogPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid col3">
+          <div className="grid col3 carousel-mobile">
             {posts.map((post) => (
               <Link
                 key={post.slug}

@@ -64,7 +64,7 @@ export function SchoolTabs({
         </div>
       </div>
 
-      <div id="courses-panel" role="tabpanel" className="grid col3">
+      <div id="courses-panel" role="tabpanel" className="grid col3 carousel-mobile">
         {(current?.courses ?? []).map((course) => (
           <button
             key={course.name}

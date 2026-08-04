@@ -223,9 +223,12 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="grid col4">
-          {home.team.members.map((member) => (
-            <div key={member.name} className={styles.tile}>
+        <div className={styles.teamGrid}>
+          {home.team.members.map((member, index) => (
+            <div
+              key={member.name}
+              className={`${styles.tile} ${index === 0 ? styles.tileFeatured : ""}`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={member.image}
@@ -418,7 +421,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="grid col3">
+        <div className="grid col3 carousel-mobile">
           {projects.slice(0, home.portfolio.limit).map((project) => (
             <Link
               key={project.slug}
@@ -461,7 +464,7 @@ export default async function HomePage() {
             {home.academy.ctaLabel}
           </Link>
         </div>
-        <div className="grid col5">
+        <div className="grid col5 carousel-mobile" data-peek="small">
           {home.academy.grid.map((tile) => (
             <div
               key={tile.label}

@@ -443,6 +443,53 @@
 
 /* --- Hover-reveal tiles (team, projects) --------------------------------- */
 
+/* Team grid: an unequal-width 4-track grid so the founder's card (first
+   member, .tileFeatured) reads bigger than the rest, not just first. Falls
+   back to a plain 2-column grid at tablet, then a swipeable carousel at
+   mobile — kept self-contained here rather than sharing .carousel-mobile
+   (globals.css) so the founder's extra width survives the breakpoint
+   without depending on cross-stylesheet cascade order. */
+.teamGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 1000px) {
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .teamGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    margin-inline: calc(-1 * var(--pad-x));
+    padding-inline: var(--pad-x);
+    padding-bottom: 4px;
+  }
+
+  .teamGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .teamGrid > * {
+    flex: 0 0 62%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .tileFeatured {
+    flex-basis: 82%;
+  }
+}
+
 .tile {
   position: relative;
   border-radius: var(--r-card);

@@ -161,7 +161,7 @@ export default async function ProjectPage({
       {project.gallery.length > 0 ? (
         <section className="shell section section--tight-top">
           <h2 className="h2 mb-34">{detail.galleryLabel}</h2>
-          <div className="grid col3">
+          <div className="grid col3 carousel-mobile">
             {project.gallery.map((src, index) => (
               <div key={`${src}-${index}`} className="frame ratio-4-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
