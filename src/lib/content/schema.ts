@@ -739,6 +739,11 @@ export const schemas: DocSchema[] = [
             label: "Featured plan",
             help: "Zero-based. 1 highlights the second card (Growth), as designed.",
           },
+          selectLabel: {
+            kind: "text",
+            label: "Select-plan button label",
+            help: "Jumps to the questionnaire below with this plan pre-selected.",
+          },
           items: {
             kind: "repeater",
             label: "Plans",

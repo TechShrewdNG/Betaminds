@@ -578,6 +578,7 @@ export const defaults = {
       heading: "Engagement plans",
       /** The Growth plan is highlighted — index 1, matching the prototype's `plan: 1`. */
       featuredIndex: 1,
+      selectLabel: "Select Plan",
       items: [
         {
           name: "Starter Partnership",

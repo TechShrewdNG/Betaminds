@@ -314,6 +314,14 @@
   background: var(--line-soft);
 }
 
+/* `.planIncludes { display: flex }` above has the same specificity as the
+   UA default `[hidden] { display: none }` and loads after it, so it wins —
+   the `hidden` attribute alone never actually hides the panel. This rule's
+   higher specificity (class + attribute) restores it. */
+.planIncludes[hidden] {
+  display: none;
+}
+
 .planInclude {
   padding: 13px 28px;
   background: var(--surface);
@@ -322,6 +330,15 @@
   color: var(--ink-86);
   display: flex;
   gap: 11px;
+}
+
+.planCta {
+  padding: 20px 28px 26px;
+  border-top: 1px solid var(--line);
+}
+
+.planCta a {
+  width: 100%;
 }
 
 /* --- Testimonial carousel ------------------------------------------------ */

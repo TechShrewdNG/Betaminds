@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import styles from "./ui.module.css";
 
 export type Plan = {
@@ -12,14 +13,18 @@ export type Plan = {
 
 /**
  * Engagement plans. The featured plan (Growth by default) starts expanded and
- * carries the accent border and tint.
+ * carries the accent border and tint. Each card's CTA jumps down to the
+ * questionnaire with `?plan=<name>`, which ConsultationForm reads to
+ * pre-select the matching option in its own Plan field.
  */
 export function PlanCards({
   plans,
   featuredIndex = 1,
+  selectLabel = "Select Plan",
 }: {
   plans: Plan[];
   featuredIndex?: number;
+  selectLabel?: string;
 }) {
   const [open, setOpen] = useState<number | null>(featuredIndex);
 
@@ -63,6 +68,15 @@ export function PlanCards({
                   {item}
                 </div>
               ))}
+            </div>
+
+            <div className={styles.planCta}>
+              <Link
+                href={`/digital-ecosystem?plan=${encodeURIComponent(plan.name)}#book`}
+                className="pill pill--accent pill--sm"
+              >
+                {selectLabel}
+              </Link>
             </div>
           </div>
         );

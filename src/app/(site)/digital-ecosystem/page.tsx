@@ -89,7 +89,11 @@ export default async function EcosystemPage() {
       {/* Engagement plans. */}
       <section className="shell section section--tight-top">
         <h2 className="h2 mb-34">{eco.plans.heading}</h2>
-        <PlanCards plans={eco.plans.items} featuredIndex={eco.plans.featuredIndex} />
+        <PlanCards
+          plans={eco.plans.items}
+          featuredIndex={eco.plans.featuredIndex}
+          selectLabel={eco.plans.selectLabel}
+        />
       </section>
 
       {/* Booking notes: paid session credited to the package, monthly free slot. */}
