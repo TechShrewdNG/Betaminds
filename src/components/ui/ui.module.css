@@ -460,21 +460,31 @@
 
 /* --- Hover-reveal tiles (team, projects) --------------------------------- */
 
-/* Team grid: an unequal-width 4-track grid so the founder's card (first
-   member, .tileFeatured) reads bigger than the rest, not just first. Falls
-   back to a plain 2-column grid at tablet, then a swipeable carousel at
+/* Team grid: a 5-track grid where the founder's card (first member,
+   .tileFeatured) spans 2 tracks, reading bigger than the rest rather than
+   just first. Falls back to a plain 2-column grid at tablet (an even
+   6-member roster divides cleanly into 3 rows there, so .tileFeatured's
+   span is reset instead of carried over), then a swipeable carousel at
    mobile — kept self-contained here rather than sharing .carousel-mobile
    (globals.css) so the founder's extra width survives the breakpoint
    without depending on cross-stylesheet cascade order. */
 .teamGrid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
+}
+
+.tileFeatured {
+  grid-column: span 2;
 }
 
 @media (max-width: 1000px) {
   .teamGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tileFeatured {
+    grid-column: span 1;
   }
 }
 
