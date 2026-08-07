@@ -29,7 +29,7 @@ export async function generateMetadata({
       title: `${project.name} — ${projectMeta(project)}`,
       description: project.summary,
     },
-    `/portfolio/${project.slug}`,
+    `/projects/${project.slug}`,
   );
 }
 
@@ -72,7 +72,7 @@ export default async function ProjectPage({
         ) : null}
         <div className="hero__wash" />
         <div className="shell hero__body">
-          <div style={{ maxWidth: 820 }}>
+          <div className="bm-rise" style={{ maxWidth: 820 }}>
             <div className="eyebrow mb-22">{projectMeta(project)}</div>
             <h1 className="h1" style={{ lineHeight: 1, marginBottom: 20 }}>
               {project.name}
@@ -110,7 +110,7 @@ export default async function ProjectPage({
       </section>
 
       {sections.length > 0 ? (
-        <section className="shell section" style={{ maxWidth: 820 }}>
+        <section data-reveal className="shell section" style={{ maxWidth: 820 }}>
           {sections.map((section) => (
             <div key={section.label} style={{ marginBottom: 44 }}>
               <h2 className="h3" style={{ marginBottom: 14 }}>
@@ -128,7 +128,7 @@ export default async function ProjectPage({
       ) : null}
 
       {project.results.length > 0 ? (
-        <section className="shell section section--tight-top">
+        <section data-reveal className="shell section section--tight-top">
           <h2 className="h2 mb-34">{detail.resultsLabel}</h2>
           <div className="grid col4">
             {project.results.map((result) => (
@@ -159,9 +159,9 @@ export default async function ProjectPage({
       ) : null}
 
       {project.gallery.length > 0 ? (
-        <section className="shell section section--tight-top">
+        <section data-reveal className="shell section section--tight-top">
           <h2 className="h2 mb-34">{detail.galleryLabel}</h2>
-          <div className="grid col3">
+          <div className="grid col3 carousel-mobile">
             {project.gallery.map((src, index) => (
               <div key={`${src}-${index}`} className="frame ratio-4-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -177,7 +177,7 @@ export default async function ProjectPage({
       ) : null}
 
       {project.quote ? (
-        <section className="shell section section--tight-top">
+        <section data-reveal className="shell section section--tight-top">
           <div className="panel" style={{ padding: "52px 48px", borderRadius: 20 }}>
             <blockquote className="quote" style={{ margin: 0 }}>
               {`“${project.quote}”`}
@@ -194,11 +194,11 @@ export default async function ProjectPage({
         </section>
       ) : null}
 
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           {next && next.slug !== project.slug ? (
             <Link
-              href={`/portfolio/${next.slug}`}
+              href={`/projects/${next.slug}`}
               className="panel"
               style={{ display: "block", color: "var(--ink)" }}
             >

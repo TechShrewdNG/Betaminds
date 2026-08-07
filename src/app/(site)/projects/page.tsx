@@ -7,10 +7,10 @@ import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("projects");
-  return pageMetadata(seo, "/portfolio");
+  return pageMetadata(seo, "/projects");
 }
 
-export default async function PortfolioPage() {
+export default async function ProjectsPage() {
   const [doc, projects] = await Promise.all([
     getContent("projects"),
     publishedProjects(),
@@ -26,7 +26,7 @@ export default async function PortfolioPage() {
         }}
       >
         <div
-          className="shell"
+          className="shell bm-rise"
           style={{ paddingTop: 130, paddingBottom: 72 }}
         >
           <div className="eyebrow mb-22">{index.eyebrow}</div>
@@ -38,7 +38,7 @@ export default async function PortfolioPage() {
         </div>
       </section>
 
-      <section className="shell section">
+      <section data-reveal className="shell section">
         {projects.length === 0 ? (
           <div className="panel" style={{ textAlign: "center", padding: "72px 32px" }}>
             <p className="body measure-520" style={{ margin: "0 auto 26px" }}>
@@ -49,11 +49,11 @@ export default async function PortfolioPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid col3">
+          <div className="grid col3 carousel-mobile">
             {projects.map((project) => (
               <Link
                 key={project.slug}
-                href={`/portfolio/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 className={styles.tile}
               >
                 {project.image ? (

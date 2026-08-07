@@ -29,7 +29,7 @@ export default async function EcosystemPage() {
         />
         <div className="hero__wash" />
         <div className="shell hero__body">
-          <div style={{ maxWidth: 820 }}>
+          <div className="bm-rise" style={{ maxWidth: 820 }}>
             <div className="eyebrow mb-22">{eco.hero.eyebrow}</div>
             <h1 className="h1" style={{ lineHeight: 1, marginBottom: 18 }}>
               {eco.hero.heading}
@@ -51,7 +51,7 @@ export default async function EcosystemPage() {
       </section>
 
       {/* Our Digital Commerce Solution — capability cards. */}
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <h2 className="h2 measure-620" style={{ marginBottom: 16 }}>
           {eco.solution.heading}
         </h2>
@@ -87,13 +87,17 @@ export default async function EcosystemPage() {
       </section>
 
       {/* Engagement plans. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <h2 className="h2 mb-34">{eco.plans.heading}</h2>
-        <PlanCards plans={eco.plans.items} featuredIndex={eco.plans.featuredIndex} />
+        <PlanCards
+          plans={eco.plans.items}
+          featuredIndex={eco.plans.featuredIndex}
+          selectLabel={eco.plans.selectLabel}
+        />
       </section>
 
       {/* Booking notes: paid session credited to the package, monthly free slot. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           <div className="panel" style={{ borderRadius: 16, padding: "34px 34px 36px" }}>
             <div className="eyebrow eyebrow--tight mb-18">
@@ -149,7 +153,10 @@ export default async function EcosystemPage() {
         </div>
       </section>
 
-      {/* Before you book — the questionnaire, live. */}
+      {/* Before you book — the questionnaire, live. No data-reveal here: this
+          section is several viewports tall, so the scroll-reveal threshold
+          wouldn't clear until well after it's on screen, making the form
+          look like it isn't there while the visitor scrolls through it. */}
       <section id="book" className="shell section section--tight-top">
         <div className="panel" style={{ borderRadius: 20, padding: "52px 44px" }}>
           <div className="grid col2 col2--mid">

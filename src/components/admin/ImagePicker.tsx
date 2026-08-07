@@ -2,6 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMedia } from "./media-context";
+import { ACCEPT_ATTR, isVideoUrl } from "@/lib/media";
+
+export type MediaKind = "image" | "video";
+
+/** Wording and file-input filter, so one picker serves both media kinds. */
+const COPY = {
+  image: { noun: "image", accept: ACCEPT_ATTR.image, empty: "No image" },
+  video: { noun: "video", accept: ACCEPT_ATTR.video, empty: "No video" },
+} as const;
 
 /**
  * Modal image browser: pick from what's already uploaded, upload something new,
@@ -12,18 +21,28 @@ export function ImagePickerModal({
   current,
   onPick,
   onClose,
+  media = "image",
 }: {
   current: string;
   onPick: (url: string) => void;
   onClose: () => void;
+  /** Which half of the library to browse and upload into. */
+  media?: MediaKind;
 }) {
-  const { assets, upload } = useMedia();
+  const { assets: allAssets, upload } = useMedia();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [manual, setManual] = useState(
-    current && !assets.some((asset) => asset.url === current) ? current : "",
+    current && !allAssets.some((asset) => asset.url === current) ? current : "",
   );
   const fileInput = useRef<HTMLInputElement>(null);
+
+  // Picking a background video shouldn't mean scrolling past every still, and
+  // vice versa.
+  const assets = allAssets.filter(
+    (asset) => isVideoUrl(asset.url) === (media === "video"),
+  );
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -38,7 +57,8 @@ export function ImagePickerModal({
     if (!file) return;
     setBusy(true);
     setError("");
-    const result = await upload(file);
+    setProgress(0);
+    const result = await upload(file, setProgress);
     setBusy(false);
     if ("error" in result) {
       setError(result.error);
@@ -53,14 +73,16 @@ export function ImagePickerModal({
       className="a-modal-back"
       role="dialog"
       aria-modal="true"
-      aria-label="Choose an image"
+      aria-label={`Choose ${COPY[media].noun === "image" ? "an" : "a"} ${COPY[media].noun}`}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div className="a-modal">
         <div className="a-modal-head">
-          <strong style={{ fontSize: 15 }}>Choose an image</strong>
+          <strong style={{ fontSize: 15 }}>
+            Choose {COPY[media].noun === "image" ? "an" : "a"} {COPY[media].noun}
+          </strong>
           <div className="a-row">
             <button
               type="button"
@@ -68,7 +90,11 @@ export function ImagePickerModal({
               onClick={() => fileInput.current?.click()}
               disabled={busy}
             >
-              {busy ? "Uploading…" : "Upload new"}
+              {busy
+                ? progress > 0 && progress < 100
+                  ? `Uploading… ${Math.round(progress)}%`
+                  : "Uploading…"
+                : "Upload new"}
             </button>
             <button type="button" className="a-btn a-btn--ghost" onClick={onClose}>
               Close
@@ -80,7 +106,7 @@ export function ImagePickerModal({
           <input
             ref={fileInput}
             type="file"
-            accept="image/*"
+            accept={COPY[media].accept}
             hidden
             onChange={(event) => handleFiles(event.target.files)}
           />
@@ -96,7 +122,7 @@ export function ImagePickerModal({
           ) : null}
 
           <div className="a-field" style={{ marginBottom: 20 }}>
-            <label className="a-label">Or use an image URL</label>
+            <label className="a-label">Or use {COPY[media].noun === "image" ? "an" : "a"} {COPY[media].noun} URL</label>
             <div className="a-row">
               <input
                 className="a-input"
@@ -141,8 +167,17 @@ export function ImagePickerModal({
                       onClose();
                     }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={asset.url} alt={asset.alt || asset.filename} />
+                    {isVideoUrl(asset.url) ? (
+                      <video
+                        src={asset.url}
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={asset.url} alt={asset.alt || asset.filename} />
+                    )}
                   </button>
                   <div className="a-thumb-meta">{asset.filename}</div>
                 </div>
@@ -155,21 +190,24 @@ export function ImagePickerModal({
   );
 }
 
-/** Thumbnail plus Choose / Remove controls, for a single image field. */
+/** Thumbnail plus Choose / Remove controls, for a single image or video field. */
 export function ImageField({
   label,
   help,
   ratio,
   value,
   onChange,
+  media = "image",
 }: {
   label: string;
   help?: string;
   ratio?: string;
   value: string;
   onChange: (url: string) => void;
+  media?: MediaKind;
 }) {
   const [open, setOpen] = useState(false);
+  const noun = COPY[media].noun;
 
   return (
     <div className="a-field">
@@ -180,10 +218,20 @@ export function ImageField({
           style={ratio ? { aspectRatio: ratio } : undefined}
         >
           {value ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={value} alt="" />
+            isVideoUrl(value) ? (
+              <video
+                src={value}
+                controls
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={value} alt="" />
+            )
           ) : (
-            <span className="a-preview-empty">No image</span>
+            <span className="a-preview-empty">{COPY[media].empty}</span>
           )}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -193,7 +241,9 @@ export function ImageField({
               className="a-btn a-btn--sm"
               onClick={() => setOpen(true)}
             >
-              {value ? "Replace" : "Choose image"}
+              {value
+                ? "Replace"
+                : `Choose ${noun === "image" ? "an" : "a"} ${noun}`}
             </button>
             {value ? (
               <button
@@ -220,6 +270,7 @@ export function ImageField({
           current={value}
           onPick={onChange}
           onClose={() => setOpen(false)}
+          media={media}
         />
       ) : null}
     </div>

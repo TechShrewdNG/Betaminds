@@ -60,6 +60,13 @@
   --r-panel: 18px;
   --r-card: 14px;
 
+  /* The sticky header's height. It sits in flow rather than over the page, so
+     anything meant to fill the screen below it has to subtract this. Tracks
+     .bar's padding plus its content in Header.module.css — keep them in step,
+     and round up: over-subtracting leaves a hairline gap, under-subtracting
+     pushes the slider's controls off the bottom of the screen. */
+  --header-h: 68px;
+
   /* Type */
   --font-display: var(--font-sora), "Sora", system-ui, sans-serif;
   --font-body: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
@@ -88,6 +95,8 @@
     --h2: 29px;
     --quote: 22px;
     --section-y: 72px;
+    /* The bar's contents are smaller here, so it sits shorter than desktop. */
+    --header-h: 63px;
   }
 }
 
@@ -183,6 +192,15 @@ button {
 
 .bm-rise {
   animation: bmRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scroll reveal: ScrollReveal.tsx adds .bm-rise to [data-reveal] sections as
+   they enter the viewport, once. Elements only go invisible-until-revealed
+   once .js-reveal (added by that same script) lands on <html> — so a page
+   with JS disabled, or before hydration, just shows everything normally
+   rather than getting stuck hidden. */
+.js-reveal [data-reveal] {
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -295,6 +313,38 @@ button {
   }
 }
 
+/* Opt a `.grid` into a swipeable, snap-scrolling carousel at mobile widths
+   instead of letting it collapse into a single stacked column. Bleeds to the
+   viewport edge (via the shell's own --pad-x) so the next card peeks in. */
+@media (max-width: 640px) {
+  .carousel-mobile {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    margin-inline: calc(-1 * var(--pad-x));
+    padding-inline: var(--pad-x);
+    padding-bottom: 4px;
+  }
+
+  .carousel-mobile::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-mobile > * {
+    flex: 0 0 78%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .carousel-mobile[data-peek="small"] > * {
+    flex-basis: 46%;
+  }
+}
+
 .row {
   display: flex;
   align-items: center;
@@ -359,6 +409,21 @@ button {
   font-size: var(--h2);
   line-height: 1.04;
   letter-spacing: -0.03em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* Homepage section names: the label above each section's headline (e.g.
+   "Who we are", "Digital marketplace"). Sized and weighted like .h1 rather
+   than the small mono eyebrow style, per the brief. */
+.section-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--h1);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-transform: none;
   margin: 0;
   text-wrap: balance;
 }
@@ -632,23 +697,58 @@ button {
   object-fit: cover;
 }
 
+/*
+ * Wash over a hero's photograph.
+ *
+ * Weighted towards wherever the copy sits rather than flat across the frame:
+ * the old 0.62-0.97 tint kept text legible but left the photography barely
+ * perceptible. Strong behind the words, opening up to near-clear elsewhere.
+ *
+ * `--wash` scales the whole thing, so a page can dial it without new rules —
+ * the splash screen sets it from the CMS. Alphas over 1 clamp, which is what
+ * gives the strong end its opacity.
+ */
+.hero {
+  --wash: 0.5;
+}
+
+/* Inner heroes: copy is a left-aligned column, so the tint falls away to the
+   right and lets the photograph through there. */
 .hero__wash {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    115deg,
-    rgba(251, 250, 248, 0.95),
-    rgba(251, 250, 248, 0.62)
+    105deg,
+    rgba(251, 250, 248, calc(var(--wash) * 1.8)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.5)) 38%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.66)) 70%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.26)) 100%
   );
 }
 
+/* The homepage hero centres its copy along the bottom edge, so the tint
+   builds from the bottom instead. */
 .hero__wash--up {
   background: linear-gradient(
     to top,
-    rgba(251, 250, 248, 0.97) 0%,
-    rgba(251, 250, 248, 0.86) 42%,
-    rgba(251, 250, 248, 0.72) 100%
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
   );
+}
+
+/* On a phone the copy spans the full width, so there's no clear side to open
+   up — go bottom-weighted there too rather than leaving text over bare photo. */
+@media (max-width: 640px) {
+  .hero__wash {
+    background: linear-gradient(
+      to top,
+      rgba(251, 250, 248, calc(var(--wash) * 1.75)) 0%,
+      rgba(251, 250, 248, calc(var(--wash) * 1.4)) 45%,
+      rgba(251, 250, 248, calc(var(--wash) * 0.8)) 100%
+    );
+  }
 }
 
 .hero__body {

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { PUBLIC_ROUTES, SITE_URL } from "@/lib/site";
 import { publishedProjects } from "@/lib/projects";
+import { publishedPosts } from "@/lib/blog";
 
 /**
  * Sitemap for the public routes, plus one entry per published case study.
@@ -34,11 +35,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Each published case study is its own indexable page.
   const projects = await publishedProjects();
   const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${SITE_URL}/portfolio/${project.slug}`,
+    url: `${SITE_URL}/projects/${project.slug}`,
     lastModified: edited.get("projects") ?? fallback,
     changeFrequency: "yearly",
     priority: 0.6,
   }));
 
-  return [...pages, ...projectPages];
+  // Each published post is its own indexable page.
+  const posts = await publishedPosts();
+  const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: edited.get("blog") ?? fallback,
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
+  return [...pages, ...projectPages, ...postPages];
 }

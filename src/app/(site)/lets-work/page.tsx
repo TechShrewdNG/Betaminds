@@ -31,7 +31,7 @@ export default async function LetsWorkPage() {
           }}
         />
         <div className="shell hero__body">
-          <div style={{ maxWidth: 760 }}>
+          <div className="bm-rise" style={{ maxWidth: 760 }}>
             <div className="eyebrow mb-22">{work.hero.eyebrow}</div>
             <h1 className="h1" style={{ lineHeight: 1, marginBottom: 20 }}>
               {work.hero.heading}
@@ -49,7 +49,7 @@ export default async function LetsWorkPage() {
         </div>
       </section>
 
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <div className="grid col2 col2--tight">
           {/* Office address, email, website, phone, and the social icons. */}
           <div className="grid gap-14" style={{ alignContent: "start" }}>

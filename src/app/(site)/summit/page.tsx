@@ -36,7 +36,7 @@ export default async function SummitPage() {
           }}
         />
         <div className="shell hero__body">
-          <div style={{ maxWidth: 860 }}>
+          <div className="bm-rise" style={{ maxWidth: 860 }}>
             <div className="eyebrow mb-22">{summit.hero.eyebrow}</div>
             <h1 className="h1" style={{ lineHeight: 1, marginBottom: 22 }}>
               {summit.hero.heading}
@@ -96,7 +96,7 @@ export default async function SummitPage() {
       </section>
 
       {/* A movement, not a conference. */}
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <div className="grid col2 col2--mid">
           <div>
             <h2 className="h2" style={{ marginBottom: 20 }}>
@@ -128,7 +128,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Event highlights. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col5">
           {summit.stats.items.map((stat) => (
             <div
@@ -157,7 +157,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Why attend? */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <h2 className="h2" style={{ marginBottom: 32 }}>
           {summit.why.heading}
         </h2>
@@ -207,7 +207,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Editions and galleries. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           {summit.editions.items.map((edition) => (
             <div
@@ -310,7 +310,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Agenda beside success stories. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--mid">
           <div>
             <h2 className="h2" style={{ marginBottom: 28 }}>
@@ -404,6 +404,7 @@ export default async function SummitPage() {
 
       {/* FAQ. */}
       <section
+        data-reveal
         className="shell section section--tight-top"
         style={{ maxWidth: 900 }}
       >
@@ -414,7 +415,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Sponsorship, registration note and newsletter. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           <div
             className="panel panel--accent"
@@ -514,7 +515,9 @@ export default async function SummitPage() {
         </div>
       </section>
 
-      {/* Register interest. */}
+      {/* Register interest. No data-reveal: same reasoning as the other two
+          form sections — a tall or growing form shouldn't be gated behind
+          a scroll threshold that can lag well behind it being on screen. */}
       <section
         id="interest"
         className="shell section section--tight-top"

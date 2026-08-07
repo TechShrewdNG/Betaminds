@@ -13,6 +13,7 @@ export type Field =
   | { kind: "number"; label: string; help?: string }
   | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
+  | { kind: "video"; label: string; help?: string }
   | { kind: "images"; label: string; help?: string }
   | { kind: "list"; label: string; help?: string; placeholder?: string }
   | { kind: "select"; label: string; options: string[]; help?: string }
@@ -249,9 +250,67 @@ export const schemas: DocSchema[] = [
     sections: [
       seo,
       {
+        key: "heroSlider",
+        title: "Splash screen",
+        note: "The full-screen slider visitors land on at betaminds.africa, before the site itself. Switch it off and visitors go straight to the homepage.",
+        fields: {
+          enabled: {
+            kind: "boolean",
+            label: "Show the splash screen",
+            help: "Off sends visitors straight to the homepage — nobody sees the slider.",
+          },
+          autoplay: {
+            kind: "boolean",
+            label: "Advance automatically",
+            help: "Visitors who ask their device to reduce motion never get autoplay, whatever this is set to.",
+          },
+          interval: {
+            kind: "number",
+            label: "Seconds per slide",
+            help: "Only used when advancing automatically. Below 2 is ignored.",
+          },
+          overlay: {
+            kind: "number",
+            label: "Background tint (0-100)",
+            help: "How much the picture or video is faded behind the words. Lower shows more of it; raise it if a headline gets hard to read against busy footage. The tint is weighted to the bottom, so the top of the frame always stays clearer.",
+          },
+          slides: {
+            kind: "repeater",
+            label: "Slides",
+            itemLabel: "Slide",
+            titleKey: "heading",
+            fields: {
+              eyebrow: { kind: "text", label: "Pill label", mono: true },
+              heading: { kind: "textarea", label: "Headline", rows: 2 },
+              body: { kind: "textarea", label: "Body", rows: 3 },
+              video: {
+                kind: "video",
+                label: "Background video",
+                help: "Plays muted and looping, cropped to cover. Leave empty to use the picture instead. Keep it short and compressed — visitors download it before they see anything.",
+              },
+              image: {
+                kind: "image",
+                label: "Background picture",
+                ratio: "16 / 9",
+                help: "Shown while the video loads, when there's no video, and on devices that won't autoplay it. Always set one.",
+              },
+              imageAlt: { kind: "text", label: "Picture alt text" },
+              primaryLabel: { kind: "text", label: "Button label" },
+              primaryHref: { kind: "text", label: "Button link" },
+              secondaryLabel: {
+                kind: "text",
+                label: "Second button label",
+                help: "Leave empty for a single button.",
+              },
+              secondaryHref: { kind: "text", label: "Second button link" },
+            },
+          },
+        },
+      },
+      {
         key: "hero",
         title: "Hero",
-        note: "Full-height photograph with bottom-anchored, centred content.",
+        note: "Full-height photograph with bottom-anchored, centred content. Opens the homepage itself, after the splash screen.",
         fields: {
           ...heroImage("16 / 9", "Cropped to cover. Landscape works best."),
           eyebrow: { kind: "text", label: "Pill label", mono: true },
@@ -385,8 +444,8 @@ export const schemas: DocSchema[] = [
       },
       {
         key: "portfolio",
-        title: "06 / Portfolio",
-        note: "The tiles come from the Portfolio document, so each one links to its own case study. This section only controls the heading and how many are shown.",
+        title: "Projects",
+        note: "The tiles come from the Projects document, so each one links to its own case study. This section only controls the heading and how many are shown.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -395,7 +454,7 @@ export const schemas: DocSchema[] = [
           limit: {
             kind: "number",
             label: "How many to show",
-            help: "The rest are still on /portfolio.",
+            help: "The rest are still on /projects.",
           },
           allLinkLabel: { kind: "text", label: "Link to all work" },
         },
@@ -456,15 +515,15 @@ export const schemas: DocSchema[] = [
 
   {
     id: "projects",
-    title: "Portfolio",
-    route: "/portfolio",
+    title: "Projects",
+    route: "/projects",
     blurb:
-      "Case studies. Each project gets its own page at /portfolio/<slug>, and the homepage grid is drawn from this list.",
+      "Case studies. Each project gets its own page at /projects/<slug>, and the homepage grid is drawn from this list.",
     sections: [
       seo,
       {
         key: "index",
-        title: "Portfolio index page",
+        title: "Projects index page",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -511,7 +570,7 @@ export const schemas: DocSchema[] = [
                 kind: "text",
                 label: "URL slug",
                 mono: true,
-                help: "Lowercase words separated by hyphens — this becomes /portfolio/<slug>. Changing it breaks any link already shared.",
+                help: "Lowercase words separated by hyphens — this becomes /projects/<slug>. Changing it breaks any link already shared.",
               },
               published: { kind: "boolean", label: "Published" },
               industry: { kind: "text", label: "Industry" },
@@ -543,6 +602,82 @@ export const schemas: DocSchema[] = [
               gallery: { kind: "images", label: "Gallery" },
               quote: { kind: "textarea", label: "Client quote", rows: 3 },
               quoteAuthor: { kind: "text", label: "Quote attribution" },
+            },
+          },
+        },
+      },
+    ],
+  },
+
+  {
+    id: "blog",
+    title: "Blog",
+    route: "/blog",
+    blurb:
+      "Posts. Each one gets its own page at /blog/<slug>, listed newest-first as added below.",
+    sections: [
+      seo,
+      {
+        key: "index",
+        title: "Blog index page",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          accentTail: { kind: "text", label: "Heading accent tail" },
+          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
+          readLabel: { kind: "text", label: "Card link label" },
+          emptyMessage: {
+            kind: "textarea",
+            label: "Shown when nothing is published",
+            rows: 2,
+          },
+        },
+      },
+      {
+        key: "detail",
+        title: "Post page labels",
+        note: "Section labels used on every post page.",
+        fields: {
+          backLabel: { kind: "text", label: "Back-to-index label", mono: true },
+          nextLabel: { kind: "text", label: "Next-post label", mono: true },
+          ctaHeading: { kind: "text", label: "Closing CTA heading" },
+          ctaLabel: { kind: "text", label: "Closing CTA button" },
+          ctaHref: { kind: "text", label: "Closing CTA link" },
+        },
+      },
+      {
+        key: "list",
+        title: "Posts",
+        note: "Untick Published to keep a post off the site while you write it. New posts add to the end of this list — reorder rows to change display order.",
+        fields: {
+          items: {
+            kind: "repeater",
+            label: "Posts",
+            itemLabel: "Post",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Title" },
+              slug: {
+                kind: "text",
+                label: "URL slug",
+                mono: true,
+                help: "Lowercase words separated by hyphens — this becomes /blog/<slug>. Changing it breaks any link already shared.",
+              },
+              published: { kind: "boolean", label: "Published" },
+              author: { kind: "text", label: "Author" },
+              date: {
+                kind: "text",
+                label: "Date",
+                help: "Free text, e.g. \"January 2026\" — shown as written.",
+              },
+              coverImage: { kind: "image", label: "Cover image", ratio: "16 / 9" },
+              excerpt: { kind: "textarea", label: "Excerpt", rows: 3 },
+              body: {
+                kind: "textarea",
+                label: "Post body",
+                rows: 12,
+                help: "A blank line starts a new paragraph.",
+              },
             },
           },
         },
@@ -603,6 +738,11 @@ export const schemas: DocSchema[] = [
             kind: "number",
             label: "Featured plan",
             help: "Zero-based. 1 highlights the second card (Growth), as designed.",
+          },
+          selectLabel: {
+            kind: "text",
+            label: "Select-plan button label",
+            help: "Jumps to the questionnaire below with this plan pre-selected.",
           },
           items: {
             kind: "repeater",
@@ -759,6 +899,11 @@ export const schemas: DocSchema[] = [
                   name: { kind: "text", label: "Course" },
                   weeks: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
+                  description: {
+                    kind: "textarea",
+                    label: "Description",
+                    help: "Shown in the course's detail pop-up.",
+                  },
                 },
               },
             },

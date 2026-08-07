@@ -314,6 +314,14 @@
   background: var(--line-soft);
 }
 
+/* `.planIncludes { display: flex }` above has the same specificity as the
+   UA default `[hidden] { display: none }` and loads after it, so it wins —
+   the `hidden` attribute alone never actually hides the panel. This rule's
+   higher specificity (class + attribute) restores it. */
+.planIncludes[hidden] {
+  display: none;
+}
+
 .planInclude {
   padding: 13px 28px;
   background: var(--surface);
@@ -324,7 +332,29 @@
   gap: 11px;
 }
 
+.planCta {
+  padding: 20px 28px 26px;
+  border-top: 1px solid var(--line);
+}
+
+.planCta a {
+  width: 100%;
+}
+
 /* --- Testimonial carousel ------------------------------------------------ */
+
+@keyframes bmTestiFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.testiFade {
+  animation: bmTestiFade 0.35s ease both;
+}
 
 .testiFoot {
   display: flex;
@@ -441,7 +471,64 @@
   background: var(--surface);
 }
 
-/* --- Hover-reveal tiles (team, portfolio) -------------------------------- */
+/* --- Hover-reveal tiles (team, projects) --------------------------------- */
+
+/* Team grid: a 5-track grid where the founder's card (first member,
+   .tileFeatured) spans 2 tracks, reading bigger than the rest rather than
+   just first. Falls back to a plain 2-column grid at tablet (an even
+   6-member roster divides cleanly into 3 rows there, so .tileFeatured's
+   span is reset instead of carried over), then a swipeable carousel at
+   mobile — kept self-contained here rather than sharing .carousel-mobile
+   (globals.css) so the founder's extra width survives the breakpoint
+   without depending on cross-stylesheet cascade order. */
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.tileFeatured {
+  grid-column: span 2;
+}
+
+@media (max-width: 1000px) {
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tileFeatured {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .teamGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    margin-inline: calc(-1 * var(--pad-x));
+    padding-inline: var(--pad-x);
+    padding-bottom: 4px;
+  }
+
+  .teamGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .teamGrid > * {
+    flex: 0 0 62%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .tileFeatured {
+    flex-basis: 82%;
+  }
+}
 
 .tile {
   position: relative;
@@ -517,7 +604,7 @@
   color: var(--accent-fill);
 }
 
-/* Portfolio overlay: canvas wash, meta, name, view pill. */
+/* Project tile overlay: canvas wash, meta, name, view pill. */
 .workHover {
   position: absolute;
   inset: 0;
@@ -582,5 +669,332 @@
     opacity: 1;
     position: static;
     background: var(--surface);
+  }
+}
+
+/* --- Opening hero slider -------------------------------------------------- */
+
+.slider {
+  position: relative;
+  /* svh, not vh: mobile browsers include the collapsing toolbar in vh, which
+     pushes the buttons under the fold on first paint. The header is sticky and
+     sits in flow above this, so its height comes off the top — without that the
+     arrows and counter land just past the bottom of the screen. */
+  height: calc(100svh - var(--header-h));
+  min-height: 520px;
+  overflow: hidden;
+  background: var(--surface-deep);
+}
+
+/*
+ * Wash over the slide's picture or video.
+ *
+ * Weighted to the bottom, where the copy sits: the top of the frame stays
+ * close to clear so the footage is actually visible, and the tint only builds
+ * up behind the headline and buttons, which are dark text and need it. The
+ * previous flat 0.72-0.97 wash was legible but left the background barely
+ * perceptible.
+ *
+ * `--wash` is set per slider from the CMS, so the studio can dial this without
+ * a developer. Alphas over 1 clamp, which is what makes the high end opaque.
+ */
+.slideWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
+  );
+}
+
+/* The splash screen has no header above it, so it takes the whole viewport. */
+.slider[data-full="true"] {
+  height: 100svh;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 700ms ease,
+    visibility 0s linear 700ms;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 700ms ease,
+    visibility 0s;
+}
+
+.slideMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slideBody {
+  position: relative;
+  align-self: flex-end;
+  max-width: 1180px;
+  text-align: center;
+  padding-top: 120px;
+  /* Clears the controls sitting along the bottom edge. */
+  padding-bottom: 132px;
+}
+
+.slideEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: var(--r-pill);
+  margin-bottom: 24px;
+}
+
+.slideDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+}
+
+.sliderControls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.sliderArrow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border: 1px solid var(--line-outline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.sliderArrow:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.sliderCount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-55);
+  margin: 0;
+  min-width: 68px;
+  text-align: center;
+}
+
+.sliderCountNow {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .slideBody {
+    padding-top: 104px;
+    padding-bottom: 116px;
+  }
+
+  .sliderControls {
+    bottom: 32px;
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .slide[data-active="true"] {
+    transition: none;
+  }
+
+  .sliderArrow {
+    transition: none;
+  }
+}
+
+/* --- Course cards + detail modal ------------------------------------------ */
+
+.courseCard {
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 26px 26px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.courseCard:hover {
+  border-color: var(--accent-line-strong);
+  background: linear-gradient(150deg, var(--surface), var(--surface-alt));
+}
+
+.courseCardName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.courseCardCta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@keyframes bmModalBack {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bmModalPanel {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.modalBack {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 23, 27, 0.55);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 64px 20px;
+  overflow-y: auto;
+  z-index: 100;
+  animation: bmModalBack 0.25s ease both;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  padding: 44px 40px;
+  animation: bmModalPanel 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.modalClose {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-outline);
+  background: transparent;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.modalClose:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.modalName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  padding-right: 40px;
+  text-wrap: balance;
+}
+
+.modalDescription {
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--ink-82);
+  margin: 0 0 20px;
+  text-wrap: pretty;
+}
+
+.modalDivider {
+  height: 1px;
+  background: var(--line);
+  margin: 28px 0;
+}
+
+.modalFormHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.modalFormBody {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-74);
+  margin: 0 0 24px;
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  .modalBack {
+    padding: 32px 14px;
+  }
+
+  .modal {
+    padding: 32px 24px;
+  }
+
+  .modalName {
+    font-size: 23px;
   }
 }
