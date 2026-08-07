@@ -40,7 +40,7 @@ export default async function HomePage() {
         />
         <div className="hero__wash hero__wash--up" />
         <div
-          className="shell"
+          className="shell bm-rise"
           style={{
             position: "relative",
             maxWidth: 1180,
@@ -107,7 +107,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2 — Trusted by. */}
-      <section className="tint-band" style={{ padding: "34px 0" }}>
+      <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
         <div
           className="eyebrow eyebrow--muted center"
           style={{ marginBottom: 26 }}
@@ -118,7 +118,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3 — 01 / Who we are. */}
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <div className="grid col2" style={{ alignItems: "start" }}>
           <div>
             <div className="section-name mb-22">{home.about.eyebrow}</div>
@@ -205,7 +205,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4 — 02 / Meet the spark. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="split mb-34">
           <div>
             <div className="section-name mb-18">{home.team.eyebrow}</div>
@@ -266,7 +266,7 @@ export default async function HomePage() {
       </section>
 
       {/* 5 — 03 / Digital marketplace. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="panel--feature panel">
           <div className="grid col2 col2--mid" style={{ alignItems: "center" }}>
             <div>
@@ -335,7 +335,7 @@ export default async function HomePage() {
       </section>
 
       {/* 6 — 04 / Media services. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="section-name mb-18">{home.media.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2 measure-620">{home.media.heading}</h2>
@@ -350,8 +350,7 @@ export default async function HomePage() {
       </section>
 
       {/* 7 — 05 / The Summit. */}
-      <section
-        className="hero"
+      <section data-reveal         className="hero"
         style={{ marginBottom: "var(--section-y)" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -408,7 +407,7 @@ export default async function HomePage() {
       </section>
 
       {/* 8 — Projects. */}
-      <section id="projects" className="shell section section--tight-top">
+      <section data-reveal id="projects" className="shell section section--tight-top">
         <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2">{home.portfolio.heading}</h2>
@@ -448,7 +447,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9 — Testimonials. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <Testimonials
           label={home.testimonials.label}
           items={home.testimonials.items}
@@ -456,7 +455,7 @@ export default async function HomePage() {
       </section>
 
       {/* 10 — 07 / Betaminds Academy. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="section-name mb-18">{home.academy.eyebrow}</div>
         <div className="split mb-34">
           <h2 className="h2 measure-620">{home.academy.heading}</h2>
@@ -502,7 +501,7 @@ export default async function HomePage() {
       </section>
 
       {/* 11 — 08 / Final CTA. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div
           className="frame"
           style={{

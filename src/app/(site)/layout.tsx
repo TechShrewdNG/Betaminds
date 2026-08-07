@@ -1,5 +1,6 @@
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { ScrollReveal } from "@/components/site/ScrollReveal";
 import { getGlobal } from "@/lib/content";
 
 /**
@@ -16,6 +17,7 @@ export default async function SiteLayout({
 
   return (
     <>
+      <ScrollReveal />
       <Header brand={global.brand} nav={global.nav} />
       <main id="main">{children}</main>
       <Footer

@@ -194,6 +194,15 @@ button {
   animation: bmRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Scroll reveal: ScrollReveal.tsx adds .bm-rise to [data-reveal] sections as
+   they enter the viewport, once. Elements only go invisible-until-revealed
+   once .js-reveal (added by that same script) lands on <html> — so a page
+   with JS disabled, or before hydration, just shows everything normally
+   rather than getting stuck hidden. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

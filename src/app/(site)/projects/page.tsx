@@ -26,7 +26,7 @@ export default async function ProjectsPage() {
         }}
       >
         <div
-          className="shell"
+          className="shell bm-rise"
           style={{ paddingTop: 130, paddingBottom: 72 }}
         >
           <div className="eyebrow mb-22">{index.eyebrow}</div>
@@ -38,7 +38,7 @@ export default async function ProjectsPage() {
         </div>
       </section>
 
-      <section className="shell section">
+      <section data-reveal className="shell section">
         {projects.length === 0 ? (
           <div className="panel" style={{ textAlign: "center", padding: "72px 32px" }}>
             <p className="body measure-520" style={{ margin: "0 auto 26px" }}>

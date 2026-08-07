@@ -23,7 +23,7 @@ export default async function MediaServicesPage() {
         />
         <div className="hero__wash" />
         <div className="shell hero__body" style={{ paddingBottom: 90 }}>
-          <div style={{ maxWidth: 800 }}>
+          <div className="bm-rise" style={{ maxWidth: 800 }}>
             <div className="eyebrow mb-22">{media.hero.eyebrow}</div>
             <h1 className="h1" style={{ lineHeight: 1, marginBottom: 20 }}>
               {media.hero.heading}
@@ -34,7 +34,7 @@ export default async function MediaServicesPage() {
         </div>
       </section>
 
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <PackageCards
           packages={media.packages.items}
           deliverablesLabel={media.packages.deliverablesLabel}

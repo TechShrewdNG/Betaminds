@@ -59,7 +59,7 @@ export default async function BlogPostPage({
         ) : null}
         <div className="hero__wash" />
         <div className="shell hero__body">
-          <div style={{ maxWidth: 820 }}>
+          <div className="bm-rise" style={{ maxWidth: 820 }}>
             <Link
               href="/blog"
               className="eyebrow eyebrow--tight mb-22"
@@ -77,7 +77,7 @@ export default async function BlogPostPage({
         </div>
       </section>
 
-      <section className="shell section" style={{ maxWidth: 820 }}>
+      <section data-reveal className="shell section" style={{ maxWidth: 820 }}>
         {post.excerpt ? (
           <p
             className="quote"
@@ -99,7 +99,7 @@ export default async function BlogPostPage({
         ))}
       </section>
 
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           {next && next.slug !== post.slug ? (
             <Link

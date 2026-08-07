@@ -25,7 +25,7 @@ export default async function BlogPage() {
           borderBottom: "1px solid rgba(23,23,27,.07)",
         }}
       >
-        <div className="shell" style={{ paddingTop: 130, paddingBottom: 72 }}>
+        <div className="shell bm-rise" style={{ paddingTop: 130, paddingBottom: 72 }}>
           <div className="eyebrow mb-22">{index.eyebrow}</div>
           <h1 className="h1" style={{ marginBottom: 20 }}>
             {index.heading}
@@ -35,7 +35,7 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      <section className="shell section">
+      <section data-reveal className="shell section">
         {posts.length === 0 ? (
           <div
             className="panel"

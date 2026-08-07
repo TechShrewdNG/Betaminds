@@ -343,6 +343,19 @@
 
 /* --- Testimonial carousel ------------------------------------------------ */
 
+@keyframes bmTestiFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.testiFade {
+  animation: bmTestiFade 0.35s ease both;
+}
+
 .testiFoot {
   display: flex;
   flex-wrap: wrap;
@@ -865,6 +878,26 @@
   color: var(--accent);
 }
 
+@keyframes bmModalBack {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bmModalPanel {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .modalBack {
   position: fixed;
   inset: 0;
@@ -875,6 +908,7 @@
   padding: 64px 20px;
   overflow-y: auto;
   z-index: 100;
+  animation: bmModalBack 0.25s ease both;
 }
 
 .modal {
@@ -885,6 +919,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-panel);
   padding: 44px 40px;
+  animation: bmModalPanel 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .modalClose {

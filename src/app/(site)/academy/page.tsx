@@ -32,7 +32,7 @@ export default async function AcademyPage() {
             alignItems: "center",
           }}
         >
-          <div>
+          <div className="bm-rise">
             <div className="eyebrow mb-22">{academy.hero.eyebrow}</div>
             <h1 className="h1" style={{ marginBottom: 18 }}>
               {academy.hero.heading}
@@ -98,7 +98,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Courses, tabbed by school. */}
-      <section className="shell section">
+      <section data-reveal className="shell section">
         <SchoolTabs
           heading={academy.courses.heading}
           schools={academy.courses.schools}
@@ -110,7 +110,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Why the Academy, beside the choice-to-employment pathway. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           <div className="panel">
             <h2 className="h3" style={{ marginBottom: 22 }}>
@@ -176,7 +176,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Statistics. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <h2 className="h2 measure-520 mb-34">{academy.stats.heading}</h2>
         <div className="grid col4">
           {academy.stats.items.map((stat) => (
@@ -209,7 +209,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Student quotes. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           {academy.quotes.items.map((item) => (
             <div
@@ -271,6 +271,7 @@ export default async function AcademyPage() {
 
       {/* FAQ. */}
       <section
+        data-reveal
         className="shell section section--tight-top"
         style={{ maxWidth: 900 }}
       >
@@ -281,7 +282,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Partners and Creative Foundations. */}
-      <section className="shell section section--tight-top">
+      <section data-reveal className="shell section section--tight-top">
         <div className="grid col2 col2--tight">
           <div className="panel" style={{ padding: "44px 40px" }}>
             <div className="eyebrow eyebrow--tight mb-18">
@@ -393,6 +394,7 @@ export default async function AcademyPage() {
 
       {/* Application form. */}
       <section
+        data-reveal
         id="apply"
         className="shell section section--tight-top"
         style={{ maxWidth: 760 }}
