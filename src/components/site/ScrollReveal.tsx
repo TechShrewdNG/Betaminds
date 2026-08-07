@@ -37,7 +37,15 @@ export function ScrollReveal() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+      // threshold: 0 fires as soon as any part of a section enters — using a
+      // fraction of the section's own height instead (e.g. 0.15) meant a
+      // section taller than the viewport could stay invisible for a very
+      // long stretch of scrolling after it was already on screen, which on
+      // the tallest sections read as content (in one case, a form) that
+      // "isn't showing". rootMargin still shrinks the trigger point in from
+      // the viewport's own edges, not the target's, so it behaves the same
+      // regardless of how tall the section is.
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
     );
 
     targets.forEach((el) => observer.observe(el));

@@ -392,9 +392,11 @@ export default async function AcademyPage() {
         </div>
       </section>
 
-      {/* Application form. */}
+      {/* Application form. No data-reveal: a form section's height depends
+          on CMS content, and the scroll-reveal threshold can lag well
+          behind it entering the viewport for a tall one — see the same
+          note on Digital Ecosystem's questionnaire section. */}
       <section
-        data-reveal
         id="apply"
         className="shell section section--tight-top"
         style={{ maxWidth: 760 }}

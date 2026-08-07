@@ -153,8 +153,11 @@ export default async function EcosystemPage() {
         </div>
       </section>
 
-      {/* Before you book — the questionnaire, live. */}
-      <section data-reveal id="book" className="shell section section--tight-top">
+      {/* Before you book — the questionnaire, live. No data-reveal here: this
+          section is several viewports tall, so the scroll-reveal threshold
+          wouldn't clear until well after it's on screen, making the form
+          look like it isn't there while the visitor scrolls through it. */}
+      <section id="book" className="shell section section--tight-top">
         <div className="panel" style={{ borderRadius: 20, padding: "52px 44px" }}>
           <div className="grid col2 col2--mid">
             <div>

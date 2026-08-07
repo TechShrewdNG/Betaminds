@@ -515,9 +515,10 @@ export default async function SummitPage() {
         </div>
       </section>
 
-      {/* Register interest. */}
+      {/* Register interest. No data-reveal: same reasoning as the other two
+          form sections — a tall or growing form shouldn't be gated behind
+          a scroll threshold that can lag well behind it being on screen. */}
       <section
-        data-reveal
         id="interest"
         className="shell section section--tight-top"
         style={{ maxWidth: 760 }}
