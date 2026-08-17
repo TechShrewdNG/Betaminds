@@ -283,15 +283,36 @@ button {
   gap: 16px;
 }
 
+/* align-items: start keeps each column's own height — without it, grid's
+   default stretch forces a shorter panel's border/background to match its
+   taller sibling, leaving a block of dead space inside the shorter card.
+   Sections that genuinely want matched-height columns (e.g. a hero image
+   beside copy) opt back into stretch/center with an inline override. */
 .col2 {
   grid-template-columns: 1fr 1fr;
   gap: 64px;
+  align-items: start;
 }
 .col2--tight {
   gap: 14px;
 }
 .col2--mid {
   gap: 56px;
+}
+
+/* For a short intro column beside a much taller sibling (e.g. a long form)
+   that would otherwise strand at the top with a lot of blank space below
+   it as the page scrolls — keeps it in view instead. Desktop/tablet only:
+   .col2's 1000px breakpoint stacks columns, where sticking would float the
+   intro over the content now sitting below it. */
+.sticky-col {
+  align-self: start;
+}
+@media (min-width: 1001px) {
+  .sticky-col {
+    position: sticky;
+    top: 96px;
+  }
 }
 .col3 {
   grid-template-columns: repeat(3, 1fr);

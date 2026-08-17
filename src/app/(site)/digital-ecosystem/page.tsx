@@ -180,7 +180,7 @@ export default async function EcosystemPage() {
         <div className="shell section">
           <div className="panel" style={{ borderRadius: 20, padding: "52px 44px" }}>
             <div className="grid col2 col2--mid">
-              <div>
+              <div className="sticky-col">
                 <div className="eyebrow eyebrow--tight mb-18">
                   {eco.questionnaire.eyebrow}
                 </div>
