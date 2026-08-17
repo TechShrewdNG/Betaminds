@@ -409,7 +409,7 @@ export const schemas: DocSchema[] = [
       {
         key: "marketplace",
         title: "03 / Digital marketplace",
-        note: "The three plan cards on the right are pulled from Digital Ecosystem → Engagement plans, so there is one place to edit them.",
+        note: "The three plan cards on the right are pulled from Digital Marketplace → Engagement plans, so there is one place to edit them.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -687,7 +687,7 @@ export const schemas: DocSchema[] = [
 
   {
     id: "ecosystem",
-    title: "Digital Ecosystem",
+    title: "Digital Marketplace",
     route: "/digital-ecosystem",
     blurb:
       "Digital Commerce & Marketplace Solutions, engagement plans and the discovery questionnaire.",
@@ -897,6 +897,16 @@ export const schemas: DocSchema[] = [
                 titleKey: "name",
                 fields: {
                   name: { kind: "text", label: "Course" },
+                  icon: {
+                    kind: "select",
+                    label: "Icon",
+                    options: [
+                      "camera", "video", "pen", "film", "sparkle",
+                      "megaphone", "layout", "code", "cpu", "search",
+                      "chart", "share", "identity", "strategy", "spark",
+                    ],
+                    help: "Shown on the course card and in its pop-up.",
+                  },
                   weeks: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
                   description: {

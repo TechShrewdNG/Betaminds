@@ -14,7 +14,7 @@ type Questionnaire = ContentDefaults["ecosystem"]["questionnaire"];
 
 /**
  * The discovery questionnaire. Its fields, labels, types and options all come
- * from the CMS (Digital Ecosystem → Discovery questionnaire), resolved
+ * from the CMS (Digital Marketplace → Discovery questionnaire), resolved
  * server-side and validated against the same definitions.
  */
 export function ConsultationForm({

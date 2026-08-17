@@ -6,12 +6,18 @@ import { pageMetadata } from "@/lib/seo";
 import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("home");
   return pageMetadata(seo, "/home");
 }
+
+/** Mission / vision / why-us, one logo colour each so the mark's palette shows
+ *  up in the page rather than only in the header. */
+const PILLAR_ICONS: IconName[] = ["strategy", "spark", "users"];
+const PILLAR_TONES = ["blue", "orange", "green"] as const;
 
 export default async function HomePage() {
   // Plans, media packages and summit stats are edited on their own pages; the
@@ -151,8 +157,19 @@ export default async function HomePage() {
                 }}
                 loading="lazy"
               />
-              {home.about.pillars.map((pillar) => (
-                <div key={pillar.kicker} className="card">
+              {home.about.pillars.map((pillar, index) => (
+                <div
+                  key={pillar.kicker}
+                  className="card"
+                  style={{ display: "flex", gap: 16, alignItems: "flex-start" }}
+                >
+                  <span
+                    className="icon-chip icon-chip--sm"
+                    data-tone={PILLAR_TONES[index % PILLAR_TONES.length]}
+                  >
+                    <Icon name={PILLAR_ICONS[index] ?? "spark"} size={17} />
+                  </span>
+                  <div>
                   <div
                     className="eyebrow eyebrow--tight"
                     style={{ fontWeight: 600, marginBottom: 9 }}
@@ -168,6 +185,7 @@ export default async function HomePage() {
                     }}
                   >
                     {pillar.body}
+                  </div>
                   </div>
                 </div>
               ))}

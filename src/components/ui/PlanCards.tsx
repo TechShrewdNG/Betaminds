@@ -1,7 +1,5 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
+import { Icon } from "./Icon";
 import styles from "./ui.module.css";
 
 export type Plan = {
@@ -12,10 +10,15 @@ export type Plan = {
 };
 
 /**
- * Engagement plans. The featured plan (Growth by default) starts expanded and
- * carries the accent border and tint. Each card's CTA jumps down to the
- * questionnaire with `?plan=<name>`, which ConsultationForm reads to
- * pre-select the matching option in its own Plan field.
+ * Engagement plans. Every plan lists what it includes up front rather than
+ * behind a toggle: the lists are what a visitor is comparing, so hiding them
+ * made the three cards look identical and forced a click per plan just to see
+ * the difference. The featured plan (Growth by default) still carries the
+ * accent border and tint. Each card's CTA jumps to the questionnaire with
+ * `?plan=<name>`, which ConsultationForm reads to pre-select the matching
+ * option in its own Plan field.
+ *
+ * No longer a client component — with the accordion gone there is no state.
  */
 export function PlanCards({
   plans,
@@ -26,12 +29,9 @@ export function PlanCards({
   featuredIndex?: number;
   selectLabel?: string;
 }) {
-  const [open, setOpen] = useState<number | null>(featuredIndex);
-
   return (
     <div className="grid col3" style={{ alignItems: "stretch" }}>
       {plans.map((plan, index) => {
-        const isOpen = open === index;
         return (
           <div
             key={plan.name}
@@ -44,27 +44,12 @@ export function PlanCards({
               <div className={styles.planShort}>{plan.short}</div>
             </div>
 
-            <button
-              type="button"
-              className={styles.planToggle}
-              aria-expanded={isOpen}
-              aria-controls={`plan-${index}`}
-              onClick={() => setOpen(isOpen ? null : index)}
-            >
-              {isOpen ? "What's included" : "See what's included"}
-              <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
-            </button>
+            <div className={styles.planIncludesLabel}>What's included</div>
 
-            <div
-              id={`plan-${index}`}
-              className={styles.planIncludes}
-              hidden={!isOpen}
-            >
+            <div className={styles.planIncludes}>
               {plan.includes.map((item) => (
                 <div key={item} className={styles.planInclude}>
-                  <span className={styles.tickMark} aria-hidden="true">
-                    ✓
-                  </span>
+                  <Icon name="check" size={16} className={styles.tickMark} />
                   {item}
                 </div>
               ))}

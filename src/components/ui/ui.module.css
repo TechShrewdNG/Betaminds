@@ -240,8 +240,9 @@
 }
 
 .tickMark {
-  color: var(--accent);
+  color: var(--brand-green);
   flex: none;
+  margin-top: 1px;
 }
 
 /* --- Plan cards ---------------------------------------------------------- */
@@ -289,21 +290,17 @@
   text-wrap: pretty;
 }
 
-.planToggle {
-  width: 100%;
-  text-align: left;
+/* Static label now the inclusions are always shown — no longer a control. */
+.planIncludesLabel {
   padding: 15px 28px;
-  border: 0;
   border-top: 1px solid var(--line);
   background: rgba(23, 23, 27, 0.02);
   color: var(--accent);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 12.5px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   margin-top: auto;
 }
 
@@ -312,14 +309,6 @@
   flex-direction: column;
   gap: 1px;
   background: var(--line-soft);
-}
-
-/* `.planIncludes { display: flex }` above has the same specificity as the
-   UA default `[hidden] { display: none }` and loads after it, so it wins —
-   the `hidden` attribute alone never actually hides the panel. This rule's
-   higher specificity (class + attribute) restores it. */
-.planIncludes[hidden] {
-  display: none;
 }
 
 .planInclude {
@@ -865,6 +854,16 @@
   background: linear-gradient(150deg, var(--surface), var(--surface-alt));
 }
 
+.courseIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--brand-blue-tint);
+  color: var(--brand-blue-ink);
+}
+
 .courseCardName {
   font-family: var(--font-display);
   font-weight: 600;
@@ -898,36 +897,76 @@
   }
 }
 
+/* The backdrop centres the dialog and never scrolls itself — scrolling lives
+   on .modalBody. Previously the backdrop was the scroll container while the
+   page behind it also scrolled, which is what made the dialog feel like a
+   stuck frame: the wheel often moved the page, not the form. */
 .modalBack {
   position: fixed;
   inset: 0;
   background: rgba(23, 23, 27, 0.55);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 64px 20px;
-  overflow-y: auto;
+  padding: 24px 20px;
+  overflow: hidden;
   z-index: 100;
   animation: bmModalBack 0.25s ease both;
 }
 
 .modal {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 560px;
+  max-width: 580px;
+  /* Never taller than the viewport, so the body always has somewhere to
+     scroll instead of overflowing off-screen. */
+  max-height: min(88vh, 900px);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-panel);
-  padding: 44px 40px;
+  overflow: hidden;
   animation: bmModalPanel 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Title and close stay put while the form scrolls under them. */
+.modalHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 24px 20px 26px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  flex: none;
+}
+
+.modalIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--brand-blue-tint);
+  color: var(--brand-blue-ink);
+  flex: none;
+}
+
+.modalBody {
+  padding: 26px 26px 30px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .modalClose {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 34px;
-  height: 34px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid var(--line-outline);
   background: transparent;
@@ -948,11 +987,11 @@
 .modalName {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 28px;
+  font-size: 21px;
   letter-spacing: -0.02em;
-  margin-bottom: 14px;
-  padding-right: 40px;
+  line-height: 1.2;
   text-wrap: balance;
+  min-width: 0;
 }
 
 .modalDescription {
@@ -986,15 +1025,29 @@
 }
 
 @media (max-width: 640px) {
+  /* Full-height sheet on phones: a centred box with margins wastes the space
+     a long form needs. */
   .modalBack {
-    padding: 32px 14px;
+    padding: 0;
   }
 
   .modal {
-    padding: 32px 24px;
+    max-width: none;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  .modalHead {
+    padding: 16px 16px 14px 18px;
+  }
+
+  .modalBody {
+    padding: 20px 18px 32px;
   }
 
   .modalName {
-    font-size: 23px;
+    font-size: 18px;
   }
 }

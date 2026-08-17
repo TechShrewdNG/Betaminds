@@ -42,6 +42,25 @@
   --line-input: rgba(23, 23, 27, 0.14);
   --line-outline: rgba(23, 23, 27, 0.46);
 
+  /* Logo palette — the three figures in the mark, sampled from the artwork.
+     These are supporting accents for icons, category cues and graphic marks.
+     The gold --accent-fill below stays the single action colour: the handoff
+     calls it a deliberate neighbour to the logo's orange, not a match, so the
+     two are kept in their own lanes rather than blended. Because all three are
+     bright, they are used for graphics and tints — never as text on canvas,
+     where they would fail contrast. --brand-*-ink are the readable partners. */
+  --brand-blue: #0ca8fc;
+  --brand-orange: #fc900c;
+  --brand-green: #54cc48;
+
+  --brand-blue-ink: #0a6491;
+  --brand-orange-ink: #94540a;
+  --brand-green-ink: #2c7324;
+
+  --brand-blue-tint: rgba(12, 168, 252, 0.12);
+  --brand-orange-tint: rgba(252, 144, 12, 0.12);
+  --brand-green-tint: rgba(84, 204, 72, 0.14);
+
   /* Accent */
   --accent: #8a5a0f;
   --accent-hover: #b8791a;
@@ -646,6 +665,43 @@ button {
   background: var(--surface-alt);
   border-top: 1px solid var(--line-soft);
   border-bottom: 1px solid var(--line-soft);
+}
+
+/* --- Icon chips ---------------------------------------------------------- */
+
+/* A rounded tile behind an inline SVG icon. `data-tone` picks one of the three
+   logo colours; the tint carries the hue while the darker -ink partner keeps
+   the glyph readable, since the raw logo colours are too bright on canvas. */
+.icon-chip {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  flex: none;
+}
+
+.icon-chip[data-tone="blue"] {
+  background: var(--brand-blue-tint);
+  color: var(--brand-blue-ink);
+}
+
+.icon-chip[data-tone="orange"] {
+  background: var(--brand-orange-tint);
+  color: var(--brand-orange-ink);
+}
+
+.icon-chip[data-tone="green"] {
+  background: var(--brand-green-tint);
+  color: var(--brand-green-ink);
+}
+
+.icon-chip--sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
 }
 
 /* --- Section bands ------------------------------------------------------- */

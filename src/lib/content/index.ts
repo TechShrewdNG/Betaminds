@@ -32,6 +32,35 @@ function merge<T>(base: T, patch: unknown): T {
   return patch as T;
 }
 
+/**
+ * Strips the legacy "01 / " index prefix off section eyebrows.
+ *
+ * The numbering was removed from the defaults, but a document saved in the
+ * admin stores its own copy of every field it holds, so any page an editor had
+ * already saved kept serving the numbered wording no matter what the defaults
+ * said. Rather than leave that stranded until someone retypes eight fields by
+ * hand, the prefix is treated as a formatting artefact and dropped on read.
+ *
+ * Scoped to keys literally named `eyebrow` so it can only ever touch a section
+ * label — body copy that happens to start with a number is left alone.
+ */
+const INDEX_PREFIX = /^\s*\d{1,2}\s*\/\s*/;
+
+function stripSectionNumbering<T>(value: T): T {
+  if (typeof value === "string") return value as T;
+  if (Array.isArray(value)) return value.map(stripSectionNumbering) as T;
+  if (!isPlainObject(value)) return value;
+
+  const out: Plain = {};
+  for (const [key, v] of Object.entries(value)) {
+    out[key] =
+      key === "eyebrow" && typeof v === "string"
+        ? v.replace(INDEX_PREFIX, "")
+        : stripSectionNumbering(v);
+  }
+  return out as T;
+}
+
 function parse(raw: string | null | undefined): unknown {
   if (!raw) return undefined;
   try {
@@ -62,7 +91,7 @@ export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  return merge(defaults[id], saved);
+  return stripSectionNumbering(merge(defaults[id], saved));
 }
 
 /** Site-wide chrome. Every page needs it, so it gets its own helper. */
@@ -79,7 +108,9 @@ export async function getRawDoc(id: string): Promise<Plain> {
 /** Defaults merged with the saved patch, for pre-filling the admin form. */
 export async function getMergedDoc(id: DocId): Promise<Plain> {
   const saved = await readDoc(id);
-  return merge(defaults[id], saved) as Plain;
+  // Normalised here too, so the admin form shows the same wording the site
+  // serves rather than re-saving the stale numbering straight back in.
+  return stripSectionNumbering(merge(defaults[id], saved)) as Plain;
 }
 
 export async function saveDoc(id: DocId, data: Plain, updatedBy?: string) {

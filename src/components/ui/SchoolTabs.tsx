@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import styles from "./ui.module.css";
+import { Icon, type IconName } from "./Icon";
 import { AcademyForm } from "@/components/forms/AcademyForm";
 import type { FormField } from "@/lib/forms/definition";
 import type { ContentDefaults } from "@/lib/content/defaults";
@@ -11,7 +12,21 @@ export type Course = {
   weeks: string;
   mode: string;
   description?: string;
+  icon?: string;
 };
+
+/** Courses are CMS content, so an unknown or empty icon falls back rather
+ *  than rendering nothing. */
+const COURSE_ICONS: IconName[] = [
+  "camera", "video", "pen", "film", "sparkle", "megaphone",
+  "layout", "code", "cpu", "search", "chart", "share",
+  "identity", "strategy", "spark",
+];
+
+const courseIcon = (course: Course): IconName =>
+  COURSE_ICONS.includes(course.icon as IconName)
+    ? (course.icon as IconName)
+    : "spark";
 export type School = { name: string; courses: Course[] };
 type Apply = ContentDefaults["academy"]["apply"];
 
@@ -34,13 +49,40 @@ export function SchoolTabs({
   const [openCourse, setOpenCourse] = useState<Course | null>(null);
   const current = schools[active] ?? schools[0];
 
+  // While the dialog is open, close on Escape and freeze the page behind it.
+  // Without the scroll lock the wheel kept driving the page underneath, so the
+  // dialog read as an unscrollable frame pinned over a moving background.
   useEffect(() => {
     if (!openCourse) return;
+
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpenCourse(null);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+
+    const { body } = document;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflowY: body.style.overflowY,
+    };
+    // Fixing the body is what actually stops iOS Safari from scrolling the
+    // page behind the dialog; the offset keeps the visitor's place.
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflowY = "scroll";
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflowY = prev.overflowY;
+      window.scrollTo(0, scrollY);
+    };
   }, [openCourse]);
 
   return (
@@ -72,6 +114,9 @@ export function SchoolTabs({
             className={styles.courseCard}
             onClick={() => setOpenCourse(course)}
           >
+            <span className={styles.courseIcon}>
+              <Icon name={courseIcon(course)} size={22} />
+            </span>
             <div className={styles.courseCardName}>{course.name}</div>
             <div className="row-wrap" style={{ gap: 6 }}>
               <Chip>{course.weeks}</Chip>
@@ -94,38 +139,45 @@ export function SchoolTabs({
           }}
         >
           <div className={styles.modal}>
-            <button
-              type="button"
-              className={styles.modalClose}
-              aria-label="Close"
-              onClick={() => setOpenCourse(null)}
-            >
-              ×
-            </button>
-
-            <div className={styles.modalName}>{openCourse.name}</div>
-            {openCourse.description ? (
-              <p className={styles.modalDescription}>
-                {openCourse.description}
-              </p>
-            ) : null}
-            <div className="row-wrap" style={{ gap: 6, marginBottom: 28 }}>
-              <Chip>{openCourse.weeks}</Chip>
-              <Chip>{openCourse.mode}</Chip>
-              <Chip accent>{certificateLabel}</Chip>
+            <div className={styles.modalHead}>
+              <span className={styles.modalIcon}>
+                <Icon name={courseIcon(openCourse)} size={22} />
+              </span>
+              <div className={styles.modalName}>{openCourse.name}</div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                aria-label="Close"
+                onClick={() => setOpenCourse(null)}
+              >
+                <Icon name="close" size={17} />
+              </button>
             </div>
 
-            <div className={styles.modalDivider} />
+            <div className={styles.modalBody}>
+              {openCourse.description ? (
+                <p className={styles.modalDescription}>
+                  {openCourse.description}
+                </p>
+              ) : null}
+              <div className="row-wrap" style={{ gap: 6, marginBottom: 28 }}>
+                <Chip>{openCourse.weeks}</Chip>
+                <Chip>{openCourse.mode}</Chip>
+                <Chip accent>{certificateLabel}</Chip>
+              </div>
 
-            <h3 className={styles.modalFormHeading}>{apply.heading}</h3>
-            <p className={styles.modalFormBody}>{apply.body}</p>
-            <Suspense fallback={null}>
-              <AcademyForm
-                apply={apply}
-                fields={fields}
-                presetCourse={openCourse.name}
-              />
-            </Suspense>
+              <div className={styles.modalDivider} />
+
+              <h3 className={styles.modalFormHeading}>{apply.heading}</h3>
+              <p className={styles.modalFormBody}>{apply.body}</p>
+              <Suspense fallback={null}>
+                <AcademyForm
+                  apply={apply}
+                  fields={fields}
+                  presetCourse={openCourse.name}
+                />
+              </Suspense>
+            </div>
           </div>
         </div>
       ) : null}

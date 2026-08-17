@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { resolveForm } from "@/lib/forms/resolve";
 
@@ -10,6 +11,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("ecosystem");
   return pageMetadata(seo, "/digital-ecosystem");
 }
+
+/** Capability cards, in the order the CMS lists them. Falls back to a neutral
+ *  mark if an editor adds a tenth item. */
+const SOLUTION_ICONS: IconName[] = [
+  "identity", "strategy", "camera", "layout", "search",
+  "card", "share", "megaphone", "users", "chart",
+];
+
+/** Logo blue / orange / green, cycled so the grid carries the mark's palette
+ *  instead of ten identical gold ticks. */
+const SOLUTION_TONES = ["blue", "orange", "green"] as const;
 
 export default async function EcosystemPage() {
   const eco = await getContent("ecosystem");
@@ -69,12 +81,13 @@ export default async function EcosystemPage() {
                 className="card"
                 style={{ padding: "26px 26px 28px" }}
               >
-                <div
-                  className="eyebrow eyebrow--tight"
-                  style={{ marginBottom: 14 }}
+                <span
+                  className="icon-chip"
+                  data-tone={SOLUTION_TONES[index % SOLUTION_TONES.length]}
+                  style={{ marginBottom: 16 }}
                 >
-                  {String(index + 1).padStart(2, "0")}
-                </div>
+                  <Icon name={SOLUTION_ICONS[index] ?? "spark"} size={21} />
+                </span>
                 <div
                   className="card-title"
                   style={{ marginBottom: 8, textWrap: "balance" }}
@@ -217,32 +230,6 @@ export default async function EcosystemPage() {
                   ))}
                 </div>
 
-                <div className="hairline-stack" style={{ alignSelf: "start" }}>
-                  {(groups ?? []).map((group, index) => (
-                    <div key={group.title} style={{ padding: "16px 20px" }}>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-display)",
-                          fontWeight: 600,
-                          fontSize: 13.5,
-                          marginBottom: 6,
-                        }}
-                      >
-                        {index + 1}. {group.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          lineHeight: 1.55,
-                          color: "var(--ink-70)",
-                          textWrap: "pretty",
-                        }}
-                      >
-                        {group.fields.map((field) => field.label).join(" · ")}
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               <div>

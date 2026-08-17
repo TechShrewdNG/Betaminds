@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import styles from "./Footer.module.css";
 import type { ContentDefaults } from "@/lib/content/defaults";
 
 type Global = ContentDefaults["global"];
+
+/** Contact rows are CMS content, so the icon is chosen from the row's own
+ *  label rather than a fixed index — reordering or renaming a row in the
+ *  admin still gets a sensible mark, and anything unrecognised gets a pin. */
+function contactIcon(label: string): IconName {
+  const l = label.toLowerCase();
+  if (l.includes("mail") || l.includes("email")) return "mail";
+  if (l.includes("phone") || l.includes("tel")) return "phone";
+  if (l.includes("web") || l.includes("site")) return "globe";
+  return "pin";
+}
 
 export function Footer({
   brand,
@@ -104,7 +116,10 @@ export function Footer({
             <div className={styles.backGrid}>
               {contact.rows.map((row) => (
                 <div key={row.label} className={styles.backItem}>
-                  <div className={styles.backLabel}>{row.label}</div>
+                  <div className={styles.backLabel}>
+                    <Icon name={contactIcon(row.label)} size={13} />
+                    {row.label}
+                  </div>
                   <div className={styles.backValue}>{row.value}</div>
                 </div>
               ))}

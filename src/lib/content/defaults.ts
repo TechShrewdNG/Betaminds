@@ -118,7 +118,7 @@ export const defaults = {
       items: [
         { label: "Home", href: "/home" },
         { label: "Projects", href: "/projects" },
-        { label: "Digital Ecosystem", href: "/digital-ecosystem" },
+        { label: "Digital Marketplace", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
         { label: "Academy", href: "/academy" },
         { label: "Summit", href: "/summit" },
@@ -222,7 +222,7 @@ export const defaults = {
           secondaryHref: "/media-services",
         },
         {
-          eyebrow: "Digital ecosystem",
+          eyebrow: "Digital marketplace",
           heading: "Commerce systems that actually convert",
           body: "Storefronts, payments and the operations behind them — built to be measured, and rebuilt when the numbers say so.",
           video: "",
@@ -528,15 +528,15 @@ export const defaults = {
 
   ecosystem: {
     seo: {
-      title: "Digital Commerce & Marketplace Solutions — Betaminds Africa",
+      title: "Digital Marketplace — Betaminds Africa",
       description:
         "Build. Scale. Sell. Grow. One integrated digital commerce solution: branding, content, website, ads, customer experience and analytics.",
     },
     hero: {
       image: IMG(5060980, 1800),
-      imageAlt: "Building a digital commerce ecosystem",
-      eyebrow: "Digital ecosystem",
-      heading: "Digital Commerce & Marketplace Solutions",
+      imageAlt: "Building a digital marketplace",
+      eyebrow: "Digital marketplace",
+      heading: "Digital Marketplace",
       accentLine: "Build. Scale. Sell. Grow.",
       lead: "Growth is driven by visibility, strategy, technology and customer experience. We help businesses build, launch, market and grow their online presence through one integrated solution instead of a pile of standalone services.",
       ctaLabel: "Book a discovery call →",
@@ -669,7 +669,7 @@ export const defaults = {
        * success screen.
        */
       schedulingUrl: "",
-      submitLabel: "Submit and get my scheduling link",
+      submitLabel: "Get My Schedule Link",
       successHeading: "Thank you. We have your answers.",
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
@@ -948,6 +948,7 @@ export const defaults = {
           courses: [
             {
               name: "Photography",
+              icon: "camera",
               weeks: "10 weeks",
               mode: "Hybrid",
               description:
@@ -955,6 +956,7 @@ export const defaults = {
             },
             {
               name: "Videography",
+              icon: "video",
               weeks: "12 weeks",
               mode: "Physical",
               description:
@@ -962,6 +964,7 @@ export const defaults = {
             },
             {
               name: "Content Creation",
+              icon: "pen",
               weeks: "8 weeks",
               mode: "Hybrid",
               description:
@@ -969,6 +972,7 @@ export const defaults = {
             },
             {
               name: "Animation",
+              icon: "film",
               weeks: "12 weeks",
               mode: "Virtual",
               description:
@@ -976,6 +980,7 @@ export const defaults = {
             },
             {
               name: "Motion Graphics",
+              icon: "sparkle",
               weeks: "10 weeks",
               mode: "Hybrid",
               description:
@@ -988,6 +993,7 @@ export const defaults = {
           courses: [
             {
               name: "Digital Marketing",
+              icon: "megaphone",
               weeks: "12 weeks",
               mode: "Hybrid",
               description:
@@ -995,6 +1001,7 @@ export const defaults = {
             },
             {
               name: "UI/UX Design",
+              icon: "layout",
               weeks: "12 weeks",
               mode: "Hybrid",
               description:
@@ -1002,6 +1009,7 @@ export const defaults = {
             },
             {
               name: "Website Development",
+              icon: "code",
               weeks: "16 weeks",
               mode: "Hybrid",
               description:
@@ -1009,6 +1017,7 @@ export const defaults = {
             },
             {
               name: "AI Productivity",
+              icon: "cpu",
               weeks: "6 weeks",
               mode: "Virtual",
               description:
@@ -1016,6 +1025,7 @@ export const defaults = {
             },
             {
               name: "SEO",
+              icon: "search",
               weeks: "6 weeks",
               mode: "Virtual",
               description:
