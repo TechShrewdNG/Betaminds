@@ -96,305 +96,63 @@ export default async function SummitPage() {
       </section>
 
       {/* A movement, not a conference. */}
-      <section data-reveal className="shell section">
-        <div className="grid col2 col2--mid">
-          <div>
-            <h2 className="h2" style={{ marginBottom: 20 }}>
-              {summit.movement.heading}
-            </h2>
-            <p className="body" style={{ marginBottom: 16 }}>
-              {summit.movement.body1}
-            </p>
-            <p className="body">{summit.movement.body2}</p>
-          </div>
-
-          <div className="panel panel--accent" style={{ padding: "34px 32px" }}>
-            <div className="eyebrow eyebrow--tight mb-18">
-              {summit.movement.missionLabel}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--mid">
+            <div>
+              <h2 className="h2" style={{ marginBottom: 20 }}>
+                {summit.movement.heading}
+              </h2>
+              <p className="body" style={{ marginBottom: 16 }}>
+                {summit.movement.body1}
+              </p>
+              <p className="body">{summit.movement.body2}</p>
             </div>
-            <p
-              style={{
-                fontSize: 16,
-                lineHeight: 1.66,
-                color: "var(--ink-88)",
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              {summit.movement.mission}
-            </p>
+
+            <div className="panel panel--accent" style={{ padding: "34px 32px" }}>
+              <div className="eyebrow eyebrow--tight mb-18">
+                {summit.movement.missionLabel}
+              </div>
+              <p
+                style={{
+                  fontSize: 16,
+                  lineHeight: 1.66,
+                  color: "var(--ink-88)",
+                  margin: 0,
+                  textWrap: "pretty",
+                }}
+              >
+                {summit.movement.mission}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Event highlights. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col5">
-          {summit.stats.items.map((stat) => (
-            <div
-              key={stat.label}
-              className="card"
-              style={{ padding: "30px 24px" }}
-            >
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="grid col5">
+            {summit.stats.items.map((stat) => (
               <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: 38,
-                  letterSpacing: "-0.04em",
-                  color: "var(--accent)",
-                  lineHeight: 1,
-                }}
-              >
-                {stat.n}
-              </div>
-              <div className="mono-meta" style={{ marginTop: 11 }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Why attend? */}
-      <section data-reveal className="shell section section--tight-top">
-        <h2 className="h2" style={{ marginBottom: 32 }}>
-          {summit.why.heading}
-        </h2>
-        <div className="grid col3">
-          {summit.why.items.map((item, index) => (
-            <div
-              key={item.title}
-              className="card"
-              style={{ borderRadius: 16, padding: "30px 28px" }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 11,
-                  background: "var(--accent-tint)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  color: "var(--accent)",
-                  marginBottom: 18,
-                }}
-              >
-                {String(index + 1).padStart(2, "0")}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 18,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 8,
-                  textWrap: "balance",
-                }}
-              >
-                {item.title}
-              </div>
-              <div className="card-body" style={{ color: "var(--ink-76)" }}>
-                {item.body}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Editions and galleries. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col2 col2--tight">
-          {summit.editions.items.map((edition) => (
-            <div
-              key={edition.edition}
-              className="panel"
-              style={{ padding: 0, overflow: "hidden" }}
-            >
-              <div style={{ padding: "28px 30px 22px" }}>
-                <div className="eyebrow eyebrow--tight" style={{ marginBottom: 12 }}>
-                  {edition.edition}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 600,
-                    fontSize: 21,
-                    letterSpacing: "-0.02em",
-                    marginBottom: 10,
-                    textWrap: "balance",
-                  }}
-                >
-                  {edition.theme}
-                </div>
-                <div style={{ fontSize: 14.5, color: "var(--ink-74)" }}>
-                  {edition.date} · {edition.venue}
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 1,
-                  background: "rgba(23,23,27,.07)",
-                }}
-              >
-                {edition.gallery.map((src, index) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={`${src}-${index}`}
-                    src={src}
-                    alt={`${edition.edition} gallery image ${index + 1}`}
-                    className="ratio-1-1"
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
-                    loading="lazy"
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div
-          className="panel mt-14"
-          style={{
-            borderRadius: 16,
-            padding: "26px 30px",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: 22,
-          }}
-        >
-          <div className="eyebrow eyebrow--tight">{summit.press.label}</div>
-          <div className="row-wrap" style={{ gap: 10 }}>
-            {summit.press.items.map((item) => {
-              const chip = (
-                <span
-                  style={{
-                    padding: "10px 18px",
-                    border: "1px dashed rgba(23,23,27,.16)",
-                    borderRadius: 8,
-                    fontSize: 13.5,
-                    color: "var(--ink-84)",
-                    display: "inline-block",
-                  }}
-                >
-                  {item.name}
-                </span>
-              );
-              return item.href ? (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {chip}
-                </a>
-              ) : (
-                <span key={item.name}>{chip}</span>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Agenda beside success stories. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col2 col2--mid">
-          <div>
-            <h2 className="h2" style={{ marginBottom: 28 }}>
-              {summit.agenda.heading}
-            </h2>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {summit.agenda.steps.map((step, index) => (
-                <li
-                  key={step}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                    padding: "11px 0",
-                    borderBottom: "1px solid var(--line-soft)",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontWeight: 500,
-                      fontSize: 10,
-                      color: "var(--accent)",
-                      flex: "none",
-                      width: 22,
-                    }}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span style={{ fontSize: 15.5, color: "var(--ink-90)" }}>
-                    {step}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="grid gap-14" style={{ alignContent: "start" }}>
-            {summit.stories.items.map((story) => (
-              <div
-                key={story.name}
+                key={stat.label}
                 className="card"
-                style={{ borderRadius: 16, padding: 30 }}
+                style={{ padding: "30px 24px" }}
               >
                 <div
                   style={{
-                    color: "var(--accent)",
-                    fontSize: 13,
-                    letterSpacing: "0.2em",
-                    marginBottom: 14,
-                  }}
-                  aria-label="Five out of five"
-                >
-                  ★★★★★
-                </div>
-                <blockquote
-                  style={{
                     fontFamily: "var(--font-display)",
-                    fontWeight: 300,
-                    fontSize: 19,
-                    lineHeight: 1.42,
-                    letterSpacing: "-0.015em",
-                    margin: "0 0 18px",
-                    textWrap: "pretty",
+                    fontWeight: 700,
+                    fontSize: 38,
+                    letterSpacing: "-0.04em",
+                    color: "var(--accent)",
+                    lineHeight: 1,
                   }}
                 >
-                  {`“${story.quote}”`}
-                </blockquote>
-                <div className="row" style={{ gap: 12 }}>
-                  {story.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={story.image}
-                      alt=""
-                      width={38}
-                      height={38}
-                      className="avatar"
-                      style={{ width: 38, height: 38 }}
-                      loading="lazy"
-                    />
-                  ) : null}
-                  <div style={{ fontSize: 13, color: "var(--ink-76)" }}>
-                    {story.name}
-                  </div>
+                  {stat.n}
+                </div>
+                <div className="mono-meta" style={{ marginTop: 11 }}>
+                  {stat.label}
                 </div>
               </div>
             ))}
@@ -402,114 +160,366 @@ export default async function SummitPage() {
         </div>
       </section>
 
+      {/* Why attend? */}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <h2 className="h2" style={{ marginBottom: 32 }}>
+            {summit.why.heading}
+          </h2>
+          <div className="grid col3">
+            {summit.why.items.map((item, index) => (
+              <div
+                key={item.title}
+                className="card"
+                style={{ borderRadius: 16, padding: "30px 28px" }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 11,
+                    background: "var(--accent-tint)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    color: "var(--accent)",
+                    marginBottom: 18,
+                  }}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 600,
+                    fontSize: 18,
+                    letterSpacing: "-0.02em",
+                    marginBottom: 8,
+                    textWrap: "balance",
+                  }}
+                >
+                  {item.title}
+                </div>
+                <div className="card-body" style={{ color: "var(--ink-76)" }}>
+                  {item.body}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Editions and galleries. */}
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--tight">
+            {summit.editions.items.map((edition) => (
+              <div
+                key={edition.edition}
+                className="panel"
+                style={{ padding: 0, overflow: "hidden" }}
+              >
+                <div style={{ padding: "28px 30px 22px" }}>
+                  <div className="eyebrow eyebrow--tight" style={{ marginBottom: 12 }}>
+                    {edition.edition}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 600,
+                      fontSize: 21,
+                      letterSpacing: "-0.02em",
+                      marginBottom: 10,
+                      textWrap: "balance",
+                    }}
+                  >
+                    {edition.theme}
+                  </div>
+                  <div style={{ fontSize: 14.5, color: "var(--ink-74)" }}>
+                    {edition.date} · {edition.venue}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 1,
+                    background: "rgba(23,23,27,.07)",
+                  }}
+                >
+                  {edition.gallery.map((src, index) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={`${src}-${index}`}
+                      src={src}
+                      alt={`${edition.edition} gallery image ${index + 1}`}
+                      className="ratio-1-1"
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="panel mt-14"
+            style={{
+              borderRadius: 16,
+              padding: "26px 30px",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 22,
+            }}
+          >
+            <div className="eyebrow eyebrow--tight">{summit.press.label}</div>
+            <div className="row-wrap" style={{ gap: 10 }}>
+              {summit.press.items.map((item) => {
+                const chip = (
+                  <span
+                    style={{
+                      padding: "10px 18px",
+                      border: "1px dashed rgba(23,23,27,.16)",
+                      borderRadius: 8,
+                      fontSize: 13.5,
+                      color: "var(--ink-84)",
+                      display: "inline-block",
+                    }}
+                  >
+                    {item.name}
+                  </span>
+                );
+                return item.href ? (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {chip}
+                  </a>
+                ) : (
+                  <span key={item.name}>{chip}</span>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Agenda beside success stories. */}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--mid">
+            <div>
+              <h2 className="h2" style={{ marginBottom: 28 }}>
+                {summit.agenda.heading}
+              </h2>
+              <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                {summit.agenda.steps.map((step, index) => (
+                  <li
+                    key={step}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 16,
+                      padding: "11px 0",
+                      borderBottom: "1px solid var(--line-soft)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontWeight: 500,
+                        fontSize: 10,
+                        color: "var(--accent)",
+                        flex: "none",
+                        width: 22,
+                      }}
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span style={{ fontSize: 15.5, color: "var(--ink-90)" }}>
+                      {step}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="grid gap-14" style={{ alignContent: "start" }}>
+              {summit.stories.items.map((story) => (
+                <div
+                  key={story.name}
+                  className="card"
+                  style={{ borderRadius: 16, padding: 30 }}
+                >
+                  <div
+                    style={{
+                      color: "var(--accent)",
+                      fontSize: 13,
+                      letterSpacing: "0.2em",
+                      marginBottom: 14,
+                    }}
+                    aria-label="Five out of five"
+                  >
+                    ★★★★★
+                  </div>
+                  <blockquote
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 300,
+                      fontSize: 19,
+                      lineHeight: 1.42,
+                      letterSpacing: "-0.015em",
+                      margin: "0 0 18px",
+                      textWrap: "pretty",
+                    }}
+                  >
+                    {`“${story.quote}”`}
+                  </blockquote>
+                  <div className="row" style={{ gap: 12 }}>
+                    {story.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={story.image}
+                        alt=""
+                        width={38}
+                        height={38}
+                        className="avatar"
+                        style={{ width: 38, height: 38 }}
+                        loading="lazy"
+                      />
+                    ) : null}
+                    <div style={{ fontSize: 13, color: "var(--ink-76)" }}>
+                      {story.name}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ. */}
-      <section
-        data-reveal
-        className="shell section section--tight-top"
-        style={{ maxWidth: 900 }}
-      >
-        <h2 className="h2" style={{ marginBottom: 30 }}>
-          {summit.faq.heading}
-        </h2>
-        <Accordion items={summit.faq.items} />
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section" style={{ maxWidth: 900 }}>
+          <h2 className="h2" style={{ marginBottom: 30 }}>
+            {summit.faq.heading}
+          </h2>
+          <Accordion items={summit.faq.items} />
+        </div>
       </section>
 
       {/* Sponsorship, registration note and newsletter. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col2 col2--tight">
-          <div
-            className="panel panel--accent"
-            style={{
-              padding: "44px 40px",
-              borderColor: "rgba(232,163,61,.3)",
-              background:
-                "linear-gradient(145deg, rgba(232,163,61,.1), transparent 70%)",
-            }}
-          >
-            <h3
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--tight">
+            <div
+              className="panel panel--accent"
               style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 700,
-                fontSize: 28,
-                lineHeight: 1.12,
-                letterSpacing: "-0.025em",
-                margin: "0 0 14px",
-                textWrap: "balance",
+                padding: "44px 40px",
+                borderColor: "rgba(232,163,61,.3)",
+                background:
+                  "linear-gradient(145deg, rgba(232,163,61,.1), transparent 70%)",
               }}
             >
-              {summit.sponsor.heading}
-            </h3>
-            <p
-              style={{
-                fontSize: 15.5,
-                lineHeight: 1.64,
-                color: "var(--ink-84)",
-                margin: "0 0 26px",
-                textWrap: "pretty",
-              }}
-            >
-              {summit.sponsor.body}
-            </p>
-            <div className="row-wrap" style={{ gap: 10 }}>
-              {summit.hero.deckUrl ? (
-                <a
-                  href={summit.hero.deckUrl}
-                  className="pill pill--accent pill--sm"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {summit.sponsor.ctaPrimary}
-                </a>
-              ) : null}
-              <Link
-                href={summit.sponsor.ctaSecondaryHref}
-                className="pill pill--outline pill--sm"
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: 28,
+                  lineHeight: 1.12,
+                  letterSpacing: "-0.025em",
+                  margin: "0 0 14px",
+                  textWrap: "balance",
+                }}
               >
-                {summit.sponsor.ctaSecondary}
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-14">
-            <div className="panel" style={{ padding: "30px 32px" }}>
-              <div className="eyebrow eyebrow--tight" style={{ marginBottom: 10 }}>
-                {summit.register.label}
-              </div>
-              <div
+                {summit.sponsor.heading}
+              </h3>
+              <p
                 style={{
                   fontSize: 15.5,
-                  lineHeight: 1.6,
+                  lineHeight: 1.64,
                   color: "var(--ink-84)",
+                  margin: "0 0 26px",
                   textWrap: "pretty",
                 }}
               >
-                {summit.register.body}
+                {summit.sponsor.body}
+              </p>
+              <div className="row-wrap" style={{ gap: 10 }}>
+                {summit.hero.deckUrl ? (
+                  <a
+                    href={summit.hero.deckUrl}
+                    className="pill pill--accent pill--sm"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {summit.sponsor.ctaPrimary}
+                  </a>
+                ) : null}
+                <Link
+                  href={summit.sponsor.ctaSecondaryHref}
+                  className="pill pill--outline pill--sm"
+                >
+                  {summit.sponsor.ctaSecondary}
+                </Link>
               </div>
             </div>
 
-            <div className="panel" style={{ padding: "30px 32px" }}>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 19,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 8,
-                }}
-              >
-                {summit.newsletter.heading}
+            <div className="grid gap-14">
+              <div className="panel" style={{ padding: "30px 32px" }}>
+                <div className="eyebrow eyebrow--tight" style={{ marginBottom: 10 }}>
+                  {summit.register.label}
+                </div>
+                <div
+                  style={{
+                    fontSize: 15.5,
+                    lineHeight: 1.6,
+                    color: "var(--ink-84)",
+                    textWrap: "pretty",
+                  }}
+                >
+                  {summit.register.body}
+                </div>
               </div>
-              <div
-                style={{
-                  fontSize: 14.5,
-                  lineHeight: 1.6,
-                  color: "var(--ink-76)",
-                  marginBottom: 18,
-                }}
-              >
-                {summit.newsletter.body}
+
+              <div className="panel" style={{ padding: "30px 32px" }}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 600,
+                    fontSize: 19,
+                    letterSpacing: "-0.02em",
+                    marginBottom: 8,
+                  }}
+                >
+                  {summit.newsletter.heading}
+                </div>
+                <div
+                  style={{
+                    fontSize: 14.5,
+                    lineHeight: 1.6,
+                    color: "var(--ink-76)",
+                    marginBottom: 18,
+                  }}
+                >
+                  {summit.newsletter.body}
+                </div>
+                <NewsletterForm newsletter={summit.newsletter} />
               </div>
-              <NewsletterForm newsletter={summit.newsletter} />
             </div>
           </div>
         </div>
@@ -518,22 +528,20 @@ export default async function SummitPage() {
       {/* Register interest. No data-reveal: same reasoning as the other two
           form sections — a tall or growing form shouldn't be gated behind
           a scroll threshold that can lag well behind it being on screen. */}
-      <section
-        id="interest"
-        className="shell section section--tight-top"
-        style={{ maxWidth: 760 }}
-      >
-        <div className="panel">
-          <h2 className="h2" style={{ marginBottom: 12 }}>
-            {summit.interest.heading}
-          </h2>
-          <p className="body" style={{ fontSize: 15.5, marginBottom: 28 }}>
-            {summit.interest.body}
-          </p>
-          <SummitInterestForm
-            interest={summit.interest}
-            fields={interestFields}
-          />
+      <section id="interest" className="band band--alt band--ruled">
+        <div className="shell section" style={{ maxWidth: 760 }}>
+          <div className="panel">
+            <h2 className="h2" style={{ marginBottom: 12 }}>
+              {summit.interest.heading}
+            </h2>
+            <p className="body" style={{ fontSize: 15.5, marginBottom: 28 }}>
+              {summit.interest.body}
+            </p>
+            <SummitInterestForm
+              interest={summit.interest}
+              fields={interestFields}
+            />
+          </div>
         </div>
       </section>
     </>

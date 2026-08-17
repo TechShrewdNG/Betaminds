@@ -118,215 +118,87 @@ export default async function HomePage() {
       </section>
 
       {/* 3 — 01 / Who we are. */}
-      <section data-reveal className="shell section">
-        <div className="grid col2" style={{ alignItems: "start" }}>
-          <div>
-            <div className="section-name mb-22">{home.about.eyebrow}</div>
-            <h2 className="h2" style={{ marginBottom: 24 }}>
-              {home.about.heading}
-            </h2>
-            <p className="body" style={{ marginBottom: 16 }}>
-              {home.about.body1}
-            </p>
-            <p className="body" style={{ marginBottom: 34 }}>
-              {home.about.body2}
-            </p>
-            <Link href={home.about.ctaHref} className="pill pill--accent">
-              {home.about.ctaLabel} <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-
-          <div className="grid gap-14">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={home.about.image}
-              alt={home.about.imageAlt}
-              className="ratio-16-10"
-              style={{
-                display: "block",
-                width: "100%",
-                objectFit: "cover",
-                borderRadius: "var(--r-card)",
-              }}
-              loading="lazy"
-            />
-            {home.about.pillars.map((pillar) => (
-              <div key={pillar.kicker} className="card">
-                <div
-                  className="eyebrow eyebrow--tight"
-                  style={{ fontWeight: 600, marginBottom: 9 }}
-                >
-                  {pillar.kicker}
-                </div>
-                <div
-                  style={{
-                    fontSize: 15.5,
-                    lineHeight: 1.6,
-                    color: "var(--ink-88)",
-                    textWrap: "pretty",
-                  }}
-                >
-                  {pillar.body}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="panel--accent-soft mt-56">
-          <div
-            className="eyebrow eyebrow--tight"
-            style={{ fontWeight: 600, marginBottom: 16 }}
-          >
-            {home.about.notForTitle}
-          </div>
-          <div
-            className="grid col3"
-            style={{ gap: "12px 34px" }}
-          >
-            {home.about.notFor.map((item) => (
-              <div
-                key={item}
-                style={{
-                  display: "flex",
-                  gap: 11,
-                  alignItems: "flex-start",
-                  fontSize: 15,
-                  lineHeight: 1.55,
-                  color: "var(--ink-78)",
-                }}
-              >
-                <span style={{ color: "var(--accent)", flex: "none" }}>·</span>
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4 — 02 / Meet the spark. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="split mb-34">
-          <div>
-            <div className="section-name mb-18">{home.team.eyebrow}</div>
-            <h2 className="h2">{home.team.heading}</h2>
-          </div>
-          <div
-            style={{
-              fontSize: 14.5,
-              lineHeight: 1.6,
-              color: "var(--ink-70)",
-              maxWidth: 300,
-            }}
-          >
-            {home.team.note}
-          </div>
-        </div>
-
-        <div className={styles.teamGrid}>
-          {home.team.members.map((member, index) => (
-            <div
-              key={member.name}
-              className={`${styles.tile} ${index === 0 ? styles.tileFeatured : ""}`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={member.image}
-                alt={member.name}
-                className={`${styles.tileImg} ratio-3-4`}
-                loading="lazy"
-              />
-              <div className={styles.tileScrim}>
-                <div className={styles.tileName}>{member.name}</div>
-                <div className={styles.tileRole}>{member.role}</div>
-              </div>
-              <div className={styles.tileHover}>
-                {member.instagram ? (
-                  <a
-                    href={member.instagram}
-                    className={styles.socialCircle}
-                    aria-label={`${member.name} on Instagram`}
-                  >
-                    IG
-                  </a>
-                ) : null}
-                {member.linkedin ? (
-                  <a
-                    href={member.linkedin}
-                    className={styles.socialCircle}
-                    aria-label={`${member.name} on LinkedIn`}
-                  >
-                    IN
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5 — 03 / Digital marketplace. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="panel--feature panel">
-          <div className="grid col2 col2--mid" style={{ alignItems: "center" }}>
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="grid col2" style={{ alignItems: "start" }}>
             <div>
-              <div className="section-name mb-18">{home.marketplace.eyebrow}</div>
-              <h2 className="h2" style={{ marginBottom: 20 }}>
-                {home.marketplace.heading}
+              <div className="section-name mb-22">{home.about.eyebrow}</div>
+              <h2 className="section-lede" style={{ marginBottom: 26 }}>
+                {home.about.heading}
               </h2>
-              <p className="body" style={{ marginBottom: 28 }}>
-                {home.marketplace.body}
+              <p className="body" style={{ marginBottom: 16 }}>
+                {home.about.body1}
               </p>
-              <Link
-                href={home.marketplace.ctaHref}
-                className="pill pill--accent"
-              >
-                {home.marketplace.ctaLabel} <span aria-hidden="true">→</span>
+              <p className="body" style={{ marginBottom: 34 }}>
+                {home.about.body2}
+              </p>
+              <Link href={home.about.ctaHref} className="pill pill--accent">
+                {home.about.ctaLabel} <span aria-hidden="true">→</span>
               </Link>
             </div>
 
-            <div className="grid gap-12">
-              {plans.map((plan, index) => (
-                <div
-                  key={plan.name}
-                  className="card"
-                  style={{
-                    borderColor:
-                      index === featured
-                        ? "var(--accent-line-strong)"
-                        : "var(--line-strong)",
-                    background:
-                      index === featured
-                        ? "rgba(232,163,61,.06)"
-                        : "var(--surface)",
-                  }}
-                >
+            <div className="grid gap-14">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={home.about.image}
+                alt={home.about.imageAlt}
+                className="ratio-16-10"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  objectFit: "cover",
+                  borderRadius: "var(--r-card)",
+                }}
+                loading="lazy"
+              />
+              {home.about.pillars.map((pillar) => (
+                <div key={pillar.kicker} className="card">
                   <div
-                    className="row"
-                    style={{
-                      justifyContent: "space-between",
-                      gap: 12,
-                      marginBottom: 7,
-                    }}
+                    className="eyebrow eyebrow--tight"
+                    style={{ fontWeight: 600, marginBottom: 9 }}
                   >
-                    <div className="card-title">{plan.name}</div>
-                    <div
-                      className="eyebrow eyebrow--tight"
-                      style={{ letterSpacing: "0.14em" }}
-                    >
-                      {plan.tag}
-                    </div>
+                    {pillar.kicker}
                   </div>
                   <div
                     style={{
-                      fontSize: 14.5,
+                      fontSize: 15.5,
                       lineHeight: 1.6,
-                      color: "var(--ink-78)",
+                      color: "var(--ink-88)",
                       textWrap: "pretty",
                     }}
                   >
-                    {plan.short}
+                    {pillar.body}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel--accent-soft mt-56">
+            <div
+              className="eyebrow eyebrow--tight"
+              style={{ fontWeight: 600, marginBottom: 16 }}
+            >
+              {home.about.notForTitle}
+            </div>
+            <div
+              className="grid col3"
+              style={{ gap: "12px 34px" }}
+            >
+              {home.about.notFor.map((item) => (
+                <div
+                  key={item}
+                  style={{
+                    display: "flex",
+                    gap: 11,
+                    alignItems: "flex-start",
+                    fontSize: 15,
+                    lineHeight: 1.55,
+                    color: "var(--ink-78)",
+                  }}
+                >
+                  <span style={{ color: "var(--accent)", flex: "none" }}>·</span>
+                  {item}
                 </div>
               ))}
             </div>
@@ -334,19 +206,155 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6 — 04 / Media services. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="section-name mb-18">{home.media.eyebrow}</div>
-        <div className="split mb-34">
-          <h2 className="h2 measure-620">{home.media.heading}</h2>
-          <Link href="/media-services" className="link-underline">
-            {home.media.linkLabel}
-          </Link>
+      {/* 4 — 02 / Meet the spark. */}
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="split mb-34">
+            <div>
+              <div className="section-name mb-18">{home.team.eyebrow}</div>
+              <h2 className="section-lede">{home.team.heading}</h2>
+            </div>
+            <div
+              style={{
+                fontSize: 14.5,
+                lineHeight: 1.6,
+                color: "var(--ink-70)",
+                maxWidth: 300,
+              }}
+            >
+              {home.team.note}
+            </div>
+          </div>
+
+          <div className={styles.teamGrid}>
+            {home.team.members.map((member, index) => (
+              <div
+                key={member.name}
+                className={`${styles.tile} ${index === 0 ? styles.tileFeatured : ""}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className={`${styles.tileImg} ratio-3-4`}
+                  loading="lazy"
+                />
+                <div className={styles.tileScrim}>
+                  <div className={styles.tileName}>{member.name}</div>
+                  <div className={styles.tileRole}>{member.role}</div>
+                </div>
+                <div className={styles.tileHover}>
+                  {member.instagram ? (
+                    <a
+                      href={member.instagram}
+                      className={styles.socialCircle}
+                      aria-label={`${member.name} on Instagram`}
+                    >
+                      IG
+                    </a>
+                  ) : null}
+                  {member.linkedin ? (
+                    <a
+                      href={member.linkedin}
+                      className={styles.socialCircle}
+                      aria-label={`${member.name} on LinkedIn`}
+                    >
+                      IN
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <MediaTabs
-          packages={media.packages.items}
-          enquireLabel={home.media.enquireLabel}
-        />
+      </section>
+
+      {/* 5 — 03 / Digital marketplace. */}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="panel--feature panel">
+            <div className="grid col2 col2--mid" style={{ alignItems: "center" }}>
+              <div>
+                <div className="section-name mb-18">{home.marketplace.eyebrow}</div>
+                <h2 className="section-lede" style={{ marginBottom: 22 }}>
+                  {home.marketplace.heading}
+                </h2>
+                <p className="body" style={{ marginBottom: 28 }}>
+                  {home.marketplace.body}
+                </p>
+                <Link
+                  href={home.marketplace.ctaHref}
+                  className="pill pill--accent"
+                >
+                  {home.marketplace.ctaLabel} <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+
+              <div className="grid gap-12">
+                {plans.map((plan, index) => (
+                  <div
+                    key={plan.name}
+                    className="card"
+                    style={{
+                      borderColor:
+                        index === featured
+                          ? "var(--accent-line-strong)"
+                          : "var(--line-strong)",
+                      background:
+                        index === featured
+                          ? "rgba(232,163,61,.06)"
+                          : "var(--surface)",
+                    }}
+                  >
+                    <div
+                      className="row"
+                      style={{
+                        justifyContent: "space-between",
+                        gap: 12,
+                        marginBottom: 7,
+                      }}
+                    >
+                      <div className="card-title">{plan.name}</div>
+                      <div
+                        className="eyebrow eyebrow--tight"
+                        style={{ letterSpacing: "0.14em" }}
+                      >
+                        {plan.tag}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 14.5,
+                        lineHeight: 1.6,
+                        color: "var(--ink-78)",
+                        textWrap: "pretty",
+                      }}
+                    >
+                      {plan.short}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6 — 04 / Media services. */}
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="section-name mb-18">{home.media.eyebrow}</div>
+          <div className="split mb-34">
+            <h2 className="section-lede measure-620">{home.media.heading}</h2>
+            <Link href="/media-services" className="link-underline">
+              {home.media.linkLabel}
+            </Link>
+          </div>
+          <MediaTabs
+            packages={media.packages.items}
+            enquireLabel={home.media.enquireLabel}
+          />
+        </div>
       </section>
 
       {/* 7 — 05 / The Summit. */}
@@ -373,7 +381,7 @@ export default async function HomePage() {
         >
           <div className="measure-660">
             <div className="section-name mb-18">{home.summit.eyebrow}</div>
-            <h2 className="h2" style={{ marginBottom: 18 }}>
+            <h2 className="section-lede" style={{ marginBottom: 20 }}>
               {home.summit.heading}
             </h2>
             <p className="body" style={{ color: "var(--ink-84)" }}>
@@ -407,142 +415,150 @@ export default async function HomePage() {
       </section>
 
       {/* 8 — Projects. */}
-      <section data-reveal id="projects" className="shell section section--tight-top">
-        <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
-        <div className="split mb-34">
-          <h2 className="h2">{home.portfolio.heading}</h2>
-          <div className="row-wrap" style={{ gap: 20, alignItems: "baseline" }}>
-            <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
-              {home.portfolio.note}
-            </div>
-            <Link href="/projects" className="link-underline">
-              {home.portfolio.allLinkLabel}
-            </Link>
-          </div>
-        </div>
-        <div className="grid col3 carousel-mobile">
-          {projects.slice(0, home.portfolio.limit).map((project) => (
-            <Link
-              key={project.slug}
-              href={`/projects/${project.slug}`}
-              className={styles.tile}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={project.image}
-                alt={project.name}
-                className={`${styles.tileImg} ratio-4-3`}
-                loading="lazy"
-              />
-              <div className={styles.workHover}>
-                <div className={styles.workMeta}>{projectMeta(project)}</div>
-                <div className={styles.workName}>{project.name}</div>
-                <span className={styles.workView}>
-                  {home.portfolio.viewLabel}
-                </span>
+      <section data-reveal id="projects" className="band band--ruled">
+        <div className="shell section">
+          <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
+          <div className="split mb-34">
+            <h2 className="section-lede">{home.portfolio.heading}</h2>
+            <div className="row-wrap" style={{ gap: 20, alignItems: "baseline" }}>
+              <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
+                {home.portfolio.note}
               </div>
-            </Link>
-          ))}
+              <Link href="/projects" className="link-underline">
+                {home.portfolio.allLinkLabel}
+              </Link>
+            </div>
+          </div>
+          <div className="grid col3 carousel-mobile">
+            {projects.slice(0, home.portfolio.limit).map((project) => (
+              <Link
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                className={styles.tile}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={project.image}
+                  alt={project.name}
+                  className={`${styles.tileImg} ratio-4-3`}
+                  loading="lazy"
+                />
+                <div className={styles.workHover}>
+                  <div className={styles.workMeta}>{projectMeta(project)}</div>
+                  <div className={styles.workName}>{project.name}</div>
+                  <span className={styles.workView}>
+                    {home.portfolio.viewLabel}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* 9 — Testimonials. */}
-      <section data-reveal className="shell section section--tight-top">
-        <Testimonials
-          label={home.testimonials.label}
-          items={home.testimonials.items}
-        />
+      <section data-reveal className="band band--alt">
+        <div className="shell section">
+          <Testimonials
+            label={home.testimonials.label}
+            items={home.testimonials.items}
+          />
+        </div>
       </section>
 
       {/* 10 — 07 / Betaminds Academy. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div className="section-name mb-18">{home.academy.eyebrow}</div>
-        <div className="split mb-34">
-          <h2 className="h2 measure-620">{home.academy.heading}</h2>
-          <Link href={home.academy.ctaHref} className="pill pill--accent">
-            {home.academy.ctaLabel}
-          </Link>
-        </div>
-        <div className="grid col5 carousel-mobile" data-peek="small">
-          {home.academy.grid.map((tile) => (
-            <div
-              key={tile.label}
-              className="frame ratio-3-4"
-              style={{ borderRadius: 12, border: "1px solid var(--line)" }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={tile.image} alt={tile.label} loading="lazy" />
+      <section data-reveal className="band band--accent band--ruled">
+        <div className="shell section">
+          <div className="section-name mb-18">{home.academy.eyebrow}</div>
+          <div className="split mb-34">
+            <h2 className="section-lede measure-620">{home.academy.heading}</h2>
+            <Link href={home.academy.ctaHref} className="pill pill--accent">
+              {home.academy.ctaLabel}
+            </Link>
+          </div>
+          <div className="grid col5 carousel-mobile" data-peek="small">
+            {home.academy.grid.map((tile) => (
               <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(to top, rgba(23,23,27,.74), transparent 58%)",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  left: 14,
-                  bottom: 14,
-                  fontFamily: "var(--font-mono)",
-                  fontWeight: 500,
-                  fontSize: 10,
-                  letterSpacing: "0.1em",
-                  color: "#FFFFFF",
-                  textTransform: "uppercase",
-                }}
+                key={tile.label}
+                className="frame ratio-3-4"
+                style={{ borderRadius: 12, border: "1px solid var(--line)" }}
               >
-                {tile.label}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={tile.image} alt={tile.label} loading="lazy" />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(23,23,27,.74), transparent 58%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 14,
+                    bottom: 14,
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 500,
+                    fontSize: 10,
+                    letterSpacing: "0.1em",
+                    color: "#FFFFFF",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {tile.label}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* 11 — 08 / Final CTA. */}
-      <section data-reveal className="shell section section--tight-top">
-        <div
-          className="frame"
-          style={{
-            borderRadius: "var(--r-feature)",
-            border: "1px solid var(--line)",
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={home.finalCta.image}
-            alt={home.finalCta.imageAlt}
-            loading="lazy"
-          />
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
           <div
+            className="frame"
             style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(120deg, rgba(251,250,248,.92), rgba(251,250,248,.6))",
-            }}
-          />
-          <div
-            style={{
-              position: "relative",
-              padding: "96px 40px",
-              textAlign: "center",
+              borderRadius: "var(--r-feature)",
+              border: "1px solid var(--line)",
             }}
           >
-            <div className="section-name mb-22">{home.finalCta.eyebrow}</div>
-            <h2
-              className="h2 measure-740"
-              style={{ margin: "0 auto 26px" }}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={home.finalCta.image}
+              alt={home.finalCta.imageAlt}
+              loading="lazy"
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(120deg, rgba(251,250,248,.92), rgba(251,250,248,.6))",
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                padding: "96px 40px",
+                textAlign: "center",
+              }}
             >
-              {home.finalCta.heading}
-            </h2>
-            <Link
-              href={home.finalCta.ctaHref}
-              className="pill pill--accent pill--lg"
-            >
-              {home.finalCta.ctaLabel}
-            </Link>
+              <div className="section-name mb-22">{home.finalCta.eyebrow}</div>
+              <h2
+                className="section-lede measure-740"
+                style={{ margin: "0 auto 26px" }}
+              >
+                {home.finalCta.heading}
+              </h2>
+              <Link
+                href={home.finalCta.ctaHref}
+                className="pill pill--accent pill--lg"
+              >
+                {home.finalCta.ctaLabel}
+              </Link>
+            </div>
           </div>
         </div>
       </section>

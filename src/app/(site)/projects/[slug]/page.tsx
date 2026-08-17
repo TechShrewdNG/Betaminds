@@ -110,123 +110,133 @@ export default async function ProjectPage({
       </section>
 
       {sections.length > 0 ? (
-        <section data-reveal className="shell section" style={{ maxWidth: 820 }}>
-          {sections.map((section) => (
-            <div key={section.label} style={{ marginBottom: 44 }}>
-              <h2 className="h3" style={{ marginBottom: 14 }}>
-                {section.label}
-              </h2>
-              {/* Paragraph breaks come from blank lines in the CMS textarea. */}
-              {section.body.split(/\n{2,}/).map((paragraph, index) => (
-                <p key={index} className="body" style={{ marginBottom: 14 }}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          ))}
+        <section data-reveal className="band band--ruled">
+          <div className="shell section" style={{ maxWidth: 820 }}>
+            {sections.map((section) => (
+              <div key={section.label} style={{ marginBottom: 44 }}>
+                <h2 className="h3" style={{ marginBottom: 14 }}>
+                  {section.label}
+                </h2>
+                {/* Paragraph breaks come from blank lines in the CMS textarea. */}
+                {section.body.split(/\n{2,}/).map((paragraph, index) => (
+                  <p key={index} className="body" style={{ marginBottom: 14 }}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
         </section>
       ) : null}
 
       {project.results.length > 0 ? (
-        <section data-reveal className="shell section section--tight-top">
-          <h2 className="h2 mb-34">{detail.resultsLabel}</h2>
-          <div className="grid col4">
-            {project.results.map((result) => (
-              <div
-                key={`${result.n}-${result.label}`}
-                className="card"
-                style={{ borderRadius: 16, padding: "32px 28px" }}
-              >
+        <section data-reveal className="band band--alt band--ruled">
+          <div className="shell section">
+            <h2 className="h2 mb-34">{detail.resultsLabel}</h2>
+            <div className="grid col4">
+              {project.results.map((result) => (
                 <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 700,
-                    fontSize: 40,
-                    letterSpacing: "-0.04em",
-                    color: "var(--accent)",
-                    lineHeight: 1,
-                  }}
+                  key={`${result.n}-${result.label}`}
+                  className="card"
+                  style={{ borderRadius: 16, padding: "32px 28px" }}
                 >
-                  {result.n}
+                  <div
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 700,
+                      fontSize: 40,
+                      letterSpacing: "-0.04em",
+                      color: "var(--accent)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {result.n}
+                  </div>
+                  <div className="mono-meta" style={{ fontSize: 11, marginTop: 12 }}>
+                    {result.label}
+                  </div>
                 </div>
-                <div className="mono-meta" style={{ fontSize: 11, marginTop: 12 }}>
-                  {result.label}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
       ) : null}
 
       {project.gallery.length > 0 ? (
-        <section data-reveal className="shell section section--tight-top">
-          <h2 className="h2 mb-34">{detail.galleryLabel}</h2>
-          <div className="grid col3 carousel-mobile">
-            {project.gallery.map((src, index) => (
-              <div key={`${src}-${index}`} className="frame ratio-4-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={`${project.name}, image ${index + 1}`}
-                  loading="lazy"
-                />
-              </div>
-            ))}
+        <section data-reveal className="band band--ruled">
+          <div className="shell section">
+            <h2 className="h2 mb-34">{detail.galleryLabel}</h2>
+            <div className="grid col3 carousel-mobile">
+              {project.gallery.map((src, index) => (
+                <div key={`${src}-${index}`} className="frame ratio-4-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={src}
+                    alt={`${project.name}, image ${index + 1}`}
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       ) : null}
 
       {project.quote ? (
-        <section data-reveal className="shell section section--tight-top">
-          <div className="panel" style={{ padding: "52px 48px", borderRadius: 20 }}>
-            <blockquote className="quote" style={{ margin: 0 }}>
-              {`“${project.quote}”`}
-            </blockquote>
-            {project.quoteAuthor ? (
-              <div
-                className="mono-meta"
-                style={{ marginTop: 26 }}
-              >
-                {project.quoteAuthor}
-              </div>
-            ) : null}
+        <section data-reveal className="band band--alt band--ruled">
+          <div className="shell section">
+            <div className="panel" style={{ padding: "52px 48px", borderRadius: 20 }}>
+              <blockquote className="quote" style={{ margin: 0 }}>
+                {`“${project.quote}”`}
+              </blockquote>
+              {project.quoteAuthor ? (
+                <div
+                  className="mono-meta"
+                  style={{ marginTop: 26 }}
+                >
+                  {project.quoteAuthor}
+                </div>
+              ) : null}
+            </div>
           </div>
         </section>
       ) : null}
 
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col2 col2--tight">
-          {next && next.slug !== project.slug ? (
-            <Link
-              href={`/projects/${next.slug}`}
-              className="panel"
-              style={{ display: "block", color: "var(--ink)" }}
-            >
-              <div className="eyebrow eyebrow--tight mb-18">
-                {detail.nextLabel}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: 26,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 8,
-                }}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--tight">
+            {next && next.slug !== project.slug ? (
+              <Link
+                href={`/projects/${next.slug}`}
+                className="panel"
+                style={{ display: "block", color: "var(--ink)" }}
               >
-                {next.name}
-              </div>
-              <div className="card-body">{projectMeta(next)}</div>
-            </Link>
-          ) : null}
+                <div className="eyebrow eyebrow--tight mb-18">
+                  {detail.nextLabel}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 700,
+                    fontSize: 26,
+                    letterSpacing: "-0.02em",
+                    marginBottom: 8,
+                  }}
+                >
+                  {next.name}
+                </div>
+                <div className="card-body">{projectMeta(next)}</div>
+              </Link>
+            ) : null}
 
-          <div className="panel panel--accent">
-            <h2 className="h3" style={{ marginBottom: 20 }}>
-              {detail.ctaHeading}
-            </h2>
-            <Link href={detail.ctaHref} className="pill pill--accent">
-              {detail.ctaLabel}
-            </Link>
+            <div className="panel panel--accent">
+              <h2 className="h3" style={{ marginBottom: 20 }}>
+                {detail.ctaHeading}
+              </h2>
+              <Link href={detail.ctaHref} className="pill pill--accent">
+                {detail.ctaLabel}
+              </Link>
+            </div>
           </div>
         </div>
       </section>

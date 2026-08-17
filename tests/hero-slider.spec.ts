@@ -73,7 +73,10 @@ test.describe("splash screen at /", () => {
     const hiddenLinks = page.locator(
       `${slider} [data-active='false'] a:visible`,
     );
-    expect(await hiddenLinks.count()).toBe(0);
+    // Web-first assertion rather than a one-shot count(): an outgoing slide
+    // keeps visibility:visible for the length of the 700ms crossfade, so
+    // sampling once right after goto() races the transition.
+    await expect(hiddenLinks).toHaveCount(0);
   });
 
   test("does not autoplay when the visitor asks for reduced motion", async ({

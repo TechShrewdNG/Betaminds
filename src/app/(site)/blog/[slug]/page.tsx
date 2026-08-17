@@ -77,61 +77,65 @@ export default async function BlogPostPage({
         </div>
       </section>
 
-      <section data-reveal className="shell section" style={{ maxWidth: 820 }}>
-        {post.excerpt ? (
-          <p
-            className="quote"
-            style={{
-              lineHeight: 1.4,
-              color: "rgba(23,23,27,.92)",
-              margin: "0 0 34px",
-              textWrap: "pretty",
-            }}
-          >
-            {post.excerpt}
-          </p>
-        ) : null}
-        {/* Paragraph breaks come from blank lines in the CMS textarea. */}
-        {post.body.split(/\n{2,}/).map((paragraph, index) => (
-          <p key={index} className="body" style={{ marginBottom: 18 }}>
-            {paragraph}
-          </p>
-        ))}
+      <section data-reveal className="band band--ruled">
+        <div className="shell section" style={{ maxWidth: 820 }}>
+          {post.excerpt ? (
+            <p
+              className="quote"
+              style={{
+                lineHeight: 1.4,
+                color: "rgba(23,23,27,.92)",
+                margin: "0 0 34px",
+                textWrap: "pretty",
+              }}
+            >
+              {post.excerpt}
+            </p>
+          ) : null}
+          {/* Paragraph breaks come from blank lines in the CMS textarea. */}
+          {post.body.split(/\n{2,}/).map((paragraph, index) => (
+            <p key={index} className="body" style={{ marginBottom: 18 }}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </section>
 
-      <section data-reveal className="shell section section--tight-top">
-        <div className="grid col2 col2--tight">
-          {next && next.slug !== post.slug ? (
-            <Link
-              href={`/blog/${next.slug}`}
-              className="panel"
-              style={{ display: "block", color: "var(--ink)" }}
-            >
-              <div className="eyebrow eyebrow--tight mb-18">
-                {detail.nextLabel}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: 26,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 8,
-                }}
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="grid col2 col2--tight">
+            {next && next.slug !== post.slug ? (
+              <Link
+                href={`/blog/${next.slug}`}
+                className="panel"
+                style={{ display: "block", color: "var(--ink)" }}
               >
-                {next.title}
-              </div>
-              <div className="card-body">{postMeta(next)}</div>
-            </Link>
-          ) : null}
+                <div className="eyebrow eyebrow--tight mb-18">
+                  {detail.nextLabel}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 700,
+                    fontSize: 26,
+                    letterSpacing: "-0.02em",
+                    marginBottom: 8,
+                  }}
+                >
+                  {next.title}
+                </div>
+                <div className="card-body">{postMeta(next)}</div>
+              </Link>
+            ) : null}
 
-          <div className="panel panel--accent">
-            <h2 className="h3" style={{ marginBottom: 20 }}>
-              {detail.ctaHeading}
-            </h2>
-            <Link href={detail.ctaHref} className="pill pill--accent">
-              {detail.ctaLabel}
-            </Link>
+            <div className="panel panel--accent">
+              <h2 className="h3" style={{ marginBottom: 20 }}>
+                {detail.ctaHeading}
+              </h2>
+              <Link href={detail.ctaHref} className="pill pill--accent">
+                {detail.ctaLabel}
+              </Link>
+            </div>
           </div>
         </div>
       </section>

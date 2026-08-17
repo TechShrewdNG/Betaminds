@@ -428,6 +428,21 @@ button {
   text-wrap: balance;
 }
 
+/* The supporting line under a .section-name. Deliberately light and mid-sized
+   so the section name stays the section's one shout: two competing bold
+   headings per section left neither of them carrying. Also fills the gap in
+   the scale between the display sizes and 16.5px body copy. */
+.section-lede {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(21px, 2.15vw, 31px);
+  line-height: 1.24;
+  letter-spacing: -0.022em;
+  color: var(--ink-84);
+  margin: 0;
+  text-wrap: balance;
+}
+
 .h3 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -631,6 +646,62 @@ button {
   background: var(--surface-alt);
   border-top: 1px solid var(--line-soft);
   border-bottom: 1px solid var(--line-soft);
+}
+
+/* --- Section bands ------------------------------------------------------- */
+
+/* A full-bleed surface band. The <section> carries the background and the
+   gold opening rule; a .shell inside keeps content on the grid. Alternating
+   the three warm surfaces gives each section its own "chapter", which is the
+   handoff's rule stated positively: depth comes from surface tints and
+   hairlines, never shadows. */
+.band {
+  position: relative;
+}
+
+.band--alt {
+  background: var(--surface-alt);
+}
+
+.band--deep {
+  background: var(--surface-deep);
+}
+
+/* Accent-tinted band — reserved for the one or two sections that should read
+   as a feature rather than another chapter. This is where the brand gold
+   finally gets to work at full-section scale instead of only in pills. */
+.band--accent {
+  background: linear-gradient(
+    155deg,
+    rgba(232, 163, 61, 0.11),
+    rgba(232, 163, 61, 0.04) 48%,
+    var(--surface-alt) 100%
+  );
+}
+
+/* Gold rule opening a section — the chapter marker that replaces the old
+   numbered eyebrows. A full-width hairline carries across the band edge, and
+   a short accent bar sits on top of it, inset to the content grid so it
+   aligns with the section name below. */
+.band--ruled {
+  border-top: 1px solid var(--line-soft);
+}
+
+.band--ruled::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: min(220px, 26vw);
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-fill) 0%,
+    var(--accent-fill) 55%,
+    var(--accent-line-strong) 100%
+  );
+  /* Align the bar with the shell's content edge rather than the viewport. */
+  margin-left: max(var(--pad-x), calc((100% - var(--max-w)) / 2 + var(--pad-x)));
 }
 
 /* --- Media --------------------------------------------------------------- */

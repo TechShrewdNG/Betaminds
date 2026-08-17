@@ -34,12 +34,14 @@ export default async function MediaServicesPage() {
         </div>
       </section>
 
-      <section data-reveal className="shell section">
-        <PackageCards
-          packages={media.packages.items}
-          deliverablesLabel={media.packages.deliverablesLabel}
-          enquirePrefix={media.packages.enquirePrefix}
-        />
+      <section data-reveal className="band band--ruled">
+        <div className="shell section">
+          <PackageCards
+            packages={media.packages.items}
+            deliverablesLabel={media.packages.deliverablesLabel}
+            enquirePrefix={media.packages.enquirePrefix}
+          />
+        </div>
       </section>
     </>
   );
