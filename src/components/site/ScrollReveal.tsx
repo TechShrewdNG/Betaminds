@@ -16,6 +16,23 @@ import { usePathname } from "next/navigation";
  * across client-side navigations, so without watching the pathname a second
  * page's sections would never get observed.
  */
+/**
+ * Cards inside a revealed section come in one after another rather than as one
+ * block. The delay is set per child as a custom property so the CSS keeps the
+ * timing, and it's capped so a ten-card grid doesn't leave the last item
+ * waiting noticeably after the visitor has already read the rest.
+ */
+function revealChildren(section: HTMLElement) {
+  const groups = section.querySelectorAll<HTMLElement>("[data-stagger]");
+  groups.forEach((group) => {
+    Array.from(group.children).forEach((child, index) => {
+      if (!(child instanceof HTMLElement)) return;
+      child.style.setProperty("--bm-delay", `${Math.min(index, 7) * 70}ms`);
+      child.classList.add("bm-stagger");
+    });
+  });
+}
+
 export function ScrollReveal() {
   const pathname = usePathname();
 
@@ -34,6 +51,7 @@ export function ScrollReveal() {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           entry.target.classList.add("bm-rise");
+          revealChildren(entry.target as HTMLElement);
           observer.unobserve(entry.target);
         }
       },

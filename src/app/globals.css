@@ -213,6 +213,25 @@ button {
   animation: bmRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Staggered children. ScrollReveal.tsx tags the items inside any
+   [data-stagger] container once their section reveals, and sets --bm-delay
+   per item so they arrive in sequence instead of as one slab. */
+@keyframes bmStagger {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bm-stagger {
+  animation: bmStagger 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--bm-delay, 0ms);
+}
+
 /* Scroll reveal: ScrollReveal.tsx adds .bm-rise to [data-reveal] sections as
    they enter the viewport, once. Elements only go invisible-until-revealed
    once .js-reveal (added by that same script) lands on <html> — so a page
@@ -231,7 +250,8 @@ button {
     animation: none !important;
     transform: none !important;
   }
-  .bm-rise {
+  .bm-rise,
+  .bm-stagger {
     animation: none !important;
   }
   *,
@@ -572,7 +592,23 @@ button {
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
-    color 0.25s ease;
+    color 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pill:hover {
+  transform: translateY(-2px);
+}
+
+/* The trailing arrow in a CTA travels a little on hover. Scoped to the
+   decorative span the buttons already carry, so it never touches label text. */
+.pill span[aria-hidden="true"] {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pill:hover span[aria-hidden="true"] {
+  transform: translateX(4px);
 }
 
 .pill--accent {
@@ -635,6 +671,22 @@ button {
   border: 1px solid var(--line-strong);
   border-radius: var(--r-card);
   padding: 22px 24px;
+  transition:
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Depth on hover comes from the border warming and the surface tinting, plus
+   a small lift — the handoff rules out shadows, so those are the levers. */
+.card:hover {
+  border-color: var(--accent-line-strong);
+  background: linear-gradient(
+    160deg,
+    rgba(232, 163, 61, 0.055),
+    var(--surface) 70%
+  );
+  transform: translateY(-3px);
 }
 
 .panel {
@@ -936,6 +988,9 @@ button {
 
 .mt-14 {
   margin-top: 14px;
+}
+.mt-40 {
+  margin-top: 40px;
 }
 .mt-56 {
   margin-top: 56px;

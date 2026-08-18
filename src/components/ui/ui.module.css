@@ -430,6 +430,11 @@
   animation: bmMarquee 26s linear infinite;
 }
 
+/* Pause on hover so a visitor can actually read a client name they spotted. */
+.marquee:hover .marqueeTrack {
+  animation-play-state: paused;
+}
+
 .logoSlot {
   width: 174px;
   height: 56px;
@@ -528,6 +533,24 @@
   display: block;
   width: 100%;
   object-fit: cover;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A slow push-in under the hover overlay — enough to feel alive, short of the
+   swooping zoom that reads as a stock template. */
+.tile:hover .tileImg,
+.tile:focus-within .tileImg {
+  transform: scale(1.045);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tileImg {
+    transition: none;
+  }
+  .tile:hover .tileImg,
+  .tile:focus-within .tileImg {
+    transform: none;
+  }
 }
 
 .tileScrim {
@@ -915,10 +938,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 580px;
+  max-width: 660px;
   /* Never taller than the viewport, so the body always has somewhere to
      scroll instead of overflowing off-screen. */
-  max-height: min(88vh, 900px);
+  max-height: min(90vh, 940px);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-panel);
@@ -955,6 +978,26 @@
   -webkit-overflow-scrolling: touch;
   flex: 1 1 auto;
   min-height: 0;
+  /* A slim, always-visible track: the dialog is a scroll container inside an
+     overlay, and an overlay scrollbar that only appears mid-gesture leaves no
+     hint that there is more form below the fold. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(23, 23, 27, 0.24) transparent;
+  scroll-behavior: smooth;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(23, 23, 27, 0.24);
+  border-radius: 999px;
+  border: 3px solid var(--surface);
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-50);
 }
 
 .modalClose {
@@ -1045,5 +1088,240 @@
 
   .modalName {
     font-size: 18px;
+  }
+}
+
+/* --- Monthly free slot ---------------------------------------------------- */
+
+/* The offer panel, given real presence: a slow accent wash moving behind the
+   copy, a live pulse on the label and a countdown to the next slot. Depth is
+   still borders and tints — the wash is the only moving part, and it stops
+   entirely under prefers-reduced-motion. */
+.freeSlot {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: var(--r-panel);
+  background: linear-gradient(
+    145deg,
+    rgba(232, 163, 61, 0.14),
+    rgba(232, 163, 61, 0.03) 55%,
+    transparent
+  );
+  isolation: isolate;
+}
+
+/* A wide, very soft accent sweep drifting across the panel. */
+.freeSlotGlow {
+  position: absolute;
+  z-index: -1;
+  top: -60%;
+  left: -30%;
+  width: 60%;
+  height: 220%;
+  background: radial-gradient(
+    closest-side,
+    rgba(232, 163, 61, 0.34),
+    transparent 100%
+  );
+  filter: blur(12px);
+  animation: bmSlotDrift 9s ease-in-out infinite alternate;
+}
+
+.freeSlotInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 48px;
+  padding: 48px 46px 50px;
+}
+
+.freeSlotCopy {
+  min-width: 0;
+}
+
+.freeSlotLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+/* Live dot with an expanding ring — the "slot is open" signal. */
+.freeSlotPulse {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  flex: none;
+}
+
+.freeSlotPulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-fill);
+  animation: bmSlotPing 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.freeSlotHeading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(26px, 2.9vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+  max-width: 20ch;
+}
+
+.freeSlotBody {
+  font-size: 16px;
+  line-height: 1.64;
+  color: var(--ink-84);
+  margin: 0 0 30px;
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+
+/* The clock sits opposite the copy so the panel reads across its full width
+   rather than trailing off into empty gold on the right. */
+.freeSlotCountdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex: none;
+}
+
+.freeSlotCountLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+
+.freeSlotUnits {
+  display: flex;
+  gap: 10px;
+}
+
+.freeSlotUnit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 92px;
+  padding: 18px 14px 14px;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: 12px;
+  background: rgba(251, 250, 248, 0.72);
+}
+
+.freeSlotNum {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.freeSlotCaption {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+
+.freeSlotWhen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--ink-74);
+}
+
+.freeSlotCta {
+  align-self: start;
+}
+
+/* Below the two-column threshold the clock drops under the copy and goes
+   full-width, so the numerals stay large instead of being squeezed. */
+@media (max-width: 900px) {
+  .freeSlotInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .freeSlotCountdown {
+    align-items: flex-start;
+  }
+
+  .freeSlotUnits {
+    width: 100%;
+  }
+
+  .freeSlotUnit {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .freeSlotInner {
+    padding: 32px 24px 34px;
+  }
+
+  .freeSlotUnit {
+    padding: 14px 8px 11px;
+  }
+
+  .freeSlotNum {
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .freeSlotGlow,
+  .freeSlotPulse::after {
+    animation: none;
+  }
+  .freeSlotPulse::after {
+    opacity: 0.45;
+  }
+}
+
+@keyframes bmSlotDrift {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(190%) scale(1.15);
+  }
+}
+
+@keyframes bmSlotPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: scale(2.9);
+    opacity: 0;
   }
 }

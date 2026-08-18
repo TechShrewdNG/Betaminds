@@ -132,7 +132,7 @@ export default async function SummitPage() {
       {/* Event highlights. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
-          <div className="grid col5">
+          <div className="grid col5" data-stagger>
             {summit.stats.items.map((stat) => (
               <div
                 key={stat.label}

@@ -143,33 +143,40 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="grid gap-14">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={home.about.image}
-                alt={home.about.imageAlt}
-                className="ratio-16-10"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  objectFit: "cover",
-                  borderRadius: "var(--r-card)",
-                }}
-                loading="lazy"
-              />
-              {home.about.pillars.map((pillar, index) => (
-                <div
-                  key={pillar.kicker}
-                  className="card"
-                  style={{ display: "flex", gap: 16, alignItems: "flex-start" }}
+            {/* The portrait pairs with the intro copy — at 16:10 in this
+                column it lands within a few pixels of the text block's own
+                height, so the two columns finish together. The pillars used to
+                stack under it here, which made this side twice as tall as the
+                copy and left a large hole beside the CTA. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={home.about.image}
+              alt={home.about.imageAlt}
+              className="ratio-16-10"
+              style={{
+                display: "block",
+                width: "100%",
+                objectFit: "cover",
+                borderRadius: "var(--r-card)",
+              }}
+              loading="lazy"
+            />
+          </div>
+
+          <div className="grid col3 mt-40" data-stagger>
+            {home.about.pillars.map((pillar, index) => (
+              <div
+                key={pillar.kicker}
+                className="card"
+                style={{ display: "flex", gap: 16, alignItems: "flex-start" }}
+              >
+                <span
+                  className="icon-chip icon-chip--sm"
+                  data-tone={PILLAR_TONES[index % PILLAR_TONES.length]}
                 >
-                  <span
-                    className="icon-chip icon-chip--sm"
-                    data-tone={PILLAR_TONES[index % PILLAR_TONES.length]}
-                  >
-                    <Icon name={PILLAR_ICONS[index] ?? "spark"} size={17} />
-                  </span>
-                  <div>
+                  <Icon name={PILLAR_ICONS[index] ?? "spark"} size={17} />
+                </span>
+                <div>
                   <div
                     className="eyebrow eyebrow--tight"
                     style={{ fontWeight: 600, marginBottom: 9 }}
@@ -186,10 +193,9 @@ export default async function HomePage() {
                   >
                     {pillar.body}
                   </div>
-                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
           <div className="panel--accent-soft mt-56">

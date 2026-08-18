@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./ui.module.css";
 import { Icon, type IconName } from "./Icon";
 import { AcademyForm } from "@/components/forms/AcademyForm";
@@ -47,7 +48,14 @@ export function SchoolTabs({
 }) {
   const [active, setActive] = useState(0);
   const [openCourse, setOpenCourse] = useState<Course | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
   const current = schools[active] ?? schools[0];
+
+  // The dialog is portalled to <body>, which needs a client mount first —
+  // document doesn't exist while this renders on the server.
+  useEffect(() => setMounted(true), []);
 
   // While the dialog is open, close on Escape and freeze the page behind it.
   // Without the scroll lock the wheel kept driving the page underneath, so the
@@ -59,6 +67,12 @@ export function SchoolTabs({
       if (event.key === "Escape") setOpenCourse(null);
     };
     window.addEventListener("keydown", onKey);
+
+    // Move focus into the dialog, and hand it back to the card that opened it
+    // on close — otherwise keyboard focus is left stranded at the top of the
+    // document behind the overlay.
+    const opener = openerRef.current;
+    closeRef.current?.focus();
 
     const { body } = document;
     const scrollY = window.scrollY;
@@ -82,6 +96,7 @@ export function SchoolTabs({
       body.style.width = prev.width;
       body.style.overflowY = prev.overflowY;
       window.scrollTo(0, scrollY);
+      opener?.focus();
     };
   }, [openCourse]);
 
@@ -112,7 +127,10 @@ export function SchoolTabs({
             key={course.name}
             type="button"
             className={styles.courseCard}
-            onClick={() => setOpenCourse(course)}
+            onClick={(event) => {
+              openerRef.current = event.currentTarget;
+              setOpenCourse(course);
+            }}
           >
             <span className={styles.courseIcon}>
               <Icon name={courseIcon(course)} size={22} />
@@ -128,7 +146,13 @@ export function SchoolTabs({
         ))}
       </div>
 
-      {openCourse ? (
+      {/* Portalled to <body> on purpose. The scroll-reveal animation leaves a
+          transform on the enclosing <section>, and a transformed ancestor
+          becomes the containing block for position:fixed — which pinned the
+          dialog inside that section instead of the viewport, so it read as a
+          framed panel with the page scrolling past it. */}
+      {mounted && openCourse
+        ? createPortal(
         <div
           className={styles.modalBack}
           role="dialog"
@@ -145,6 +169,7 @@ export function SchoolTabs({
               </span>
               <div className={styles.modalName}>{openCourse.name}</div>
               <button
+                ref={closeRef}
                 type="button"
                 className={styles.modalClose}
                 aria-label="Close"
@@ -179,8 +204,10 @@ export function SchoolTabs({
               </Suspense>
             </div>
           </div>
-        </div>
-      ) : null}
+        </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

@@ -81,7 +81,12 @@
   gap: 19px;
 }
 
+/* The rule under a nav link is a pseudo-element that wipes in from the left
+   rather than a border that snaps on, so hovering the bar feels responsive
+   instead of binary. transform-origin flips on the way out so it retracts
+   the way it arrived. */
 .navLink {
+  position: relative;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 13px;
@@ -89,17 +94,44 @@
   letter-spacing: 0.01em;
   color: var(--ink-90);
   padding-bottom: 3px;
-  border-bottom: 1.5px solid transparent;
   white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .navLink:hover {
   color: var(--accent);
 }
 
+.navLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
 .navLinkActive {
   color: var(--accent);
-  border-bottom-color: var(--accent);
+}
+
+.navLinkActive::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink::after {
+    transition: none;
+  }
 }
 
 .right {

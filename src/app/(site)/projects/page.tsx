@@ -50,7 +50,7 @@ export default async function ProjectsPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid col3 carousel-mobile">
+            <div className="grid col3 carousel-mobile" data-stagger>
               {projects.map((project) => (
                 <Link
                   key={project.slug}

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
+import { FreeSlotCard } from "@/components/ui/FreeSlotCard";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { resolveForm } from "@/lib/forms/resolve";
@@ -74,7 +75,7 @@ export default async function EcosystemPage() {
           >
             {eco.solution.body}
           </p>
-          <div className="grid col3">
+          <div className="grid col3" data-stagger>
             {eco.solution.items.map((item, index) => (
               <div
                 key={item.name}
@@ -113,60 +114,34 @@ export default async function EcosystemPage() {
         </div>
       </section>
 
-      {/* Booking notes: paid session credited to the package, monthly free slot. */}
+      {/* Booking notes. The free slot is the strongest hook on the page, so it
+          leads the section at full width with a live countdown; the booking-fee
+          note sits under it as the supporting detail it actually is. */}
       <section data-reveal className="band band--ruled">
         <div className="shell section">
-          <div className="grid col2 col2--tight">
-            <div className="panel" style={{ borderRadius: 16, padding: "34px 34px 36px" }}>
-              <div className="eyebrow eyebrow--tight mb-18">
-                {eco.notes.paidLabel}
-              </div>
-              <div
-                style={{
-                  fontSize: 16,
-                  lineHeight: 1.66,
-                  color: "var(--ink-84)",
-                  textWrap: "pretty",
-                }}
-              >
-                {eco.notes.paidBody}
-              </div>
-            </div>
+          <FreeSlotCard
+            label={eco.notes.freeLabel}
+            heading={eco.notes.freeHeading}
+            body={eco.notes.freeBody}
+          />
 
+          <div
+            className="panel mt-40"
+            style={{ borderRadius: 16, padding: "30px 34px 32px" }}
+          >
+            <div className="eyebrow eyebrow--tight mb-18">
+              {eco.notes.paidLabel}
+            </div>
             <div
-              className="panel panel--accent"
               style={{
-                borderRadius: 16,
-                padding: "34px 34px 36px",
-                borderColor: "rgba(232,163,61,.3)",
-                background:
-                  "linear-gradient(140deg, rgba(232,163,61,.09), transparent 70%)",
+                fontSize: 16,
+                lineHeight: 1.66,
+                color: "var(--ink-84)",
+                textWrap: "pretty",
+                maxWidth: "68ch",
               }}
             >
-              <div className="eyebrow eyebrow--tight mb-18">
-                {eco.notes.freeLabel}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 20,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 10,
-                }}
-              >
-                {eco.notes.freeHeading}
-              </div>
-              <div
-                style={{
-                  fontSize: 15.5,
-                  lineHeight: 1.64,
-                  color: "var(--ink-84)",
-                  textWrap: "pretty",
-                }}
-              >
-                {eco.notes.freeBody}
-              </div>
+              {eco.notes.paidBody}
             </div>
           </div>
         </div>
