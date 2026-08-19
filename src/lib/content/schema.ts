@@ -390,7 +390,6 @@ export const schemas: DocSchema[] = [
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
-          note: { kind: "text", label: "Aside" },
           members: {
             kind: "repeater",
             label: "Team",
@@ -500,6 +499,35 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "commercials",
+        title: "Commercials",
+        note: "Two videos, side by side. A side with no video is skipped, and the whole section disappears if both are empty.",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          marketplace: {
+            kind: "group",
+            label: "Digital Marketplace commercial",
+            fields: {
+              label: { kind: "text", label: "Caption", mono: true },
+              video: { kind: "video", label: "Video" },
+              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              posterAlt: { kind: "text", label: "Poster description" },
+            },
+          },
+          academy: {
+            kind: "group",
+            label: "Academy commercial",
+            fields: {
+              label: { kind: "text", label: "Caption", mono: true },
+              video: { kind: "video", label: "Video" },
+              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              posterAlt: { kind: "text", label: "Poster description" },
+            },
+          },
+        },
+      },
+      {
         key: "finalCta",
         title: "08 / Final CTA",
         fields: {
@@ -547,6 +575,7 @@ export const schemas: DocSchema[] = [
           approachLabel: { kind: "text", label: "Approach heading" },
           outcomeLabel: { kind: "text", label: "Outcome heading" },
           resultsLabel: { kind: "text", label: "Results heading" },
+          videoLabel: { kind: "text", label: "Commercial label", mono: true },
           galleryLabel: { kind: "text", label: "Gallery heading" },
           nextLabel: { kind: "text", label: "Next-project label", mono: true },
           ctaHeading: { kind: "text", label: "Closing CTA heading" },
@@ -600,6 +629,11 @@ export const schemas: DocSchema[] = [
                 },
               },
               gallery: { kind: "images", label: "Gallery" },
+              video: {
+                kind: "video",
+                label: "Commercial",
+                help: "A promo or campaign video for this project. Shown on the case study with the hero image as its poster. Leave empty to skip it.",
+              },
               quote: { kind: "textarea", label: "Client quote", rows: 3 },
               quoteAuthor: { kind: "text", label: "Quote attribution" },
             },
@@ -726,6 +760,24 @@ export const schemas: DocSchema[] = [
               body: { kind: "textarea", label: "Body", rows: 3 },
             },
           },
+        },
+      },
+      {
+        key: "promo",
+        title: "Commercial",
+        note: "Shown before the engagement plans. Leave the video empty to skip this section entirely.",
+        fields: {
+          label: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          video: { kind: "video", label: "Video" },
+          poster: {
+            kind: "image",
+            label: "Poster frame",
+            ratio: "16 / 9",
+            help: "Shown before the visitor presses play.",
+          },
+          posterAlt: { kind: "text", label: "Poster description" },
         },
       },
       {
@@ -890,6 +942,12 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "School name" },
+              image: {
+                kind: "image",
+                label: "Classroom photo",
+                ratio: "16 / 9",
+              },
+              imageAlt: { kind: "text", label: "Photo description" },
               courses: {
                 kind: "repeater",
                 label: "Courses",
@@ -907,7 +965,7 @@ export const schemas: DocSchema[] = [
                     ],
                     help: "Shown on the course card and in its pop-up.",
                   },
-                  weeks: { kind: "text", label: "Duration" },
+                  duration: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
                   description: {
                     kind: "textarea",
@@ -915,6 +973,40 @@ export const schemas: DocSchema[] = [
                     help: "Shown in the course's detail pop-up.",
                   },
                 },
+              },
+            },
+          },
+        },
+      },
+      {
+        key: "crashCourses",
+        title: "Crash courses",
+        note: "Short, 2-3 day sessions shown in their own row below the main schools — not a tab of their own.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Intro", rows: 2 },
+          items: {
+            kind: "repeater",
+            label: "Crash courses",
+            itemLabel: "Course",
+            titleKey: "name",
+            fields: {
+              name: { kind: "text", label: "Course" },
+              icon: {
+                kind: "select",
+                label: "Icon",
+                options: [
+                  "camera", "video", "pen", "film", "sparkle",
+                  "megaphone", "layout", "code", "cpu", "search",
+                  "chart", "share", "identity", "strategy", "spark",
+                ],
+              },
+              duration: { kind: "text", label: "Duration", help: "e.g. \"2 days\"" },
+              mode: { kind: "text", label: "Format" },
+              description: {
+                kind: "textarea",
+                label: "Description",
+                help: "Shown in the course's detail pop-up.",
               },
             },
           },

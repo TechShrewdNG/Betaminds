@@ -7,6 +7,7 @@ import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { PromoVideo } from "@/components/ui/PromoVideo";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -198,16 +199,22 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <div className="panel--accent-soft mt-56">
-            <div
-              className="eyebrow eyebrow--tight"
-              style={{ fontWeight: 600, marginBottom: 16 }}
-            >
-              {home.about.notForTitle}
-            </div>
+          {/* Native <details>: keyboard- and screen-reader-operable with no
+              client state, and it degrades to just being open if JS never
+              loads — this list still reads fine either way. */}
+          <details className={`panel--accent-soft mt-56 ${styles.notForDrop}`}>
+            <summary className={styles.notForSummary}>
+              <span
+                className="eyebrow eyebrow--tight"
+                style={{ fontWeight: 600 }}
+              >
+                {home.about.notForTitle}
+              </span>
+              <Icon name="arrow-right" size={15} className={styles.notForChevron} />
+            </summary>
             <div
               className="grid col3"
-              style={{ gap: "12px 34px" }}
+              style={{ gap: "12px 34px", marginTop: 16 }}
             >
               {home.about.notFor.map((item) => (
                 <div
@@ -226,28 +233,16 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
+          </details>
         </div>
       </section>
 
       {/* 4 — 02 / Meet the spark. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
-          <div className="split mb-34">
-            <div>
-              <div className="section-name mb-18">{home.team.eyebrow}</div>
-              <h2 className="section-lede">{home.team.heading}</h2>
-            </div>
-            <div
-              style={{
-                fontSize: 14.5,
-                lineHeight: 1.6,
-                color: "var(--ink-70)",
-                maxWidth: 300,
-              }}
-            >
-              {home.team.note}
-            </div>
+          <div className="mb-34">
+            <div className="section-name mb-18">{home.team.eyebrow}</div>
+            <h2 className="section-lede">{home.team.heading}</h2>
           </div>
 
           <div className={styles.teamGrid}>
@@ -537,6 +532,38 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Commercials — Digital Marketplace and Academy, side by side. Each
+          quietly skips itself until a video is uploaded, so an empty pair
+          collapses the whole section rather than showing two empty frames. */}
+      {home.commercials.marketplace.video || home.commercials.academy.video ? (
+        <section data-reveal className="band band--alt band--ruled">
+          <div className="shell section">
+            <div className="mb-40">
+              <div className="section-name mb-18">{home.commercials.eyebrow}</div>
+              <h2 className="section-lede">{home.commercials.heading}</h2>
+            </div>
+            <div className="grid col2">
+              {home.commercials.marketplace.video ? (
+                <PromoVideo
+                  video={home.commercials.marketplace.video}
+                  poster={home.commercials.marketplace.poster}
+                  posterAlt={home.commercials.marketplace.posterAlt}
+                  label={home.commercials.marketplace.label}
+                />
+              ) : null}
+              {home.commercials.academy.video ? (
+                <PromoVideo
+                  video={home.commercials.academy.video}
+                  poster={home.commercials.academy.poster}
+                  posterAlt={home.commercials.academy.posterAlt}
+                  label={home.commercials.academy.label}
+                />
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* 11 — 08 / Final CTA. */}
       <section data-reveal className="band band--ruled">

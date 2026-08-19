@@ -8,6 +8,7 @@ import {
   projectBySlug,
   projectMeta,
 } from "@/lib/projects";
+import { PromoVideo } from "@/components/ui/PromoVideo";
 
 /** Pre-renders every published case study at build time. */
 export async function generateStaticParams() {
@@ -158,6 +159,19 @@ export default async function ProjectPage({
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      ) : null}
+
+      {project.video ? (
+        <section data-reveal className="band band--ruled">
+          <div className="shell section" style={{ maxWidth: 920, margin: "0 auto" }}>
+            <PromoVideo
+              video={project.video}
+              poster={project.heroImage}
+              posterAlt={project.name}
+              label={detail.videoLabel}
+            />
           </div>
         </section>
       ) : null}

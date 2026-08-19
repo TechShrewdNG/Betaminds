@@ -23,6 +23,7 @@ export type Project = {
   outcome: string;
   results: { n: string; label: string }[];
   gallery: string[];
+  video: string;
   quote: string;
   quoteAuthor: string;
   published: boolean;
@@ -73,6 +74,7 @@ function normalise(raw: unknown): Project | null {
     outcome: str(item.outcome),
     results,
     gallery: Array.isArray(item.gallery) ? item.gallery.filter(str) : [],
+    video: str(item.video),
     quote: str(item.quote),
     quoteAuthor: str(item.quoteAuthor),
     // Absent means published — an editor adding a row shouldn't have to opt in.

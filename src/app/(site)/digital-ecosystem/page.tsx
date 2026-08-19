@@ -4,6 +4,7 @@ import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { FreeSlotCard } from "@/components/ui/FreeSlotCard";
+import { PromoVideo } from "@/components/ui/PromoVideo";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { resolveForm } from "@/lib/forms/resolve";
@@ -101,6 +102,23 @@ export default async function EcosystemPage() {
           </div>
         </div>
       </section>
+
+      {/* Commercial — video only, so this quietly skips itself until one is
+          uploaded. */}
+      {eco.promo.video ? (
+        <section data-reveal className="band band--ruled">
+          <div className="shell section" style={{ maxWidth: 920, margin: "0 auto" }}>
+            <PromoVideo
+              video={eco.promo.video}
+              poster={eco.promo.poster}
+              posterAlt={eco.promo.posterAlt}
+              label={eco.promo.label}
+              heading={eco.promo.heading}
+              body={eco.promo.body}
+            />
+          </div>
+        </section>
+      ) : null}
 
       {/* Engagement plans. */}
       <section data-reveal className="band band--alt band--ruled">

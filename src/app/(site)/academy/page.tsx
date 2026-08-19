@@ -107,6 +107,7 @@ export default async function AcademyPage() {
             enrolLabel={academy.courses.enrolLabel}
             apply={academy.apply}
             fields={applyFields}
+            crash={academy.crashCourses}
           />
         </div>
       </section>

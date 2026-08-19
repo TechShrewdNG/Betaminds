@@ -10,7 +10,7 @@ import type { ContentDefaults } from "@/lib/content/defaults";
 
 export type Course = {
   name: string;
-  weeks: string;
+  duration: string;
   mode: string;
   description?: string;
   icon?: string;
@@ -28,8 +28,14 @@ const courseIcon = (course: Course): IconName =>
   COURSE_ICONS.includes(course.icon as IconName)
     ? (course.icon as IconName)
     : "spark";
-export type School = { name: string; courses: Course[] };
+export type School = {
+  name: string;
+  image?: string;
+  imageAlt?: string;
+  courses: Course[];
+};
 type Apply = ContentDefaults["academy"]["apply"];
+type CrashCourses = ContentDefaults["academy"]["crashCourses"];
 
 export function SchoolTabs({
   heading,
@@ -38,6 +44,7 @@ export function SchoolTabs({
   enrolLabel,
   apply,
   fields,
+  crash,
 }: {
   heading: string;
   schools: School[];
@@ -45,6 +52,9 @@ export function SchoolTabs({
   enrolLabel: string;
   apply: Apply;
   fields: FormField[];
+  /** Short, standalone sessions shown in their own row below the schools —
+   *  not a school of their own, so they skip the tab track entirely. */
+  crash?: CrashCourses;
 }) {
   const [active, setActive] = useState(0);
   const [openCourse, setOpenCourse] = useState<Course | null>(null);
@@ -121,6 +131,17 @@ export function SchoolTabs({
         </div>
       </div>
 
+      {current?.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={current.name}
+          src={current.image}
+          alt={current.imageAlt || current.name}
+          className={`${styles.schoolBanner} ratio-16-9`}
+          loading="lazy"
+        />
+      ) : null}
+
       <div id="courses-panel" role="tabpanel" className="grid col3 carousel-mobile">
         {(current?.courses ?? []).map((course) => (
           <button
@@ -137,7 +158,7 @@ export function SchoolTabs({
             </span>
             <div className={styles.courseCardName}>{course.name}</div>
             <div className="row-wrap" style={{ gap: 6 }}>
-              <Chip>{course.weeks}</Chip>
+              <Chip>{course.duration}</Chip>
               <Chip>{course.mode}</Chip>
               <Chip accent>{certificateLabel}</Chip>
             </div>
@@ -145,6 +166,37 @@ export function SchoolTabs({
           </button>
         ))}
       </div>
+
+      {crash && crash.items.length > 0 ? (
+        <div className={styles.crashSection}>
+          <div className={styles.crashHeading}>{crash.heading}</div>
+          {crash.body ? <p className={styles.crashBody}>{crash.body}</p> : null}
+          <div className="grid col2 col2--tight">
+            {crash.items.map((item) => (
+              <button
+                key={item.name}
+                type="button"
+                className={styles.crashCard}
+                onClick={(event) => {
+                  openerRef.current = event.currentTarget;
+                  setOpenCourse(item);
+                }}
+              >
+                <span className={styles.crashIcon}>
+                  <Icon name={courseIcon(item)} size={19} />
+                </span>
+                <span className={styles.crashMain}>
+                  <span className={styles.crashName}>{item.name}</span>
+                  <span className={styles.crashMeta}>
+                    {item.duration} · {item.mode}
+                  </span>
+                </span>
+                <Icon name="arrow-right" size={16} className={styles.crashArrow} />
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       {/* Portalled to <body> on purpose. The scroll-reveal animation leaves a
           transform on the enclosing <section>, and a transformed ancestor
@@ -186,7 +238,7 @@ export function SchoolTabs({
                 </p>
               ) : null}
               <div className="row-wrap" style={{ gap: 6, marginBottom: 28 }}>
-                <Chip>{openCourse.weeks}</Chip>
+                <Chip>{openCourse.duration}</Chip>
                 <Chip>{openCourse.mode}</Chip>
                 <Chip accent>{certificateLabel}</Chip>
               </div>

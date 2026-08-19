@@ -314,7 +314,6 @@ export const defaults = {
     team: {
       eyebrow: "Meet the spark",
       heading: "The people behind the work.",
-      note: "Hover a portrait for socials.",
       members: [
         {
           name: "Ileriayo S. Okunrotifa",
@@ -430,6 +429,22 @@ export const defaults = {
         { label: "Bootcamp", image: IMG(5060991, 600) },
       ],
     },
+    commercials: {
+      eyebrow: "See it in motion",
+      heading: "Two sides of the studio, on camera.",
+      marketplace: {
+        label: "Digital Marketplace",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+      academy: {
+        label: "Betaminds Academy",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+    },
     finalCta: {
       eyebrow: "Let's work",
       heading: "Let's add the spark to your vision.",
@@ -460,6 +475,7 @@ export const defaults = {
       approachLabel: "What we did",
       outcomeLabel: "The outcome",
       resultsLabel: "Results",
+      videoLabel: "The commercial",
       galleryLabel: "From the work",
       nextLabel: "Next project",
       ctaHeading: "Something like this in mind?",
@@ -587,6 +603,14 @@ export const defaults = {
           body: "One dashboard, plain-language reporting, decisions you can defend.",
         },
       ],
+    },
+    promo: {
+      label: "See it in motion",
+      heading: "What a Digital Marketplace build looks like",
+      body: "A walkthrough of a recent build: the strategy, the storefront, the launch.",
+      video: "",
+      poster: "",
+      posterAlt: "",
     },
     plans: {
       heading: "Engagement plans",
@@ -945,11 +969,13 @@ export const defaults = {
       schools: [
         {
           name: "School of Creative Media",
+          image: IMG(3184291, 1400),
+          imageAlt: "Students in a Betaminds Academy creative media class",
           courses: [
             {
               name: "Photography",
               icon: "camera",
-              weeks: "10 weeks",
+              duration: "10 weeks",
               mode: "Hybrid",
               description:
                 "Camera fundamentals, lighting and composition through to a portfolio-ready editorial shoot.",
@@ -957,7 +983,7 @@ export const defaults = {
             {
               name: "Videography",
               icon: "video",
-              weeks: "12 weeks",
+              duration: "12 weeks",
               mode: "Physical",
               description:
                 "Camera operation, shot-listing and on-set craft for narrative, commercial and event film.",
@@ -965,7 +991,7 @@ export const defaults = {
             {
               name: "Content Creation",
               icon: "pen",
-              weeks: "8 weeks",
+              duration: "8 weeks",
               mode: "Hybrid",
               description:
                 "Planning, filming and editing short-form content for brands and personal platforms.",
@@ -973,7 +999,7 @@ export const defaults = {
             {
               name: "Animation",
               icon: "film",
-              weeks: "12 weeks",
+              duration: "12 weeks",
               mode: "Virtual",
               description:
                 "2D animation principles, storyboarding and production workflow from concept to render.",
@@ -981,7 +1007,7 @@ export const defaults = {
             {
               name: "Motion Graphics",
               icon: "sparkle",
-              weeks: "10 weeks",
+              duration: "10 weeks",
               mode: "Hybrid",
               description:
                 "Typography, compositing and animation for title sequences, ads and social content.",
@@ -990,11 +1016,13 @@ export const defaults = {
         },
         {
           name: "School of Digital Technology",
+          image: IMG(4144923, 1400),
+          imageAlt: "Students in a Betaminds Academy digital technology class",
           courses: [
             {
               name: "Digital Marketing",
               icon: "megaphone",
-              weeks: "12 weeks",
+              duration: "12 weeks",
               mode: "Hybrid",
               description:
                 "Strategy, paid media, social and analytics for running campaigns that convert.",
@@ -1002,7 +1030,7 @@ export const defaults = {
             {
               name: "UI/UX Design",
               icon: "layout",
-              weeks: "12 weeks",
+              duration: "12 weeks",
               mode: "Hybrid",
               description:
                 "Research, wireframing and prototyping toward a shippable, user-tested product design.",
@@ -1010,7 +1038,7 @@ export const defaults = {
             {
               name: "Website Development",
               icon: "code",
-              weeks: "16 weeks",
+              duration: "16 weeks",
               mode: "Hybrid",
               description:
                 "Front-end and back-end fundamentals through to a deployed, full-stack project.",
@@ -1018,7 +1046,7 @@ export const defaults = {
             {
               name: "AI Productivity",
               icon: "cpu",
-              weeks: "6 weeks",
+              duration: "6 weeks",
               mode: "Virtual",
               description:
                 "Practical AI tooling for research, writing, design and workflow automation.",
@@ -1026,12 +1054,42 @@ export const defaults = {
             {
               name: "SEO",
               icon: "search",
-              weeks: "6 weeks",
+              duration: "6 weeks",
               mode: "Virtual",
               description:
                 "Technical, on-page and content SEO to grow organic search visibility.",
             },
           ],
+        },
+      ],
+    },
+    crashCourses: {
+      heading: "Crash courses",
+      body: "Short, intensive sessions for one specific skill — two to three days, hands-on, no long commitment.",
+      items: [
+        {
+          name: "Reels Editing Intensive",
+          icon: "video",
+          duration: "2 days",
+          mode: "Physical",
+          description:
+            "Hook, pace and edit short-form video that holds attention, using footage you bring on day one.",
+        },
+        {
+          name: "AI Prompt Workshop",
+          icon: "cpu",
+          duration: "2 days",
+          mode: "Virtual",
+          description:
+            "Practical prompting for research, writing and design work, with tools you'll use the same week.",
+        },
+        {
+          name: "Portfolio Sprint",
+          icon: "layout",
+          duration: "3 days",
+          mode: "Hybrid",
+          description:
+            "Leave with a finished, presentable portfolio built and critiqued over three focused days.",
         },
       ],
     },

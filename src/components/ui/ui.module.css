@@ -718,9 +718,16 @@
   );
 }
 
-/* The splash screen has no header above it, so it takes the whole viewport. */
+/* The splash screen has no header above it, so it takes the whole viewport.
+   svh as a floor keeps the arrows/counter clear of the fold on first paint
+   (see the comment on .slider above), but locking to svh alone leaves a gap
+   at the bottom on mobile once the browser's toolbar auto-hides and the real
+   viewport grows past it. dvh tracks that growth in real time, so the slider
+   fills the screen either way. */
 .slider[data-full="true"] {
   height: 100svh;
+  height: 100dvh;
+  min-height: 100svh;
 }
 
 .slide {
@@ -1323,5 +1330,231 @@
   100% {
     transform: scale(2.9);
     opacity: 0;
+  }
+}
+
+/* --- "Brands we don't work with" disclosure -------------------------------- */
+
+.notForDrop {
+  cursor: default;
+}
+
+.notForSummary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notForSummary::-webkit-details-marker {
+  display: none;
+}
+
+.notForChevron {
+  flex: none;
+  color: var(--accent);
+  transform: rotate(90deg);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.notForDrop[open] .notForChevron {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notForChevron {
+    transition: none;
+  }
+}
+
+/* --- Academy: school classroom banner, crash courses -------------------- */
+
+.schoolBanner {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  border-radius: var(--r-card);
+  margin-bottom: 30px;
+  animation: bmTestiFade 0.4s ease both;
+}
+
+.crashSection {
+  margin-top: 56px;
+  padding-top: 48px;
+  border-top: 1px solid var(--line);
+}
+
+.crashHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.1vw, 25px);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.crashBody {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-72);
+  max-width: 56ch;
+  margin-bottom: 26px;
+  text-wrap: pretty;
+}
+
+.crashCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.crashCard:hover {
+  border-color: var(--accent-line-strong);
+  background: rgba(232, 163, 61, 0.04);
+}
+
+.crashIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.crashMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.crashName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.crashMeta {
+  font-size: 12.5px;
+  color: var(--ink-62);
+}
+
+.crashArrow {
+  flex: none;
+  color: var(--accent);
+}
+
+/* --- Promo video (click-to-play commercials) ----------------------------- */
+
+.promo {
+  display: flex;
+  flex-direction: column;
+}
+
+.promoCopy {
+  margin-bottom: 22px;
+}
+
+.promoHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.2vw, 26px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.promoBody {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-74);
+  margin: 0;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+.promoFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--surface-deep);
+  border: 1px solid var(--line-strong);
+}
+
+.promoVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.promoPoster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: var(--surface-deep);
+}
+
+.promoPosterImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promoPlay {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(251, 250, 248, 0.94);
+  color: var(--accent-fill);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease;
+}
+
+.promoPlay svg {
+  margin-left: 4px;
+}
+
+.promoPoster:hover .promoPlay,
+.promoPoster:focus-visible .promoPlay {
+  transform: scale(1.08);
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promoPlay {
+    transition: none;
   }
 }
