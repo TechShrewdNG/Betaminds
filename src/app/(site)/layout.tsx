@@ -1,6 +1,7 @@
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
+import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { getGlobal } from "@/lib/content";
 
 /**
@@ -24,6 +25,11 @@ export default async function SiteLayout({
         brand={global.brand}
         footer={global.footer}
         contact={global.contact}
+      />
+      <WhatsAppButton
+        enabled={global.whatsapp.enabled}
+        number={global.whatsapp.number}
+        message={global.whatsapp.message}
       />
     </>
   );

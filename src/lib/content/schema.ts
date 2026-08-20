@@ -203,6 +203,26 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "whatsapp",
+        title: "Floating WhatsApp button",
+        note: "Shown bottom-right on every public page once a number is set. Turning this off hides it even with a number saved.",
+        fields: {
+          enabled: { kind: "boolean", label: "Show the button" },
+          number: {
+            kind: "text",
+            label: "WhatsApp number",
+            mono: true,
+            help: "Include the country code, e.g. 2348012345678. Spaces, dashes and a leading + are fine — they're stripped automatically.",
+          },
+          message: {
+            kind: "textarea",
+            label: "Pre-filled message",
+            rows: 2,
+            help: "Opens already typed into the chat, ready to send.",
+          },
+        },
+      },
+      {
         key: "footer",
         title: "Footer",
         note: "The envelope flap opens to reveal the back face.",

@@ -1,0 +1,84 @@
+/* WhatsApp keeps its own recognisable green here rather than the site's gold
+   accent — this is a link out to a third-party channel, not a site action,
+   and the colour is what makes it scannable at a glance. */
+.button {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 70;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s ease;
+  /* Clears a mobile browser's own bottom bar / home indicator. */
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+  animation: bmWaIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}
+
+.button:hover,
+.button:focus-visible {
+  transform: translateY(-3px) scale(1.05);
+  background: #1ebd5a;
+}
+
+.icon {
+  color: #fbfaf8;
+}
+
+/* A single soft ring pulses outward once on load to catch the eye without
+   nagging — not a permanent loop, which would just read as broken. */
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #25d366;
+  animation: bmWaRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) 1s 2;
+}
+
+@media (max-width: 640px) {
+  .button {
+    right: 16px;
+    bottom: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    animation: none;
+  }
+  .ring {
+    animation: none;
+    display: none;
+  }
+}
+
+@keyframes bmWaIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bmWaRing {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}

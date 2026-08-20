@@ -144,6 +144,13 @@ export const defaults = {
         { label: "YT", href: "#" },
       ],
     },
+    // No number seeded on purpose — the button stays off the live site until
+    // a real one is entered in Site-wide → Floating WhatsApp button.
+    whatsapp: {
+      enabled: true,
+      number: "",
+      message: "Hi Betaminds Africa, I'd like to talk about a project.",
+    },
     footer: {
       columns: [
         {
