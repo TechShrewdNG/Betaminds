@@ -616,26 +616,42 @@
   color: var(--accent-fill);
 }
 
-/* Project tile overlay: canvas wash, meta, name, view pill. */
+/* Project and post tile caption.
+ *
+ * The meta and title are always legible. They used to live behind opacity:0
+ * and appear only on hover, which meant a mouse user saw a grid of untitled
+ * pictures — fatal on /blog, where the headline *is* the content and the
+ * cover image carries none of it.
+ *
+ * The gradient is weighted to the bottom so the photograph still reads above
+ * the caption, and hover deepens it and brings the "Read" cue up rather than
+ * being the only way to see anything at all. */
 .workHover {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(var(--scrim-rgb), 0.96),
-    rgba(var(--scrim-rgb), 0.2)
+    rgba(var(--scrim-rgb), 0.97) 0%,
+    rgba(var(--scrim-rgb), 0.88) 26%,
+    rgba(var(--scrim-rgb), 0.34) 56%,
+    rgba(var(--scrim-rgb), 0) 80%
   );
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 22px 22px 20px;
 }
 
 .tile:hover .workHover,
 .tile:focus-within .workHover {
-  opacity: 1;
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim-rgb), 0.98) 0%,
+    rgba(var(--scrim-rgb), 0.93) 46%,
+    rgba(var(--scrim-rgb), 0.66) 74%,
+    rgba(var(--scrim-rgb), 0.34) 100%
+  );
 }
 
 .workMeta {
@@ -655,8 +671,11 @@
   letter-spacing: -0.02em;
   margin-bottom: 14px;
   color: var(--ink);
+  text-wrap: balance;
 }
 
+/* Kept in flow at rest, just invisible — reserving the space means the title
+   doesn't jump when the cue arrives. */
 .workView {
   align-self: flex-start;
   padding: 9px 16px;
@@ -666,6 +685,27 @@
   font-weight: 600;
   font-size: 11.5px;
   color: var(--ink);
+  opacity: 0;
+  transform: translateY(7px);
+  transition:
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tile:hover .workView,
+.tile:focus-within .workView {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workHover,
+  .workView {
+    transition: none;
+  }
+  .workView {
+    transform: none;
+  }
 }
 
 /* Touch devices have no hover, so reveal the overlays permanently. */
@@ -677,10 +717,12 @@
     padding: 14px;
   }
 
-  .workHover {
+  /* The caption is legible over the image on its own now, so touch no longer
+     needs the overlay pulled out into its own block below the picture — it
+     just needs the "Read" cue, which has no hover to trigger it. */
+  .workView {
     opacity: 1;
-    position: static;
-    background: var(--surface);
+    transform: none;
   }
 }
 
