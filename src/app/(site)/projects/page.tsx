@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
       <section
         style={{
           background: "var(--surface-deep)",
-          borderBottom: "1px solid rgba(23,23,27,.07)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
         <div
@@ -38,7 +38,7 @@ export default async function ProjectsPage() {
         </div>
       </section>
 
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           {projects.length === 0 ? (
             <div className="panel" style={{ textAlign: "center", padding: "72px 32px" }}>

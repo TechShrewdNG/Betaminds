@@ -22,7 +22,7 @@ export default async function BlogPage() {
       <section
         style={{
           background: "var(--surface-deep)",
-          borderBottom: "1px solid rgba(23,23,27,.07)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
         <div className="shell bm-rise" style={{ paddingTop: 130, paddingBottom: 72 }}>

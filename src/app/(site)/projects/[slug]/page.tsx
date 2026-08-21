@@ -131,7 +131,7 @@ export default async function ProjectPage({
       ) : null}
 
       {project.results.length > 0 ? (
-        <section data-reveal className="band band--alt band--ruled">
+        <section data-reveal className="band band--ink band--ruled">
           <div className="shell section">
             <h2 className="h2 mb-34">{detail.resultsLabel}</h2>
             <div className="grid col4">
@@ -177,7 +177,7 @@ export default async function ProjectPage({
       ) : null}
 
       {project.gallery.length > 0 ? (
-        <section data-reveal className="band band--ruled">
+        <section data-reveal className="band band--ink band--ruled">
           <div className="shell section">
             <h2 className="h2 mb-34">{detail.galleryLabel}</h2>
             <div className="grid col3 carousel-mobile">

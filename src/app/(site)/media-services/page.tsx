@@ -34,7 +34,7 @@ export default async function MediaServicesPage() {
         </div>
       </section>
 
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <PackageCards
             packages={media.packages.items}

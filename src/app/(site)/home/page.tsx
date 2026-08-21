@@ -238,7 +238,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4 — 02 / Meet the spark. */}
-      <section data-reveal className="band band--alt band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div className="mb-34">
             <div className="section-name mb-18">{home.team.eyebrow}</div>
@@ -391,7 +391,7 @@ export default async function HomePage() {
           className="hero__wash"
           style={{
             background:
-              "linear-gradient(100deg, rgba(251,250,248,.95), rgba(251,250,248,.55))",
+              "linear-gradient(100deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.55))",
           }}
         />
         <div
@@ -434,7 +434,7 @@ export default async function HomePage() {
       </section>
 
       {/* 8 — Projects. */}
-      <section data-reveal id="projects" className="band band--ruled">
+      <section data-reveal id="projects" className="band band--ink band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
           <div className="split mb-34">
@@ -566,7 +566,7 @@ export default async function HomePage() {
       ) : null}
 
       {/* 11 — 08 / Final CTA. */}
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div
             className="frame"
@@ -586,7 +586,7 @@ export default async function HomePage() {
                 position: "absolute",
                 inset: 0,
                 background:
-                  "linear-gradient(120deg, rgba(251,250,248,.92), rgba(251,250,248,.6))",
+                  "linear-gradient(120deg, rgba(var(--scrim-rgb),.92), rgba(var(--scrim-rgb),.6))",
               }}
             />
             <div

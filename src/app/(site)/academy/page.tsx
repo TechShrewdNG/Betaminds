@@ -21,7 +21,7 @@ export default async function AcademyPage() {
       <section
         style={{
           background: "var(--surface-deep)",
-          borderBottom: "1px solid rgba(23,23,27,.07)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
         <div
@@ -41,7 +41,7 @@ export default async function AcademyPage() {
               className="quote"
               style={{
                 lineHeight: 1.24,
-                color: "rgba(23,23,27,.92)",
+                color: "var(--ink-94)",
                 margin: "0 0 22px",
                 textWrap: "balance",
               }}
@@ -65,7 +65,7 @@ export default async function AcademyPage() {
                   style={{
                     padding: "8px 15px",
                     borderRadius: "var(--r-pill)",
-                    border: "1px solid rgba(23,23,27,.16)",
+                    border: "1px solid var(--line-input)",
                     fontSize: 13,
                     color: "var(--ink-90)",
                   }}
@@ -98,7 +98,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Courses, tabbed by school. */}
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <SchoolTabs
             heading={academy.courses.heading}
@@ -181,7 +181,7 @@ export default async function AcademyPage() {
       </section>
 
       {/* Statistics. */}
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2 measure-520 mb-34">{academy.stats.heading}</h2>
           <div className="grid col4">
@@ -315,7 +315,7 @@ export default async function AcademyPage() {
                       height: 56,
                       border: logo.logo
                         ? "1px solid var(--line)"
-                        : "1px dashed rgba(23,23,27,.14)",
+                        : "1px dashed rgba(var(--wash-rgb),.2)",
                       borderRadius: 8,
                       display: "flex",
                       alignItems: "center",

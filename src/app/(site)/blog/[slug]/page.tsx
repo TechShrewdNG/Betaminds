@@ -84,7 +84,7 @@ export default async function BlogPostPage({
               className="quote"
               style={{
                 lineHeight: 1.4,
-                color: "rgba(23,23,27,.92)",
+                color: "var(--ink-94)",
                 margin: "0 0 34px",
                 textWrap: "pretty",
               }}
@@ -101,7 +101,7 @@ export default async function BlogPostPage({
         </div>
       </section>
 
-      <section data-reveal className="band band--alt band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
             {next && next.slug !== post.slug ? (

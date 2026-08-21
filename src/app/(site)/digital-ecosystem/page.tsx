@@ -65,7 +65,7 @@ export default async function EcosystemPage() {
       </section>
 
       {/* Our Digital Commerce Solution — capability cards. */}
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2 measure-620" style={{ marginBottom: 16 }}>
             {eco.solution.heading}

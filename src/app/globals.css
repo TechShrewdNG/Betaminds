@@ -35,6 +35,13 @@
   --ink-55: rgba(23, 23, 27, 0.55);
   --ink-50: rgba(23, 23, 27, 0.5);
 
+  /* Ground and figure as raw RGB triplets, for the places that need the
+     colour at several alphas: gradient scrims over photography, and the
+     faint washes behind tab tracks and table headers. Kept as triplets so
+     .band--ink can swap the pair and every alpha follows. */
+  --scrim-rgb: 251, 250, 248;
+  --wash-rgb: 23, 23, 27;
+
   /* Hairlines */
   --line: rgba(23, 23, 27, 0.08);
   --line-soft: rgba(23, 23, 27, 0.06);
@@ -161,8 +168,13 @@ a:hover {
   color: var(--accent-hover);
 }
 
+/* Buttons take the UA's own `buttontext` colour unless told otherwise, which
+   resolves to black — harmless-looking on a cream ground, but it means any
+   button that doesn't set a colour renders black-on-black inside an ink band.
+   Inheriting is what the rest of the document already assumes. */
 button {
   font-family: inherit;
+  color: inherit;
 }
 
 ::selection {
@@ -806,6 +818,91 @@ button {
     rgba(232, 163, 61, 0.04) 48%,
     var(--surface-alt) 100%
   );
+}
+
+/* --- Ink bands ------------------------------------------------------------
+   Deep near-black sections cut between the warm ones. Photography and the
+   brand gold both read far hotter against ink than against cream, so the
+   image-led and feature sections live here while the reading sections stay
+   light.
+
+   The whole thing works by re-pointing the palette tokens inside the band
+   rather than restyling components: anything built on --ink-*, --surface,
+   --line-* or --accent inverts on its own, including the inline styles
+   scattered through the page files. Three deliberate choices in here:
+
+     - the black is warm (#15120e), not neutral — a blue-grey black beside
+       #FBFAF8 cream reads as two unrelated palettes;
+     - --accent flips from the dark #8a5a0f (a text colour for light grounds,
+       nearly invisible on black) to the bright fill, which is what actually
+       carries on ink;
+     - --on-accent is untouched, so gold pills keep their dark text and the
+       handoff's "never white on gold" rule survives the inversion.       */
+.band--ink {
+  --canvas: #15120e;
+  --surface: #1f1a14;
+  --surface-alt: #1a1611;
+  --surface-deep: #100e0b;
+
+  --ink: #fbfaf8;
+  --ink-94: rgba(251, 250, 248, 0.94);
+  --ink-90: rgba(251, 250, 248, 0.9);
+  --ink-88: rgba(251, 250, 248, 0.88);
+  --ink-86: rgba(251, 250, 248, 0.86);
+  --ink-84: rgba(251, 250, 248, 0.82);
+  --ink-82: rgba(251, 250, 248, 0.8);
+  --ink-78: rgba(251, 250, 248, 0.76);
+  --ink-76: rgba(251, 250, 248, 0.74);
+  --ink-74: rgba(251, 250, 248, 0.72);
+  --ink-72: rgba(251, 250, 248, 0.7);
+  --ink-70: rgba(251, 250, 248, 0.68);
+  --ink-62: rgba(251, 250, 248, 0.6);
+  --ink-55: rgba(251, 250, 248, 0.54);
+  --ink-50: rgba(251, 250, 248, 0.5);
+
+  --scrim-rgb: 21, 18, 14;
+  --wash-rgb: 251, 250, 248;
+
+  --line: rgba(251, 250, 248, 0.14);
+  --line-soft: rgba(251, 250, 248, 0.09);
+  --line-strong: rgba(251, 250, 248, 0.16);
+  --line-input: rgba(251, 250, 248, 0.2);
+  --line-outline: rgba(251, 250, 248, 0.5);
+
+  --accent: #f0b862;
+  --accent-hover: #f5cb89;
+  --accent-line: rgba(232, 163, 61, 0.34);
+  --accent-line-soft: rgba(232, 163, 61, 0.28);
+  --accent-line-strong: rgba(232, 163, 61, 0.52);
+  --accent-tint: rgba(232, 163, 61, 0.16);
+
+  /* The logo tints are mixed for a light ground; on ink they need the bright
+     hues and a stronger wash to stay visible. */
+  --brand-blue-ink: #6cc4fa;
+  --brand-orange-ink: #f6b25e;
+  --brand-green-ink: #86dc7c;
+  --brand-blue-tint: rgba(12, 168, 252, 0.2);
+  --brand-orange-tint: rgba(252, 144, 12, 0.2);
+  --brand-green-tint: rgba(84, 204, 72, 0.22);
+
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+/* Two ink bands running back to back would show a seam where the hairline
+   sits; between them the rule is redundant, so it goes. */
+.band--ink + .band--ink.band--ruled {
+  border-top-color: transparent;
+}
+
+/* An ink band's own alt/deep modifiers must not fall back to the light
+   surfaces defined above them in the cascade. */
+.band--ink.band--alt {
+  background: var(--surface-alt);
+}
+
+.band--ink.band--deep {
+  background: var(--surface-deep);
 }
 
 /* Gold rule opening a section — the chapter marker that replaces the old

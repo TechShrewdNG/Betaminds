@@ -27,7 +27,7 @@ export default async function LetsWorkPage() {
           className="hero__wash"
           style={{
             background:
-              "linear-gradient(110deg, rgba(251,250,248,.95), rgba(251,250,248,.62))",
+              "linear-gradient(110deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.62))",
           }}
         />
         <div className="shell hero__body">
@@ -93,7 +93,7 @@ export default async function LetsWorkPage() {
                         width: 44,
                         height: 44,
                         borderRadius: "50%",
-                        border: "1px solid rgba(23,23,27,.16)",
+                        border: "1px solid var(--line-input)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

@@ -32,7 +32,7 @@ export default async function SummitPage() {
           className="hero__wash"
           style={{
             background:
-              "linear-gradient(115deg, rgba(251,250,248,.95), rgba(251,250,248,.55))",
+              "linear-gradient(115deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.55))",
           }}
         />
         <div className="shell hero__body">
@@ -54,8 +54,8 @@ export default async function SummitPage() {
                 style={{
                   padding: "14px 20px",
                   borderRadius: 12,
-                  border: "1px solid rgba(23,23,27,.14)",
-                  background: "rgba(23,23,27,.03)",
+                  border: "1px solid var(--line-input)",
+                  background: "rgba(var(--wash-rgb),.03)",
                 }}
               >
                 <div
@@ -161,7 +161,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Why attend? */}
-      <section data-reveal className="band band--ruled">
+      <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2" style={{ marginBottom: 32 }}>
             {summit.why.heading}
@@ -213,7 +213,7 @@ export default async function SummitPage() {
       </section>
 
       {/* Editions and galleries. */}
-      <section data-reveal className="band band--alt band--ruled">
+      <section data-reveal className="band band--ink band--alt band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
             {summit.editions.items.map((edition) => (
@@ -248,7 +248,7 @@ export default async function SummitPage() {
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gap: 1,
-                    background: "rgba(23,23,27,.07)",
+                    background: "var(--line)",
                   }}
                 >
                   {edition.gallery.map((src, index) => (
@@ -289,7 +289,7 @@ export default async function SummitPage() {
                   <span
                     style={{
                       padding: "10px 18px",
-                      border: "1px dashed rgba(23,23,27,.16)",
+                      border: "1px dashed rgba(var(--wash-rgb),.2)",
                       borderRadius: 8,
                       fontSize: 13.5,
                       color: "var(--ink-84)",

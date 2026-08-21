@@ -7,7 +7,7 @@
   display: flex;
   gap: 2px;
   padding: 4px;
-  background: rgba(23, 23, 27, 0.05);
+  background: rgba(var(--wash-rgb), 0.05);
   border-radius: var(--r-pill);
   flex-wrap: wrap;
 }
@@ -294,7 +294,7 @@
 .planIncludesLabel {
   padding: 15px 28px;
   border-top: 1px solid var(--line);
-  background: rgba(23, 23, 27, 0.02);
+  background: rgba(var(--wash-rgb), 0.03);
   color: var(--accent);
   font-family: var(--font-mono);
   font-weight: 500;
@@ -375,7 +375,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(23, 23, 27, 0.18);
+  border: 1px solid rgba(var(--wash-rgb), 0.18);
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -410,7 +410,7 @@
   border-radius: 50%;
   border: 0;
   padding: 0;
-  background: rgba(23, 23, 27, 0.18);
+  background: rgba(var(--wash-rgb), 0.18);
   cursor: pointer;
 }
 
@@ -440,7 +440,7 @@
   height: 56px;
   margin: 0 14px;
   flex: none;
-  border: 1px dashed rgba(23, 23, 27, 0.14);
+  border: 1px dashed rgba(var(--wash-rgb), 0.16);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -559,7 +559,11 @@
   right: 0;
   bottom: 0;
   padding: 16px 18px;
-  background: linear-gradient(to top, rgba(251, 250, 248, 0.96), transparent);
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim-rgb), 0.96),
+    transparent
+  );
 }
 
 .tileName {
@@ -618,8 +622,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(251, 250, 248, 0.96),
-    rgba(251, 250, 248, 0.2)
+    rgba(var(--scrim-rgb), 0.96),
+    rgba(var(--scrim-rgb), 0.2)
   );
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -657,7 +661,7 @@
   align-self: flex-start;
   padding: 9px 16px;
   border-radius: var(--r-pill);
-  border: 1px solid rgba(23, 23, 27, 0.62);
+  border: 1px solid rgba(var(--wash-rgb), 0.62);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 11.5px;
@@ -1232,7 +1236,7 @@
   padding: 18px 14px 14px;
   border: 1px solid var(--accent-line-strong);
   border-radius: 12px;
-  background: rgba(251, 250, 248, 0.72);
+  background: rgba(var(--scrim-rgb), 0.72);
 }
 
 .freeSlotNum {
@@ -1535,7 +1539,7 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: rgba(251, 250, 248, 0.94);
+  background: rgba(var(--scrim-rgb), 0.94);
   color: var(--accent-fill);
   transition:
     transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),

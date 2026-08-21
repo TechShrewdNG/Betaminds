@@ -31,7 +31,7 @@ export function Footer({
   const [open, setOpen] = useState(false);
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`band--ink ${styles.footer}`}>
       {/* Envelope flap. Closed it's just a teaser; clicking it opens to reveal
           the whole footer — brand, quick links, contact details, legal — as
           the "letter" inside. The button stays text-only (just the flap, hint
