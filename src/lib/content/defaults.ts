@@ -201,10 +201,13 @@ export const defaults = {
         "A Lagos creative and digital commerce agency. We build brands, the digital commerce systems behind them, and the people who run both.",
     },
     /**
-     * The splash screen at `/` — the full-screen slider a visitor lands on
-     * before the site itself. Switching `enabled` off removes the splash
-     * entirely: `/` then serves the homepage, which has its own static hero
-     * below, so turning this off can never leave the site headless.
+     * The opening slider, used in two places: full-screen at `/` as the splash
+     * a visitor lands on, and again as the homepage's own hero once they are
+     * inside the site. One set of slides drives both, so the opening moment
+     * carries through instead of dropping to an unrelated still.
+     *
+     * `enabled` only controls the splash. Switching it off sends `/` straight
+     * to the homepage, where these slides still open the page.
      *
      * `video` is empty on every seeded slide on purpose: there is no stock
      * footage to ship, and an empty value falls back to the slide's still. Upload
@@ -252,28 +255,6 @@ export const defaults = {
           secondaryLabel: "Talk to us",
           secondaryHref: "/lets-work",
         },
-      ],
-    },
-    hero: {
-      image: IMG(5466279, 1800),
-      imageAlt: "Betaminds creative team in session",
-      eyebrow: "Creative × Digital × Commerce",
-      heading: "We add the spark that makes brands move",
-      accentTail: ".",
-      lead: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
-      promise: "Strategy first. Craft always. Growth you can measure.",
-      ctas: [
-        {
-          label: "Explore digital ecosystem",
-          href: "/digital-ecosystem",
-          style: "accent",
-        },
-        {
-          label: "Explore media services",
-          href: "/media-services",
-          style: "outline",
-        },
-        { label: "Betaminds Academy", href: "/academy", style: "outline" },
       ],
     },
     trusted: {

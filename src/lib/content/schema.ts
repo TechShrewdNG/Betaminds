@@ -271,13 +271,13 @@ export const schemas: DocSchema[] = [
       seo,
       {
         key: "heroSlider",
-        title: "Splash screen",
-        note: "The full-screen slider visitors land on at betaminds.africa, before the site itself. Switch it off and visitors go straight to the homepage.",
+        title: "Opening slider",
+        note: "These slides run twice: as the full-screen splash visitors land on at betaminds.africa, and as the homepage hero once they are inside the site.",
         fields: {
           enabled: {
             kind: "boolean",
             label: "Show the splash screen",
-            help: "Off sends visitors straight to the homepage — nobody sees the slider.",
+            help: "Off sends visitors straight to the homepage. The slides still open the homepage itself — this only controls the full-screen splash at the front.",
           },
           autoplay: {
             kind: "boolean",
@@ -323,38 +323,6 @@ export const schemas: DocSchema[] = [
                 help: "Leave empty for a single button.",
               },
               secondaryHref: { kind: "text", label: "Second button link" },
-            },
-          },
-        },
-      },
-      {
-        key: "hero",
-        title: "Hero",
-        note: "Full-height photograph with bottom-anchored, centred content. Opens the homepage itself, after the splash screen.",
-        fields: {
-          ...heroImage("16 / 9", "Cropped to cover. Landscape works best."),
-          eyebrow: { kind: "text", label: "Pill label", mono: true },
-          heading: { kind: "textarea", label: "Headline", rows: 2 },
-          accentTail: {
-            kind: "text",
-            label: "Headline accent tail",
-            help: "Rendered in the gold accent, straight after the headline. The prototype uses a full stop.",
-          },
-          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
-          promise: { kind: "text", label: "Promise line", mono: true },
-          ctas: {
-            kind: "repeater",
-            label: "Buttons",
-            itemLabel: "Button",
-            titleKey: "label",
-            fields: {
-              label: { kind: "text", label: "Label" },
-              href: { kind: "text", label: "Link" },
-              style: {
-                kind: "select",
-                label: "Style",
-                options: ["accent", "outline"],
-              },
             },
           },
         },

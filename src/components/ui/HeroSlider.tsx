@@ -44,12 +44,24 @@ export function HeroSlider({
    * slider gets the whole viewport rather than what's left under one.
    */
   fullViewport = false,
+  /**
+   * Whether this slider supplies the document's h1.
+   *
+   * True on the splash, where it is the only content on the page. False on the
+   * homepage: the first slide's heading is only *visible* while that slide is
+   * showing, so promoting it to h1 there would mean the page's single h1 went
+   * visibility:hidden a few seconds after load and stayed that way for most of
+   * the rotation. The page supplies its own stable h1 instead and every slide
+   * heading renders as display-scale text.
+   */
+  ownsHeading = true,
 }: {
   slides: HeroSlide[];
   autoplay: boolean;
   interval: number;
   overlay?: number;
   fullViewport?: boolean;
+  ownsHeading?: boolean;
 }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -164,11 +176,12 @@ export function HeroSlider({
                 </div>
               ) : null}
 
-              {/* Only the opening slide is the document's h1. Giving every
-                  slide one would put three h1s on the homepage, and making it
-                  follow the active slide would rewrite the outline every time
-                  a timer fires — worse for a screen reader than a fixed one. */}
-              {i === 0 ? (
+              {/* Only the opening slide is the document's h1, and only when
+                  this slider owns the heading at all. Giving every slide one
+                  would put three h1s on the page, and making it follow the
+                  active slide would rewrite the outline every time a timer
+                  fires — worse for a screen reader than a fixed one. */}
+              {ownsHeading && i === 0 ? (
                 <h1 className="h1" style={{ marginBottom: 20 }}>
                   {slide.heading}
                 </h1>

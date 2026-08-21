@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { publishedProjects, projectMeta } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
+import { HeroSlider } from "@/components/ui/HeroSlider";
 import { Marquee } from "@/components/ui/Marquee";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
@@ -36,82 +37,29 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* 1 — Hero. Full height, content bottom-anchored and centred. */}
-      <section className="hero" style={{ minHeight: "100vh", display: "flex" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={home.hero.image}
-          alt={home.hero.imageAlt}
-          className="hero__img"
-          fetchPriority="high"
-        />
-        <div className="hero__wash hero__wash--up" />
-        <div
-          className="shell bm-rise"
-          style={{
-            position: "relative",
-            maxWidth: 1180,
-            alignSelf: "flex-end",
-            textAlign: "center",
-            paddingTop: 120,
-            paddingBottom: 76,
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 9,
-              padding: "7px 15px",
-              border: "1px solid var(--accent-line-strong)",
-              borderRadius: "var(--r-pill)",
-              marginBottom: 26,
-            }}
-          >
-            <span
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: "var(--accent-fill)",
-              }}
-            />
-            <span className="eyebrow" style={{ letterSpacing: "0.16em" }}>
-              {home.hero.eyebrow}
-            </span>
-          </div>
-
-          <h1 className="h1" style={{ marginBottom: 22 }}>
-            {home.hero.heading}
-            <span className="accent-word">{home.hero.accentTail}</span>
-          </h1>
-
-          <p
-            className="lead measure-640"
-            style={{ margin: "0 auto 14px" }}
-          >
-            {home.hero.lead}
-          </p>
-          <p className="mono-meta" style={{ margin: "0 auto 38px" }}>
-            {home.hero.promise}
-          </p>
-
-          <div
-            className="row-wrap"
-            style={{ gap: 11, justifyContent: "center" }}
-          >
-            {home.hero.ctas.map((cta) => (
-              <Link
-                key={cta.label}
-                href={cta.href}
-                className={`pill ${cta.style === "accent" ? "pill--accent" : "pill--outline"}`}
-              >
-                {cta.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 1 — Hero. The same slider visitors land on at `/`, so the opening
+          moment carries into the site rather than dropping to a still. Not
+          fullViewport here: the header sits in flow above it, and .slider
+          takes that height off the top so the arrows and counter stay clear
+          of the fold. */}
+      {home.heroSlider.slides.length > 0 ? (
+        <>
+          {/* The page's h1 lives here rather than on a slide. A slide heading
+              is only visible while its slide is showing, so an h1 inside the
+              rotation would go visibility:hidden seconds after load and stay
+              hidden for most of the cycle. This one is stable, and carries the
+              opening slide's wording so it matches what a visitor first
+              reads. */}
+          <h1 className="sr-only">{home.heroSlider.slides[0].heading}</h1>
+          <HeroSlider
+            slides={home.heroSlider.slides}
+            autoplay={home.heroSlider.autoplay}
+            interval={home.heroSlider.interval}
+            overlay={home.heroSlider.overlay}
+            ownsHeading={false}
+          />
+        </>
+      ) : null}
 
       {/* 2 — Trusted by. */}
       <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
