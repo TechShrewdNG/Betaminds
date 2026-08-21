@@ -9,6 +9,7 @@ import {
   projectMeta,
 } from "@/lib/projects";
 import { PromoVideo } from "@/components/ui/PromoVideo";
+import styles from "@/components/ui/ui.module.css";
 
 /** Pre-renders every published case study at build time. */
 export async function generateStaticParams() {
@@ -216,41 +217,45 @@ export default async function ProjectPage({
         </section>
       ) : null}
 
+      {/* Next project: a full-bleed band carrying that project's own
+          photograph, not a bordered card with its name in it. This is the
+          highest-value onward link on the page and it was set as plain text. */}
+      {next && next.slug !== project.slug ? (
+        <Link href={`/projects/${next.slug}`} className={styles.bleedBand}>
+          {next.heroImage || next.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={next.heroImage || next.image}
+              alt=""
+              className={styles.bleedImg}
+              loading="lazy"
+            />
+          ) : null}
+          <span className={styles.bleedWash} aria-hidden="true" />
+          <span className={styles.bleedInner}>
+            <span className={styles.bleedEyebrow}>{detail.nextLabel}</span>
+            <span className={styles.bleedName}>{next.name}</span>
+            <span className={styles.bleedMeta}>{projectMeta(next)}</span>
+            <span className={styles.bleedGo}>
+              {/* The CMS label already ends in an arrow. Strip it and render
+                  our own, so the glyph is a separate element the hover can
+                  move without dragging the words with it. */}
+              {doc.index.readLabel.replace(/\s*→\s*$/, "")}{" "}
+              <span aria-hidden="true">→</span>
+            </span>
+          </span>
+        </Link>
+      ) : null}
+
       <section data-reveal className="band band--ruled">
         <div className="shell section">
-          <div className="grid col2 col2--tight">
-            {next && next.slug !== project.slug ? (
-              <Link
-                href={`/projects/${next.slug}`}
-                className="panel"
-                style={{ display: "block", color: "var(--ink)" }}
-              >
-                <div className="eyebrow eyebrow--tight mb-18">
-                  {detail.nextLabel}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 700,
-                    fontSize: 26,
-                    letterSpacing: "-0.02em",
-                    marginBottom: 8,
-                  }}
-                >
-                  {next.name}
-                </div>
-                <div className="card-body">{projectMeta(next)}</div>
-              </Link>
-            ) : null}
-
-            <div className="panel panel--accent">
-              <h2 className="h3" style={{ marginBottom: 20 }}>
-                {detail.ctaHeading}
-              </h2>
-              <Link href={detail.ctaHref} className="pill pill--accent">
-                {detail.ctaLabel}
-              </Link>
-            </div>
+          <div className="panel panel--accent" style={{ textAlign: "center" }}>
+            <h2 className="h3" style={{ marginBottom: 20 }}>
+              {detail.ctaHeading}
+            </h2>
+            <Link href={detail.ctaHref} className="pill pill--accent">
+              {detail.ctaLabel}
+            </Link>
           </div>
         </div>
       </section>

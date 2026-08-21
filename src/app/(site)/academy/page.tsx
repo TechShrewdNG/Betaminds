@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
+import styles from "@/components/ui/ui.module.css";
 import { SchoolTabs } from "@/components/ui/SchoolTabs";
 import { Accordion } from "@/components/ui/Accordion";
 import { AcademyForm } from "@/components/forms/AcademyForm";
@@ -184,33 +185,21 @@ export default async function AcademyPage() {
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2 measure-520 mb-34">{academy.stats.heading}</h2>
-          <div className="grid col4">
-            {academy.stats.items.map((stat) => (
-              <div
-                key={stat.label}
-                className="card"
-                style={{ borderRadius: 16, padding: "32px 28px" }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 700,
-                    fontSize: 44,
-                    letterSpacing: "-0.04em",
-                    color: "var(--accent)",
-                    lineHeight: 1,
-                  }}
-                >
-                  {stat.n}
+          <div className={styles.statRow} data-stagger>
+            {academy.stats.items.map((stat) => {
+              // Split a trailing +, %, K or x onto its own span so the unit
+              // can carry the accent while the figure stays ink.
+              const m = /^(.*?)([+%KkMx]*)$/.exec(stat.n) ?? [];
+              return (
+                <div key={stat.label}>
+                  <div className={styles.statNum}>
+                    {m[1] ?? stat.n}
+                    {m[2] ? <span className={styles.statUnit}>{m[2]}</span> : null}
+                  </div>
+                  <div className={styles.statLabel}>{stat.label}</div>
                 </div>
-                <div
-                  className="mono-meta"
-                  style={{ fontSize: 11, marginTop: 12 }}
-                >
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

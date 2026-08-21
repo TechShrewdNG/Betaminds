@@ -328,6 +328,14 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "statement",
+        title: "Statement band",
+        note: "A scrolling strip of short brand lines, set large on ink between two sections. Keep them short — they move while you read them. Empty the list to remove the band.",
+        fields: {
+          lines: { kind: "list", label: "Lines" },
+        },
+      },
+      {
         key: "trusted",
         title: "Trusted by",
         note: "Scrolling client-logo strip. Leave a logo empty to show the name in a dashed placeholder box.",

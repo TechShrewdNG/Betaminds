@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import styles from "@/components/ui/ui.module.css";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { Accordion } from "@/components/ui/Accordion";
@@ -132,30 +133,21 @@ export default async function SummitPage() {
       {/* Event highlights. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
-          <div className="grid col5" data-stagger>
-            {summit.stats.items.map((stat) => (
-              <div
-                key={stat.label}
-                className="card"
-                style={{ padding: "30px 24px" }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 700,
-                    fontSize: 38,
-                    letterSpacing: "-0.04em",
-                    color: "var(--accent)",
-                    lineHeight: 1,
-                  }}
-                >
-                  {stat.n}
+          <div className={styles.statRow} data-stagger>
+            {summit.stats.items.map((stat) => {
+              // Split a trailing +, %, K or x onto its own span so the unit
+              // can carry the accent while the figure stays ink.
+              const m = /^(.*?)([+%KkMx]*)$/.exec(stat.n) ?? [];
+              return (
+                <div key={stat.label}>
+                  <div className={styles.statNum}>
+                    {m[1] ?? stat.n}
+                    {m[2] ? <span className={styles.statUnit}>{m[2]}</span> : null}
+                  </div>
+                  <div className={styles.statLabel}>{stat.label}</div>
                 </div>
-                <div className="mono-meta" style={{ marginTop: 11 }}>
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

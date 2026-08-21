@@ -5,6 +5,8 @@ import { publishedProjects, projectMeta } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 import { HeroSlider } from "@/components/ui/HeroSlider";
 import { Marquee } from "@/components/ui/Marquee";
+import { StatementBand } from "@/components/ui/StatementBand";
+import { MarkedText } from "@/components/ui/MarkedText";
 import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -79,7 +81,7 @@ export default async function HomePage() {
             <div>
               <div className="section-name mb-22">{home.about.eyebrow}</div>
               <h2 className="section-lede" style={{ marginBottom: 26 }}>
-                {home.about.heading}
+                <MarkedText>{home.about.heading}</MarkedText>
               </h2>
               <p className="body" style={{ marginBottom: 16 }}>
                 {home.about.body1}
@@ -315,6 +317,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* An ink strip of brand lines, breaking a long light stretch. Used once
+          on the page by design — a second would turn it into wallpaper. */}
+      <StatementBand lines={home.statement.lines} />
 
       {/* 6 — 04 / Media services. */}
       <section data-reveal className="band band--alt band--ruled">

@@ -257,6 +257,16 @@ export const defaults = {
         },
       ],
     },
+    /** Lines for the scrolling statement band. Kept short — they run at
+     *  display scale and have to be readable while moving. */
+    statement: {
+      lines: [
+        "We add the spark",
+        "Strategy first",
+        "Craft always",
+        "Growth you can measure",
+      ],
+    },
     trusted: {
       label: "Trusted by brands across Africa",
       logos: [
@@ -270,7 +280,7 @@ export const defaults = {
     },
     about: {
       eyebrow: "Who we are",
-      heading: "We take the idea all the way, not just the pretty part.",
+      heading: "We take the idea *all the way*, not just the _pretty part_.",
       body1:
         "Creativity meets strategy. We help brands establish a distinct identity and connect with their audience in ways that actually convert. Identity, content, commerce, and the systems that keep all of it running.",
       body2: "One team, from the first workshop to the campaign report.",
