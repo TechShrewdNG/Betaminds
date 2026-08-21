@@ -468,11 +468,17 @@
 /* --- Hover-reveal tiles (team, projects) --------------------------------- */
 
 /* Team grid: a swipeable carousel at every breakpoint, so the roster reads
-   as a browsable strip instead of a grid that either crowds five-across on
-   desktop or forces every card to the same width. The founder's card (first
-   member, .tileFeatured) gets a wider flex-basis at each breakpoint so it
-   keeps reading bigger than the rest. flex-basis shrinks per breakpoint to
-   keep 2–4 cards in view at once rather than one edge-to-edge card. */
+   as a browsable strip rather than a grid that crowds five-across on desktop.
+   flex-basis shrinks per breakpoint to keep 2–4 cards in view at once rather
+   than one edge-to-edge card.
+
+   Every card is the same width on purpose. The founder's card used to take a
+   much wider basis, and because flex stretches every item to the tallest one
+   while the portraits hold a fixed 3/4 ratio, the narrower cards ended up
+   with a card far taller than their picture — 271px of dead space under each
+   portrait at desktop, 233 at tablet, 96 at mobile. Equal widths make the
+   ratio resolve to one height for everyone, so the mismatch cannot arise.
+   The founder keeps a gold hairline instead, which costs no geometry. */
 .teamGrid {
   display: flex;
   flex-wrap: nowrap;
@@ -497,27 +503,37 @@
 }
 
 .tileFeatured {
-  flex-basis: 39%;
+  border-color: var(--accent-line-strong);
 }
 
 @media (max-width: 1000px) {
   .teamGrid > * {
-    flex-basis: 42%;
-  }
-
-  .tileFeatured {
-    flex-basis: 64%;
+    flex-basis: 38%;
   }
 }
 
 @media (max-width: 640px) {
   .teamGrid > * {
-    flex-basis: 62%;
+    flex-basis: 66%;
   }
+}
 
-  .tileFeatured {
-    flex-basis: 82%;
-  }
+/* --- Team card ----------------------------------------------------------- */
+
+.teamTile {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Holds the portrait and the hover overlay, so the overlay covers the picture
+   and stops short of the caption. */
+.tileMedia {
+  position: relative;
+  display: block;
+}
+
+.tileCaption {
+  padding: 14px 16px 16px;
 }
 
 .tile {
@@ -551,19 +567,6 @@
   .tile:focus-within .tileImg {
     transform: none;
   }
-}
-
-.tileScrim {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 16px 18px;
-  background: linear-gradient(
-    to top,
-    rgba(var(--scrim-rgb), 0.96),
-    transparent
-  );
 }
 
 .tileName {
@@ -710,11 +713,16 @@
 
 /* Touch devices have no hover, so reveal the overlays permanently. */
 @media (hover: none) {
+  /* No hover to reveal the socials, so they sit permanently as a bar across
+     the foot of the portrait. Pinned rather than static — pulling it into
+     flow would stretch the 3/4 media box and reintroduce the height mismatch
+     the caption split was meant to remove. */
   .tileHover {
     opacity: 1;
-    position: static;
-    background: rgba(232, 163, 61, 0.92);
-    padding: 14px;
+    inset: auto 0 0 0;
+    background: rgba(232, 163, 61, 0.94);
+    padding: 10px;
+    gap: 8px;
   }
 
   /* The caption is legible over the image on its own now, so touch no longer

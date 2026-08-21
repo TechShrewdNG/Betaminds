@@ -249,38 +249,47 @@ export default async function HomePage() {
             {home.team.members.map((member, index) => (
               <div
                 key={member.name}
-                className={`${styles.tile} ${index === 0 ? styles.tileFeatured : ""}`}
+                className={`${styles.tile} ${styles.teamTile} ${
+                  index === 0 ? styles.tileFeatured : ""
+                }`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className={`${styles.tileImg} ratio-3-4`}
-                  loading="lazy"
-                />
-                <div className={styles.tileScrim}>
+                {/* Portrait and caption are separate blocks. The caption used
+                    to be pinned over the bottom of the picture, which meant a
+                    two-line role pushed the name to a different height on
+                    every card. */}
+                <div className={styles.tileMedia}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className={`${styles.tileImg} ratio-3-4`}
+                    loading="lazy"
+                  />
+                  <div className={styles.tileHover}>
+                    {member.instagram ? (
+                      <a
+                        href={member.instagram}
+                        className={styles.socialCircle}
+                        aria-label={`${member.name} on Instagram`}
+                      >
+                        IG
+                      </a>
+                    ) : null}
+                    {member.linkedin ? (
+                      <a
+                        href={member.linkedin}
+                        className={styles.socialCircle}
+                        aria-label={`${member.name} on LinkedIn`}
+                      >
+                        IN
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className={styles.tileCaption}>
                   <div className={styles.tileName}>{member.name}</div>
                   <div className={styles.tileRole}>{member.role}</div>
-                </div>
-                <div className={styles.tileHover}>
-                  {member.instagram ? (
-                    <a
-                      href={member.instagram}
-                      className={styles.socialCircle}
-                      aria-label={`${member.name} on Instagram`}
-                    >
-                      IG
-                    </a>
-                  ) : null}
-                  {member.linkedin ? (
-                    <a
-                      href={member.linkedin}
-                      className={styles.socialCircle}
-                      aria-label={`${member.name} on LinkedIn`}
-                    >
-                      IN
-                    </a>
-                  ) : null}
                 </div>
               </div>
             ))}
