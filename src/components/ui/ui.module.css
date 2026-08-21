@@ -246,8 +246,12 @@
   color: var(--ink-88);
 }
 
+/* Gold, matching the identical tick list on the Academy page. The logo green
+   was used here and nowhere else, so the same pattern rendered in two colours
+   depending on which page you were on — and beside the accent numerals it
+   read as a status colour rather than part of the palette. */
 .tickMark {
-  color: var(--brand-green);
+  color: var(--accent);
   flex: none;
   margin-top: 1px;
 }
@@ -1630,6 +1634,8 @@
 .pkgRow {
   border-top: 1px solid var(--line);
   transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Clears the sticky header when the hero's contents rail jumps here. */
+  scroll-margin-top: 96px;
 }
 
 .pkgRow:last-child {
@@ -2000,4 +2006,129 @@
   .bleedBand:hover .bleedImg {
     transform: none;
   }
+}
+
+/* --- Index page heroes --------------------------------------------------- */
+
+/* Copy left, a rail of real information right. `end` alignment sits the rail
+   on the lead's baseline rather than floating it beside the heading. */
+.idxGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: 56px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .idxGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* The rule sits on each group rather than on the rail, so a rail whose only
+   group is hidden (the contents list, on a phone) leaves no orphaned line. */
+.idxGroup,
+.idxContents {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+
+.idxFact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.idxFact:last-child {
+  border-bottom: 0;
+}
+
+.idxFactValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+}
+
+.idxFactValue[data-long="true"] {
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.idxFactLabel {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+  text-align: right;
+}
+
+.idxRailLabel {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+  margin-bottom: 10px;
+}
+
+@media (max-width: 900px) {
+  .idxContents {
+    display: none;
+  }
+}
+
+.idxTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.idxTag {
+  padding: 6px 12px;
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-pill);
+  font-size: 12.5px;
+  color: var(--ink-84);
+  white-space: nowrap;
+}
+
+.idxList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.idxLink {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 14px;
+  color: var(--ink-88);
+  transition: color 0.2s ease;
+}
+
+.idxLink:hover {
+  color: var(--accent);
+}
+
+.idxLinkNum {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-50);
+  flex: none;
+}
+
+.idxLink:hover .idxLinkNum {
+  color: var(--accent);
 }

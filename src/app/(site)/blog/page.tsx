@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { publishedPosts, postMeta } from "@/lib/blog";
+import { IndexHero, IndexFacts } from "@/components/ui/IndexHero";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,23 +18,28 @@ export default async function BlogPage() {
   ]);
   const { index } = doc;
 
+  // Newest post supplies the hero photograph; the archive supplies the rail.
+  const latest = posts[0];
+
   return (
     <>
-      <section
-        style={{
-          background: "var(--surface-deep)",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        <div className="shell bm-rise" style={{ paddingTop: 130, paddingBottom: 72 }}>
-          <div className="eyebrow mb-22">{index.eyebrow}</div>
-          <h1 className="h1" style={{ marginBottom: 20 }}>
-            {index.heading}
-            <span className="accent-word">{index.accentTail}</span>
-          </h1>
-          <p className="lead measure-620">{index.lead}</p>
-        </div>
-      </section>
+      <IndexHero
+        image={latest?.coverImage}
+        eyebrow={index.eyebrow}
+        heading={index.heading}
+        accentTail={index.accentTail}
+        lead={index.lead}
+        rail={
+          posts.length > 0 ? (
+            <IndexFacts
+              items={[
+                { value: String(posts.length), label: "Posts" },
+                { value: latest?.date ?? "", label: "Latest" },
+              ].filter((item) => item.value !== "")}
+            />
+          ) : null
+        }
+      />
 
       <section data-reveal className="band band--ruled">
         <div className="shell section">

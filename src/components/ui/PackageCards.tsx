@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./ui.module.css";
 import type { MediaPackage } from "./MediaTabs";
@@ -27,6 +27,32 @@ export function PackageCards({
   // a closed-by-default list left the page as seven titles and nothing else.
   const [open, setOpen] = useState<number | null>(0);
 
+  // The hero's contents rail links to #pkg-N. Opening the row it lands on
+  // matters: jumping to a collapsed row shows a title and nothing else, which
+  // looks like the link went nowhere.
+  useEffect(() => {
+    const openFromHash = () => {
+      const match = /^#pkg-(\d+)$/.exec(window.location.hash);
+      if (!match) return;
+      const index = Number(match[1]);
+      if (index < 0 || index >= packages.length) return;
+      setOpen(index);
+      // The browser scrolls on the hash change, then this collapses whichever
+      // row was open — and if that row was above the target, everything shifts
+      // up by its panel height and the jump lands short. Re-scroll once the
+      // new heights are in the DOM.
+      requestAnimationFrame(() =>
+        document.getElementById(`pkg-${index}`)?.scrollIntoView({
+          block: "start",
+          behavior: "smooth",
+        }),
+      );
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, [packages.length]);
+
   return (
     <div className={styles.pkgList}>
       {packages.map((pkg, index) => {
@@ -34,6 +60,7 @@ export function PackageCards({
         return (
           <div
             key={pkg.label}
+            id={`pkg-${index}`}
             className={styles.pkgRow}
             data-open={isOpen ? "true" : "false"}
           >

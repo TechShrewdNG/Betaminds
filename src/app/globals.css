@@ -585,6 +585,26 @@ button {
   max-width: 740px;
 }
 
+/* Narrow reading and form columns, kept on the site's one left edge.
+
+   `.shell` centres itself, so putting a max-width straight on the shell pulls
+   the column into the middle of the page. Full-width sections above and below
+   stay flush left, so the reader's left margin jumps as they scroll past —
+   measured at x=60 for most sections but x=270/310/340 for these. Constraining
+   the shell's children instead keeps the column narrow *and* flush. */
+.col-760 > * {
+  max-width: 760px;
+}
+.col-820 > * {
+  max-width: 820px;
+}
+.col-900 > * {
+  max-width: 900px;
+}
+.col-920 > * {
+  max-width: 920px;
+}
+
 /* --- Buttons ------------------------------------------------------------- */
 
 .pill {

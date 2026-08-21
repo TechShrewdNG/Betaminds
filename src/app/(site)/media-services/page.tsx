@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
+import { publishedProjects, projectMeta } from "@/lib/projects";
 import { PackageCards } from "@/components/ui/PackageCards";
+import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
+import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("media");
@@ -9,30 +13,31 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function MediaServicesPage() {
-  const media = await getContent("media");
+  const [media, projects] = await Promise.all([
+    getContent("media"),
+    publishedProjects(),
+  ]);
+  const proof = projects.slice(0, 3);
 
   return (
     <>
-      <section className="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={media.hero.image}
-          alt={media.hero.imageAlt}
-          className="hero__img"
-          fetchPriority="high"
-        />
-        <div className="hero__wash" />
-        <div className="shell hero__body" style={{ paddingBottom: 90 }}>
-          <div className="bm-rise" style={{ maxWidth: 800 }}>
-            <div className="eyebrow mb-22">{media.hero.eyebrow}</div>
-            <h1 className="h1" style={{ lineHeight: 1, marginBottom: 20 }}>
-              {media.hero.heading}
-              <span className="accent-word">{media.hero.accentTail}</span>
-            </h1>
-            <p className="lead measure-620">{media.hero.lead}</p>
-          </div>
-        </div>
-      </section>
+      <IndexHero
+        image={media.hero.image}
+        imageAlt={media.hero.imageAlt}
+        eyebrow={media.hero.eyebrow}
+        heading={media.hero.heading}
+        accentTail={media.hero.accentTail}
+        lead={media.hero.lead}
+        rail={
+          <IndexContents
+            label={media.packages.contentsLabel}
+            items={media.packages.items.map((pkg, index) => ({
+              href: `#pkg-${index}`,
+              text: pkg.label,
+            }))}
+          />
+        }
+      />
 
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
@@ -43,6 +48,50 @@ export default async function MediaServicesPage() {
           />
         </div>
       </section>
+
+      {/* Proof. The page was a hero and a price list and nothing else — seven
+          claims about the work with none of the work anywhere in sight. These
+          are the published case studies, newest first. */}
+      {proof.length > 0 ? (
+        <section data-reveal className="band band--ruled">
+          <div className="shell section">
+            <div className="split mb-34">
+              <h2 className="h2">{media.proof.heading}</h2>
+              <Link href="/projects" className={styles.pkgLink}>
+                {media.proof.linkLabel} <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <div className="grid col3 carousel-mobile" data-stagger>
+              {proof.map((project) => (
+                <Link
+                  key={project.slug}
+                  href={`/projects/${project.slug}`}
+                  className={styles.tile}
+                >
+                  {project.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={project.image}
+                      alt={project.name}
+                      className={`${styles.tileImg} ratio-4-3`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div
+                      className="ratio-4-3"
+                      style={{ background: "var(--surface-alt)" }}
+                    />
+                  )}
+                  <div className={styles.workHover}>
+                    <div className={styles.workMeta}>{projectMeta(project)}</div>
+                    <div className={styles.workName}>{project.name}</div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

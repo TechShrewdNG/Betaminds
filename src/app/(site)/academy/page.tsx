@@ -269,7 +269,7 @@ export default async function AcademyPage() {
 
       {/* FAQ. */}
       <section data-reveal className="band band--ruled">
-        <div className="shell section" style={{ maxWidth: 900 }}>
+        <div className="shell section col-900">
           <h2 className="h2" style={{ marginBottom: 30 }}>
             {academy.faq.heading}
           </h2>
@@ -395,7 +395,7 @@ export default async function AcademyPage() {
           behind it entering the viewport for a tall one — see the same
           note on Digital Ecosystem's questionnaire section. */}
       <section id="apply" className="band band--ruled">
-        <div className="shell section" style={{ maxWidth: 760 }}>
+        <div className="shell section col-760">
           <div className="panel">
             <h2 className="h2" style={{ marginBottom: 12 }}>
               {academy.apply.heading}

@@ -78,7 +78,7 @@ export default async function BlogPostPage({
       </section>
 
       <section data-reveal className="band band--ruled">
-        <div className="shell section" style={{ maxWidth: 820 }}>
+        <div className="shell section col-820">
           {post.excerpt ? (
             <p
               className="quote"

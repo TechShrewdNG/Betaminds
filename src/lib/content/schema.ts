@@ -870,10 +870,25 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "proof",
+        title: "Work",
+        note: "Shows the three newest published projects.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          linkLabel: { kind: "text", label: "Link label" },
+        },
+      },
+      {
         key: "packages",
         title: "Packages",
         note: "Also drives the homepage media tabs.",
         fields: {
+          contentsLabel: {
+            kind: "text",
+            label: "Hero contents label",
+            mono: true,
+            help: "Sits above the package list in the hero rail.",
+          },
           deliverablesLabel: {
             kind: "text",
             label: "Deliverables label",

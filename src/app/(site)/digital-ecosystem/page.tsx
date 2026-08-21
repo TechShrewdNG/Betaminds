@@ -107,7 +107,7 @@ export default async function EcosystemPage() {
           uploaded. */}
       {eco.promo.video ? (
         <section data-reveal className="band band--ruled">
-          <div className="shell section" style={{ maxWidth: 920, margin: "0 auto" }}>
+          <div className="shell section col-920">
             <PromoVideo
               video={eco.promo.video}
               poster={eco.promo.poster}

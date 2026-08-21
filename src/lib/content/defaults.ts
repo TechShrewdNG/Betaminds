@@ -850,7 +850,12 @@ export const defaults = {
       accentTail: ".",
       lead: "Seven packages, each with a defined scope and defined deliverables. Pick one, or let us shape a combination around the brief.",
     },
+    proof: {
+      heading: "The work behind the packages",
+      linkLabel: "All projects",
+    },
     packages: {
+      contentsLabel: "In this page",
       deliverablesLabel: "Deliverables",
       enquirePrefix: "Enquire about",
       items: [

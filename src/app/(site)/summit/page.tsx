@@ -406,7 +406,7 @@ export default async function SummitPage() {
 
       {/* FAQ. */}
       <section data-reveal className="band band--alt band--ruled">
-        <div className="shell section" style={{ maxWidth: 900 }}>
+        <div className="shell section col-900">
           <h2 className="h2" style={{ marginBottom: 30 }}>
             {summit.faq.heading}
           </h2>
@@ -521,7 +521,7 @@ export default async function SummitPage() {
           form sections — a tall or growing form shouldn't be gated behind
           a scroll threshold that can lag well behind it being on screen. */}
       <section id="interest" className="band band--alt band--ruled">
-        <div className="shell section" style={{ maxWidth: 760 }}>
+        <div className="shell section col-760">
           <div className="panel">
             <h2 className="h2" style={{ marginBottom: 12 }}>
               {summit.interest.heading}

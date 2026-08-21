@@ -113,7 +113,7 @@ export default async function ProjectPage({
 
       {sections.length > 0 ? (
         <section data-reveal className="band band--ruled">
-          <div className="shell section" style={{ maxWidth: 820 }}>
+          <div className="shell section col-820">
             {sections.map((section) => (
               <div key={section.label} style={{ marginBottom: 44 }}>
                 <h2 className="h3" style={{ marginBottom: 14 }}>
@@ -166,7 +166,7 @@ export default async function ProjectPage({
 
       {project.video ? (
         <section data-reveal className="band band--ruled">
-          <div className="shell section" style={{ maxWidth: 920, margin: "0 auto" }}>
+          <div className="shell section col-920">
             <PromoVideo
               video={project.video}
               poster={project.heroImage}

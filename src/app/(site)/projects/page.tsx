@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { publishedProjects, projectMeta } from "@/lib/projects";
+import { IndexHero, IndexTags } from "@/components/ui/IndexHero";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,26 +18,23 @@ export default async function ProjectsPage() {
   ]);
   const { index } = doc;
 
+  // The newest published project supplies the hero photograph, and the archive
+  // itself supplies the rail — no new CMS fields for either.
+  const featured = projects[0];
+  const industries = [
+    ...new Set(projects.map((project) => project.industry).filter(Boolean)),
+  ];
+
   return (
     <>
-      <section
-        style={{
-          background: "var(--surface-deep)",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        <div
-          className="shell bm-rise"
-          style={{ paddingTop: 130, paddingBottom: 72 }}
-        >
-          <div className="eyebrow mb-22">{index.eyebrow}</div>
-          <h1 className="h1" style={{ marginBottom: 20 }}>
-            {index.heading}
-            <span className="accent-word">{index.accentTail}</span>
-          </h1>
-          <p className="lead measure-620">{index.lead}</p>
-        </div>
-      </section>
+      <IndexHero
+        image={featured?.heroImage || featured?.image}
+        eyebrow={index.eyebrow}
+        heading={index.heading}
+        accentTail={index.accentTail}
+        lead={index.lead}
+        rail={<IndexTags label="Industries" items={industries} />}
+      />
 
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
