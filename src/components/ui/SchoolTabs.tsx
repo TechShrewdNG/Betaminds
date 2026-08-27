@@ -131,15 +131,22 @@ export function SchoolTabs({
         </div>
       </div>
 
+      {/* A band, not a wall. At 16:9 across the content column this photograph
+          stood 709px tall and pushed the first course to y=1945 — two screens
+          of scrolling before you saw a single course on the courses page. It
+          carries the school name now, so the space it takes does some work. */}
       {current?.image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={current.name}
-          src={current.image}
-          alt={current.imageAlt || current.name}
-          className={`${styles.schoolBanner} ratio-16-9`}
-          loading="lazy"
-        />
+        <div key={current.name} className={styles.schoolBanner}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={current.image}
+            alt={current.imageAlt || current.name}
+            className={styles.schoolBannerImg}
+            loading="lazy"
+          />
+          <span className={styles.schoolBannerWash} aria-hidden="true" />
+          <span className={styles.schoolBannerName}>{current.name}</span>
+        </div>
       ) : null}
 
       <div id="courses-panel" role="tabpanel" className="grid col3 carousel-mobile">

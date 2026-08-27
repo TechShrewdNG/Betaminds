@@ -22,6 +22,7 @@ export function IndexHero({
   heading,
   accentTail,
   lead,
+  cta,
   rail,
 }: {
   image?: string;
@@ -30,6 +31,7 @@ export function IndexHero({
   heading: string;
   accentTail?: string;
   lead: string;
+  cta?: ReactNode;
   rail?: ReactNode;
 }) {
   return (
@@ -50,6 +52,7 @@ export function IndexHero({
               ) : null}
             </h1>
             <p className="lead measure-620">{lead}</p>
+            {cta ? <div style={{ marginTop: 30 }}>{cta}</div> : null}
           </div>
           {rail ? <div className={styles.idxRail}>{rail}</div> : null}
         </div>
@@ -103,31 +106,50 @@ export function IndexTags({ label, items }: { label: string; items: string[] }) 
   );
 }
 
-/** A contents list down the rail, for a page that is one long list. */
+/** A numbered list down the rail — a page's contents, or a set of steps. */
 export function IndexContents({
   label,
   items,
+  hideOnMobile = false,
 }: {
   label: string;
-  items: { href: string; text: string }[];
+  items: { href?: string; text: string }[];
+  /**
+   * For a list that repeats what the page shows anyway. Stacked on a phone the
+   * rail has no empty column to fill, so a contents index becomes a seven-item
+   * list you scroll past to reach the seven-item list itself. Leave it off for
+   * a rail carrying something the page does not say twice.
+   */
+  hideOnMobile?: boolean;
 }) {
   return (
-    // Desktop only. The rail exists to fill the hero's empty right column;
-    // stacked on a phone there is no empty column, and the index turns into a
-    // seven-item list you scroll past to reach the seven-item list itself.
-    <div className={styles.idxContents}>
+    <div className={hideOnMobile ? styles.idxContents : styles.idxGroup}>
       <div className={styles.idxRailLabel}>{label}</div>
       <ol className={styles.idxList}>
-        {items.map((item, index) => (
-          <li key={item.href}>
-            <a href={item.href} className={styles.idxLink}>
+        {items.map((item, index) => {
+          const body = (
+            <>
               <span className={styles.idxLinkNum} aria-hidden="true">
                 {String(index + 1).padStart(2, "0")}
               </span>
               {item.text}
-            </a>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={item.text}>
+              {/* Numbered steps use the same rail, without being links. */}
+              {item.href ? (
+                <a href={item.href} className={styles.idxLink}>
+                  {body}
+                </a>
+              ) : (
+                <span className={styles.idxLink} data-static="true">
+                  {body}
+                </span>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </div>
   );

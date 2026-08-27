@@ -1428,6 +1428,12 @@ export const defaults = {
       lead: "Tell us what you're building. We'll tell you honestly whether we're the right team for it, and what we'd do first.",
       ctaLabel: "Book a discovery call →",
       ctaHref: "/digital-ecosystem#book",
+      stepsLabel: "What happens next",
+      steps: [
+        "You send the brief, or book a call.",
+        "We reply within one working day.",
+        "We tell you what we'd do first, and what it costs.",
+      ],
     },
     form: {
       heading: "Send us a brief",

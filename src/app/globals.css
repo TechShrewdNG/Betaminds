@@ -592,6 +592,19 @@ button {
    stay flush left, so the reader's left margin jumps as they scroll past —
    measured at x=60 for most sections but x=270/310/340 for these. Constraining
    the shell's children instead keeps the column narrow *and* flush. */
+/* Contact details that are links now look like links on interaction, without
+   an underline sitting under every phone number at rest. */
+.contact-link {
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .col-760 > * {
   max-width: 760px;
 }

@@ -4,50 +4,71 @@ import { Suspense } from "react";
 import { getContent, getGlobal } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { BriefForm } from "@/components/forms/BriefForm";
+import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
+import { contactHref, withDestination } from "@/lib/contact";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("work");
   return pageMetadata(seo, "/lets-work");
 }
 
+/**
+ * A contact row's value, linked when it is something you can act on.
+ * Falls back to plain text for a street address.
+ */
+function ContactValue({ value }: { value: string }) {
+  const href = contactHref(value);
+  const style = {
+    fontFamily: "var(--font-body)",
+    fontWeight: 500,
+    fontSize: 16,
+    color: "var(--ink-94)",
+    lineHeight: 1.5,
+    textWrap: "pretty",
+  } as const;
+
+  if (!href) return <div style={style}>{value}</div>;
+
+  return (
+    <a
+      href={href}
+      className="contact-link"
+      style={style}
+      {...(href.startsWith("http")
+        ? { target: "_blank", rel: "noreferrer noopener" }
+        : {})}
+    >
+      {value}
+    </a>
+  );
+}
+
 export default async function LetsWorkPage() {
   const [work, global] = await Promise.all([getContent("work"), getGlobal()]);
+  const socials = withDestination(global.contact.socials);
 
   return (
     <>
-      <section className="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={work.hero.image}
-          alt={work.hero.imageAlt}
-          className="hero__img"
-          fetchPriority="high"
-        />
-        <div
-          className="hero__wash"
-          style={{
-            background:
-              "linear-gradient(110deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.62))",
-          }}
-        />
-        <div className="shell hero__body">
-          <div className="bm-rise" style={{ maxWidth: 760 }}>
-            <div className="eyebrow mb-22">{work.hero.eyebrow}</div>
-            <h1 className="h1" style={{ lineHeight: 1, marginBottom: 20 }}>
-              {work.hero.heading}
-            </h1>
-            <p
-              className="lead"
-              style={{ maxWidth: 560, marginBottom: 34 }}
-            >
-              {work.hero.lead}
-            </p>
-            <Link href={work.hero.ctaHref} className="pill pill--accent pill--lg">
-              {work.hero.ctaLabel}
-            </Link>
-          </div>
-        </div>
-      </section>
+      <IndexHero
+        image={work.hero.image}
+        imageAlt={work.hero.imageAlt}
+        eyebrow={work.hero.eyebrow}
+        heading={work.hero.heading}
+        lead={work.hero.lead}
+        cta={
+          <Link href={work.hero.ctaHref} className="pill pill--accent pill--lg">
+            {work.hero.ctaLabel}
+          </Link>
+        }
+        rail={
+          work.hero.steps.length > 0 ? (
+            <IndexContents
+              label={work.hero.stepsLabel}
+              items={work.hero.steps.map((step) => ({ text: step }))}
+            />
+          ) : null
+        }
+      />
 
       <section data-reveal className="band band--ruled">
         <div className="shell section">
@@ -60,22 +81,12 @@ export default async function LetsWorkPage() {
                     <div className="eyebrow eyebrow--tight" style={{ marginBottom: 8 }}>
                       {row.label}
                     </div>
-                    <div
-                      style={{
-                        fontFamily: "var(--font-body)",
-                        fontWeight: 500,
-                        fontSize: 16,
-                        color: "var(--ink-94)",
-                        lineHeight: 1.5,
-                        textWrap: "pretty",
-                      }}
-                    >
-                      {row.value}
-                    </div>
+                    <ContactValue value={row.value} />
                   </div>
                 ))}
               </div>
 
+              {socials.length > 0 ? (
               <div className="panel" style={{ padding: "26px 28px" }}>
                 <div
                   className="eyebrow eyebrow--muted eyebrow--tight"
@@ -84,11 +95,13 @@ export default async function LetsWorkPage() {
                   {global.contact.socialsLabel}
                 </div>
                 <div className="row-wrap" style={{ gap: 9 }}>
-                  {global.contact.socials.map((social) => (
+                  {socials.map((social) => (
                     <a
                       key={social.label}
                       href={social.href}
                       aria-label={social.label}
+                      target="_blank"
+                      rel="noreferrer noopener"
                       style={{
                         width: 44,
                         height: 44,
@@ -108,6 +121,7 @@ export default async function LetsWorkPage() {
                   ))}
                 </div>
               </div>
+              ) : null}
             </div>
 
             <div className="panel" style={{ padding: "40px 38px" }}>

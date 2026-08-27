@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import styles from "./Footer.module.css";
 import type { ContentDefaults } from "@/lib/content/defaults";
+import { contactHref, withDestination } from "@/lib/contact";
 
 type Global = ContentDefaults["global"];
 
@@ -29,6 +30,7 @@ export function Footer({
   contact: Global["contact"];
 }) {
   const [open, setOpen] = useState(false);
+  const socials = withDestination(contact.socials);
 
   return (
     <footer className={`band--ink ${styles.footer}`}>
@@ -59,8 +61,13 @@ export function Footer({
           </span>
         </button>
 
-        {open ? (
-          <div id="footer-panel" className={styles.panel}>
+        {/* Always rendered, hidden when closed rather than absent. The whole
+            footer — quick links, contact details, legal, copyright — lives in
+            here, so conditional rendering kept the site's entire footer out of
+            the DOM until someone clicked an envelope. Crawlers and assistive
+            tech never saw it. `.panel` sets no display of its own, so plain
+            [hidden] collapses it. */}
+        <div id="footer-panel" className={styles.panel} hidden={!open}>
             <div className={styles.top}>
               <div>
                 {/* Footer uses the full stacked lockup at 156px. */}
@@ -72,18 +79,20 @@ export function Footer({
                 />
                 <p className={styles.tagline}>{brand.tagline}</p>
 
-                {contact.socials.length > 0 ? (
+                {socials.length > 0 ? (
                   <div className={styles.socialsBlock}>
                     <div className={styles.socialsLabel}>
                       {contact.socialsLabel}
                     </div>
                     <div className={styles.socials}>
-                      {contact.socials.map((social) => (
+                      {socials.map((social) => (
                         <a
                           key={social.label}
                           href={social.href}
                           aria-label={social.label}
                           className={styles.socialLink}
+                          target="_blank"
+                          rel="noreferrer noopener"
                         >
                           {social.label}
                         </a>
@@ -120,7 +129,18 @@ export function Footer({
                     <Icon name={contactIcon(row.label)} size={13} />
                     {row.label}
                   </div>
-                  <div className={styles.backValue}>{row.value}</div>
+                  {/* Same reasoning as the contact page: an email or phone
+                      number rendered as text is something you have to copy by
+                      hand. */}
+                  <div className={styles.backValue}>
+                    {contactHref(row.value) ? (
+                      <a href={contactHref(row.value) as string} className="contact-link">
+                        {row.value}
+                      </a>
+                    ) : (
+                      row.value
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -134,15 +154,18 @@ export function Footer({
             <div className={styles.legalRow}>
               <div>{footer.copyright}</div>
               <div className={styles.legalLinks}>
-                {footer.legalLinks.map((link) => (
+                {/* Only the ones that lead somewhere. These sat on the seeded
+                    "#" placeholder, which was invisible while the panel was
+                    conditionally rendered and became two dead links on every
+                    page the moment it wasn't. */}
+                {withDestination(footer.legalLinks).map((link) => (
                   <Link key={link.label} href={link.href}>
                     {link.label}
                   </Link>
                 ))}
               </div>
             </div>
-          </div>
-        ) : null}
+        </div>
       </div>
     </footer>
   );

@@ -1322,6 +1322,12 @@ export const schemas: DocSchema[] = [
           lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
+          stepsLabel: { kind: "text", label: "Steps label", mono: true },
+          steps: {
+            kind: "list",
+            label: "What happens next",
+            help: "Shown beside the headline. Three works best.",
+          },
         },
       },
       {

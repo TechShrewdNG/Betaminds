@@ -30,6 +30,7 @@ export default async function MediaServicesPage() {
         lead={media.hero.lead}
         rail={
           <IndexContents
+            hideOnMobile
             label={media.packages.contentsLabel}
             items={media.packages.items.map((pkg, index) => ({
               href: `#pkg-${index}`,
