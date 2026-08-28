@@ -12,6 +12,7 @@ import { Testimonials } from "@/components/ui/Testimonials";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { PromoVideo } from "@/components/ui/PromoVideo";
 import styles from "@/components/ui/ui.module.css";
+import { SplitText } from "@/components/ui/SplitText";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("home");
@@ -192,7 +193,9 @@ export default async function HomePage() {
         <div className="shell section">
           <div className="mb-34">
             <div className="section-name mb-18">{home.team.eyebrow}</div>
-            <h2 className="section-lede">{home.team.heading}</h2>
+            <h2 className="section-lede">
+              <SplitText text={home.team.heading} />
+            </h2>
           </div>
 
           <div className={styles.teamGrid}>
@@ -255,7 +258,7 @@ export default async function HomePage() {
               <div>
                 <div className="section-name mb-18">{home.marketplace.eyebrow}</div>
                 <h2 className="section-lede" style={{ marginBottom: 22 }}>
-                  {home.marketplace.heading}
+                  <SplitText text={home.marketplace.heading} />
                 </h2>
                 <p className="body" style={{ marginBottom: 28 }}>
                   {home.marketplace.body}
@@ -327,7 +330,9 @@ export default async function HomePage() {
         <div className="shell section">
           <div className="section-name mb-18">{home.media.eyebrow}</div>
           <div className="split mb-34">
-            <h2 className="section-lede measure-620">{home.media.heading}</h2>
+            <h2 className="section-lede measure-620">
+              <SplitText text={home.media.heading} />
+            </h2>
             <Link href="/media-services" className="link-underline">
               {home.media.linkLabel}
             </Link>
@@ -364,7 +369,7 @@ export default async function HomePage() {
           <div className="measure-660">
             <div className="section-name mb-18">{home.summit.eyebrow}</div>
             <h2 className="section-lede" style={{ marginBottom: 20 }}>
-              {home.summit.heading}
+              <SplitText text={home.summit.heading} />
             </h2>
             <p className="body" style={{ color: "var(--ink-84)" }}>
               {home.summit.body}
@@ -401,7 +406,9 @@ export default async function HomePage() {
         <div className="shell section">
           <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
           <div className="split mb-34">
-            <h2 className="section-lede">{home.portfolio.heading}</h2>
+            <h2 className="section-lede">
+              <SplitText text={home.portfolio.heading} />
+            </h2>
             <div className="row-wrap" style={{ gap: 20, alignItems: "baseline" }}>
               <div style={{ fontSize: 14.5, color: "var(--ink-70)" }}>
                 {home.portfolio.note}
@@ -453,7 +460,9 @@ export default async function HomePage() {
         <div className="shell section">
           <div className="section-name mb-18">{home.academy.eyebrow}</div>
           <div className="split mb-34">
-            <h2 className="section-lede measure-620">{home.academy.heading}</h2>
+            <h2 className="section-lede measure-620">
+              <SplitText text={home.academy.heading} />
+            </h2>
             <Link href={home.academy.ctaHref} className="pill pill--accent">
               {home.academy.ctaLabel}
             </Link>
@@ -466,7 +475,12 @@ export default async function HomePage() {
                 style={{ borderRadius: 12, border: "1px solid var(--line)" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={tile.image} alt={tile.label} loading="lazy" />
+                <img
+                  src={tile.image}
+                  alt={tile.label}
+                  className="bm-settle"
+                  loading="lazy"
+                />
                 <div
                   style={{
                     position: "absolute",
@@ -504,7 +518,9 @@ export default async function HomePage() {
           <div className="shell section">
             <div className="mb-40">
               <div className="section-name mb-18">{home.commercials.eyebrow}</div>
-              <h2 className="section-lede">{home.commercials.heading}</h2>
+              <h2 className="section-lede">
+                <SplitText text={home.commercials.heading} />
+              </h2>
             </div>
             <div className="grid col2">
               {home.commercials.marketplace.video ? (
@@ -542,6 +558,7 @@ export default async function HomePage() {
             <img
               src={home.finalCta.image}
               alt={home.finalCta.imageAlt}
+              className="bm-settle"
               loading="lazy"
             />
             <div

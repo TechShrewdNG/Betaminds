@@ -9,6 +9,7 @@ import {
   NewsletterForm,
 } from "@/components/forms/SummitForms";
 import { resolveForm } from "@/lib/forms/resolve";
+import { Counter } from "@/components/ui/Counter";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("summit");
@@ -141,7 +142,7 @@ export default async function SummitPage() {
               return (
                 <div key={stat.label}>
                   <div className={styles.statNum}>
-                    {m[1] ?? stat.n}
+                    <Counter value={m[1] ?? stat.n} />
                     {m[2] ? <span className={styles.statUnit}>{m[2]}</span> : null}
                   </div>
                   <div className={styles.statLabel}>{stat.label}</div>

@@ -10,6 +10,7 @@ import {
 } from "@/lib/projects";
 import { PromoVideo } from "@/components/ui/PromoVideo";
 import styles from "@/components/ui/ui.module.css";
+import { Counter } from "@/components/ui/Counter";
 
 /** Pre-renders every published case study at build time. */
 export async function generateStaticParams() {
@@ -152,7 +153,7 @@ export default async function ProjectPage({
                       lineHeight: 1,
                     }}
                   >
-                    {result.n}
+                    <Counter value={result.n} />
                   </div>
                   <div className="mono-meta" style={{ fontSize: 11, marginTop: 12 }}>
                     {result.label}
@@ -188,6 +189,7 @@ export default async function ProjectPage({
                   <img
                     src={src}
                     alt={`${project.name}, image ${index + 1}`}
+                    className="bm-settle"
                     loading="lazy"
                   />
                 </div>

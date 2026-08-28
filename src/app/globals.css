@@ -244,6 +244,34 @@ button {
   animation-delay: var(--bm-delay, 0ms);
 }
 
+/* Photographs settle rather than appearing at rest. Opt in with .bm-settle.
+
+   Scoped to the reveal system: the image only starts scaled if .js-reveal is
+   on <html>, and only settles once its section is tagged .bm-rise — so with JS
+   off, or before hydration, every image is simply at 1. The wrapper must clip
+   (.frame sets overflow: hidden) so the 1.06 start doesn't spill past the
+   corner radius.
+
+   Deliberately not applied to .tileImg: those already animate transform on
+   hover, and two rules driving one property on the same element fight. */
+.js-reveal [data-reveal] .bm-settle {
+  transform: scale(1.06);
+}
+
+[data-reveal].bm-rise .bm-settle {
+  transform: none;
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A word in a split heading. inline-block so the rise transform applies —
+   transforms do nothing on an inline box. The spaces between words are real
+   text nodes outside these spans, so wrapping and text-wrap: balance are
+   unchanged from the same heading set as plain text. */
+.bm-word {
+  display: inline-block;
+  will-change: transform;
+}
+
 /* Scroll reveal: ScrollReveal.tsx adds .bm-rise to [data-reveal] sections as
    they enter the viewport, once. Elements only go invisible-until-revealed
    once .js-reveal (added by that same script) lands on <html> — so a page
@@ -260,6 +288,9 @@ button {
   /* Handoff: kill the marquee and the rise, keep opacity fades. */
   .bm-marquee-track {
     animation: none !important;
+    transform: none !important;
+  }
+  .js-reveal [data-reveal] .bm-settle {
     transform: none !important;
   }
   .bm-rise,

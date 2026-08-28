@@ -7,6 +7,7 @@ import { SchoolTabs } from "@/components/ui/SchoolTabs";
 import { Accordion } from "@/components/ui/Accordion";
 import { AcademyForm } from "@/components/forms/AcademyForm";
 import { resolveForm } from "@/lib/forms/resolve";
+import { Counter } from "@/components/ui/Counter";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("academy");
@@ -193,7 +194,7 @@ export default async function AcademyPage() {
               return (
                 <div key={stat.label}>
                   <div className={styles.statNum}>
-                    {m[1] ?? stat.n}
+                    <Counter value={m[1] ?? stat.n} />
                     {m[2] ? <span className={styles.statUnit}>{m[2]}</span> : null}
                   </div>
                   <div className={styles.statLabel}>{stat.label}</div>
