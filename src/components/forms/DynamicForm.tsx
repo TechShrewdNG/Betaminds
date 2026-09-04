@@ -3,6 +3,7 @@
 import styles from "./form.module.css";
 import { Field, Honeypot, SelectField, TextareaField } from "./Field";
 import type { FormField, FormGroup } from "@/lib/forms/definition";
+import { autocompleteFor } from "@/lib/forms/autocomplete";
 import { held, type FormState } from "@/lib/form-state";
 
 /**
@@ -27,6 +28,7 @@ function FieldControl({
     error: state.errors[field.key],
     placeholder: field.placeholder || undefined,
     defaultValue: held(state, field.key),
+    autoComplete: autocompleteFor(field),
   };
 
   if (field.type === "textarea") {

@@ -19,8 +19,16 @@ export default async function SiteLayout({
   return (
     <>
       <ScrollReveal />
+      {/* Off screen until focused. The sticky header carries eight nav links
+          plus a CTA, so without this a keyboard or screen-reader user tabs
+          through ten controls before reaching the page on every route. */}
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <Header brand={global.brand} nav={global.nav} />
-      <main id="main">{children}</main>
+      <main id="main" tabIndex={-1}>
+        {children}
+      </main>
       <Footer
         brand={global.brand}
         footer={global.footer}

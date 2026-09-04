@@ -147,11 +147,19 @@
 }
 
 /* Two ink bars and one short accent bar. */
+/* The primary navigation control on a phone, so it gets a full tap target.
+   The bars stay 20px wide — the box grows around them, it isn't drawn bigger.
+   Measured at 36x29 before this, under the 44px guideline. */
 .burger {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 4px;
-  padding: 8px;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;

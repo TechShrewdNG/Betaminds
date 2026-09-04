@@ -627,6 +627,12 @@ button {
    an underline sitting under every phone number at rest. */
 .contact-link {
   display: block;
+  /* Padded to a comfortable tap target — these are phone numbers and email
+     addresses on a phone, and at their natural 24px line height they were a
+     small thing to hit. The negative margin keeps the row's spacing as it
+     was, so only the hit area grows. */
+  padding: 8px 0;
+  margin: -8px 0;
   transition: color 0.2s ease;
 }
 
@@ -1126,6 +1132,41 @@ button {
 }
 
 /* --- Utility ------------------------------------------------------------- */
+
+/* Skip link. Sits off screen until it takes focus, then lands as a normal
+   accent pill in the top-left. Above the sticky header's z-index so it isn't
+   covered at the moment it appears. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  transform: translateY(-160%);
+  padding: 12px 20px;
+  border-radius: var(--r-pill);
+  background: var(--accent-fill);
+  color: var(--on-accent);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+/* :focus as well as :focus-visible. A skip link is reached by keyboard and
+   nothing else, so there is no stray-mouse-focus case that :focus-visible
+   needs to filter out here, and the plain :focus is the wider-supported of
+   the two. */
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* The target takes focus programmatically, so it must not draw a ring of its
+   own around the whole page. */
+main:focus,
+main:focus-visible {
+  outline: none;
+}
 
 .sr-only {
   position: absolute;
