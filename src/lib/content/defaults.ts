@@ -49,7 +49,7 @@ const f = (
 });
 
 /**
- * Shorthand for a portfolio project.
+ * Shorthand for a case-study project.
  *
  * The structure is real; the narrative copy is placeholder, and `results` is left
  * empty on purpose. Inventing performance figures for a client's case study would
@@ -83,22 +83,46 @@ const proj = (
   published: true,
 });
 
+/**
+ * Shorthand for a blog post.
+ *
+ * The structure is real; the body copy is placeholder. The editor replaces it
+ * with the actual post before publishing.
+ */
+const post = (
+  slug: string,
+  title: string,
+  author: string,
+  date: string,
+  cover: string,
+) => ({
+  slug,
+  title,
+  excerpt: `Replace this with a one- or two-line summary of "${title}".`,
+  coverImage: cover,
+  body: "Replace this with the full post. A blank line starts a new paragraph.",
+  author,
+  date,
+  published: true,
+});
+
 export const defaults = {
   global: {
     brand: {
       logo: "/BETAMINDS-AFRICA.png",
-      wordmark: "BETAMINDS",
-      wordmarkSub: "AFRICA",
+      wordmark: "Betaminds",
+      wordmarkSub: "Africa",
       tagline: "We add the spark that makes brands move.",
     },
     nav: {
       items: [
-        { label: "Home", href: "/" },
-        { label: "Portfolio", href: "/portfolio" },
-        { label: "Digital Ecosystem", href: "/digital-ecosystem" },
+        { label: "Home", href: "/home" },
+        { label: "Projects", href: "/projects" },
+        { label: "Digital Marketplace", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
         { label: "Academy", href: "/academy" },
         { label: "Summit", href: "/summit" },
+        { label: "Blog", href: "/blog" },
         { label: "Let's Work", href: "/lets-work" },
       ],
       ctaLabel: "Let's Work",
@@ -120,12 +144,19 @@ export const defaults = {
         { label: "YT", href: "#" },
       ],
     },
+    // No number seeded on purpose — the button stays off the live site until
+    // a real one is entered in Site-wide → Floating WhatsApp button.
+    whatsapp: {
+      enabled: true,
+      number: "",
+      message: "Hi Betaminds Africa, I'd like to talk about a project.",
+    },
     footer: {
       columns: [
         {
           title: "Explore",
           links: [
-            { label: "Home", href: "/" },
+            { label: "Home", href: "/home" },
             { label: "Digital marketplace", href: "/digital-ecosystem" },
             { label: "Media services", href: "/media-services" },
           ],
@@ -142,7 +173,8 @@ export const defaults = {
           title: "Connect",
           links: [
             { label: "Let's work", href: "/lets-work" },
-            { label: "Portfolio", href: "/portfolio" },
+            { label: "Projects", href: "/projects" },
+            { label: "Blog", href: "/blog" },
             { label: "Book a discovery call", href: "/digital-ecosystem#book" },
           ],
         },
@@ -168,26 +200,71 @@ export const defaults = {
       description:
         "A Lagos creative and digital commerce agency. We build brands, the digital commerce systems behind them, and the people who run both.",
     },
-    hero: {
-      image: IMG(5466279, 1800),
-      imageAlt: "Betaminds creative team in session",
-      eyebrow: "Creative × Digital × Commerce",
-      heading: "We add the spark that makes brands move",
-      accentTail: ".",
-      lead: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
-      promise: "Strategy first. Craft always. Growth you can measure.",
-      ctas: [
+    /**
+     * The opening slider, used in two places: full-screen at `/` as the splash
+     * a visitor lands on, and again as the homepage's own hero once they are
+     * inside the site. One set of slides drives both, so the opening moment
+     * carries through instead of dropping to an unrelated still.
+     *
+     * `enabled` only controls the splash. Switching it off sends `/` straight
+     * to the homepage, where these slides still open the page.
+     *
+     * `video` is empty on every seeded slide on purpose: there is no stock
+     * footage to ship, and an empty value falls back to the slide's still. Upload
+     * real footage in the CMS (Home → Opening slider) to switch each one over.
+     */
+    heroSlider: {
+      enabled: true,
+      autoplay: true,
+      interval: 7,
+      overlay: 45,
+      slides: [
         {
-          label: "Explore digital ecosystem",
-          href: "/digital-ecosystem",
-          style: "accent",
+          eyebrow: "Creative × Digital × Commerce",
+          heading: "We add the spark that makes brands move",
+          body: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
+          video: "",
+          image: IMG(5466279, 1800),
+          imageAlt: "Betaminds creative team in session",
+          primaryLabel: "Explore digital ecosystem",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "Explore media services",
+          secondaryHref: "/media-services",
         },
         {
-          label: "Explore media services",
-          href: "/media-services",
-          style: "outline",
+          eyebrow: "Digital marketplace",
+          heading: "Commerce systems that actually convert",
+          body: "Storefronts, payments and the operations behind them — built to be measured, and rebuilt when the numbers say so.",
+          video: "",
+          image: IMG(3184292, 1800),
+          imageAlt: "Team reviewing analytics on a screen",
+          primaryLabel: "See how we build",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "View our work",
+          secondaryHref: "/projects",
         },
-        { label: "Betaminds Academy", href: "/academy", style: "outline" },
+        {
+          eyebrow: "Betaminds Academy",
+          heading: "And the people who run both",
+          body: "We train the creatives and operators African brands are short of — practical, cohort-based, taught by people still doing the work.",
+          video: "",
+          image: IMG(7683740, 1800),
+          imageAlt: "Academy cohort in a workshop",
+          primaryLabel: "Explore the Academy",
+          primaryHref: "/academy",
+          secondaryLabel: "Talk to us",
+          secondaryHref: "/lets-work",
+        },
+      ],
+    },
+    /** Lines for the scrolling statement band. Kept short — they run at
+     *  display scale and have to be readable while moving. */
+    statement: {
+      lines: [
+        "We add the spark",
+        "Strategy first",
+        "Craft always",
+        "Growth you can measure",
       ],
     },
     trusted: {
@@ -202,8 +279,8 @@ export const defaults = {
       ],
     },
     about: {
-      eyebrow: "01 / Who we are",
-      heading: "We take the idea all the way, not just the pretty part.",
+      eyebrow: "Who we are",
+      heading: "We take the idea *all the way*, not just the _pretty part_.",
       body1:
         "Creativity meets strategy. We help brands establish a distinct identity and connect with their audience in ways that actually convert. Identity, content, commerce, and the systems that keep all of it running.",
       body2: "One team, from the first workshop to the campaign report.",
@@ -233,55 +310,68 @@ export const defaults = {
       ],
     },
     team: {
-      eyebrow: "02 / Meet the spark",
+      eyebrow: "Meet the spark",
       heading: "The people behind the work.",
-      note: "Hover a portrait for socials.",
       members: [
         {
-          name: "Founder & CD",
-          role: "Creative Direction",
+          name: "Ileriayo S. Okunrotifa",
+          role: "MD / Founder",
           image: IMG(29387557, 700),
-          instagram: "#",
-          linkedin: "#",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Brand Lead",
-          role: "Identity & Systems",
+          name: "Ryzer Uffort",
+          role: "Brand Identity Designer / Betaminds Academy Facilitator",
           image: IMG(5466267, 700),
-          instagram: "#",
-          linkedin: "#",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Media Lead",
-          role: "Film & Photography",
+          name: "Adefolaju Michael",
+          role: "DOP / Betaminds Academy Facilitator",
           image: IMG(7792860, 700),
-          instagram: "#",
-          linkedin: "#",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Growth Lead",
-          role: "Performance & Social",
+          name: "Uchegbu Stanley Chibuzo",
+          role: "Virtual Designer",
           image: IMG(5439174, 700),
-          instagram: "#",
-          linkedin: "#",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Benita Oseremi Obajuobalo",
+          role: "Copywriter",
+          image: IMG(3869639, 700),
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Ayanleye Ayodeji",
+          role: "Visual Artist / Betaminds Academy Facilitator",
+          image: IMG(5934188, 700),
+          instagram: "",
+          linkedin: "",
         },
       ],
     },
     marketplace: {
-      eyebrow: "03 / Digital marketplace",
+      eyebrow: "Digital marketplace",
       heading: "Build. Scale. Sell. Grow.",
       body: "Not a pile of standalone services. One commerce ecosystem: branding, content, website, ads, customer experience and analytics, planned and run together.",
       ctaLabel: "Book a discovery call",
       ctaHref: "/digital-ecosystem",
     },
     media: {
-      eyebrow: "04 / Media services",
+      eyebrow: "Media services",
       heading: "Seven packages. Click one to see the deliverables.",
       linkLabel: "All media services →",
       enquireLabel: "Enquire",
     },
     summit: {
-      eyebrow: "05 / The Summit",
+      eyebrow: "The Summit",
       heading: "Betaminds Africa Creative Empowerment Summit",
       body: "More than an annual event. It's a movement turning creative talent into careers and businesses that last.",
       image: IMG(8761808, 1800),
@@ -290,7 +380,7 @@ export const defaults = {
       ctaHref: "/summit",
     },
     portfolio: {
-      eyebrow: "06 / Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work.",
       note: "Hover for industry & service.",
       viewLabel: "View project",
@@ -325,7 +415,7 @@ export const defaults = {
       ],
     },
     academy: {
-      eyebrow: "07 / Betaminds Academy",
+      eyebrow: "Betaminds Academy",
       heading: "Learn. Build. Earn.",
       ctaLabel: "Visit academy →",
       ctaHref: "/academy",
@@ -337,8 +427,24 @@ export const defaults = {
         { label: "Bootcamp", image: IMG(5060991, 600) },
       ],
     },
+    commercials: {
+      eyebrow: "See it in motion",
+      heading: "Two sides of the studio, on camera.",
+      marketplace: {
+        label: "Digital Marketplace",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+      academy: {
+        label: "Betaminds Academy",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+    },
     finalCta: {
-      eyebrow: "08 / Let's work",
+      eyebrow: "Let's work",
       heading: "Let's add the spark to your vision.",
       ctaLabel: "Let's work →",
       ctaHref: "/lets-work",
@@ -354,7 +460,7 @@ export const defaults = {
         "Brand identity, commerce ecosystems, content and property film for brands across Africa.",
     },
     index: {
-      eyebrow: "Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work",
       accentTail: ".",
       lead: "Identity, commerce, content and film. A few of the engagements we can talk about.",
@@ -367,6 +473,7 @@ export const defaults = {
       approachLabel: "What we did",
       outcomeLabel: "The outcome",
       resultsLabel: "Results",
+      videoLabel: "The commercial",
       galleryLabel: "From the work",
       nextLabel: "Next project",
       ctaHeading: "Something like this in mind?",
@@ -385,17 +492,65 @@ export const defaults = {
     },
   },
 
+  blog: {
+    seo: {
+      title: "Blog — Betaminds Africa",
+      description:
+        "Notes on brand, content, commerce and craft from the Betaminds Africa studio.",
+    },
+    index: {
+      eyebrow: "Blog",
+      heading: "From the studio",
+      accentTail: ".",
+      lead: "Field notes on brand, content, commerce and craft — from the team building it.",
+      emptyMessage: "Nothing published yet. Check back soon.",
+      readLabel: "Read the post →",
+    },
+    detail: {
+      backLabel: "All posts",
+      nextLabel: "Next post",
+      ctaHeading: "Got a project in mind?",
+      ctaLabel: "Let's work →",
+      ctaHref: "/lets-work",
+    },
+    list: {
+      items: [
+        post(
+          "building-brands-that-travel",
+          "Building brands that travel across African markets",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(3869639, 1200),
+        ),
+        post(
+          "content-that-converts",
+          "Content that converts: what we learned from a year of campaigns",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(8761735, 1200),
+        ),
+        post(
+          "why-commerce-ecosystems-beat-standalone-sites",
+          "Why commerce ecosystems beat standalone websites",
+          "Betaminds Studio",
+          "December 2025",
+          IMG(8761808, 1200),
+        ),
+      ],
+    },
+  },
+
   ecosystem: {
     seo: {
-      title: "Digital Commerce & Marketplace Solutions — Betaminds Africa",
+      title: "Digital Marketplace — Betaminds Africa",
       description:
         "Build. Scale. Sell. Grow. One integrated digital commerce solution: branding, content, website, ads, customer experience and analytics.",
     },
     hero: {
       image: IMG(5060980, 1800),
-      imageAlt: "Building a digital commerce ecosystem",
-      eyebrow: "Digital ecosystem",
-      heading: "Digital Commerce & Marketplace Solutions",
+      imageAlt: "Building a digital marketplace",
+      eyebrow: "Digital marketplace",
+      heading: "Digital Marketplace",
       accentLine: "Build. Scale. Sell. Grow.",
       lead: "Growth is driven by visibility, strategy, technology and customer experience. We help businesses build, launch, market and grow their online presence through one integrated solution instead of a pile of standalone services.",
       ctaLabel: "Book a discovery call →",
@@ -447,10 +602,19 @@ export const defaults = {
         },
       ],
     },
+    promo: {
+      label: "See it in motion",
+      heading: "What a Digital Marketplace build looks like",
+      body: "A walkthrough of a recent build: the strategy, the storefront, the launch.",
+      video: "",
+      poster: "",
+      posterAlt: "",
+    },
     plans: {
       heading: "Engagement plans",
       /** The Growth plan is highlighted — index 1, matching the prototype's `plan: 1`. */
       featuredIndex: 1,
+      selectLabel: "Select Plan",
       items: [
         {
           name: "Starter Partnership",
@@ -527,7 +691,7 @@ export const defaults = {
        * success screen.
        */
       schedulingUrl: "",
-      submitLabel: "Submit and get my scheduling link",
+      submitLabel: "Get My Schedule Link",
       successHeading: "Thank you. We have your answers.",
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
@@ -686,7 +850,12 @@ export const defaults = {
       accentTail: ".",
       lead: "Seven packages, each with a defined scope and defined deliverables. Pick one, or let us shape a combination around the brief.",
     },
+    proof: {
+      heading: "The work behind the packages",
+      linkLabel: "All projects",
+    },
     packages: {
+      contentsLabel: "In this page",
       deliverablesLabel: "Deliverables",
       enquirePrefix: "Enquire about",
       items: [
@@ -803,23 +972,127 @@ export const defaults = {
       schools: [
         {
           name: "School of Creative Media",
+          image: IMG(3184291, 1400),
+          imageAlt: "Students in a Betaminds Academy creative media class",
           courses: [
-            { name: "Photography", weeks: "10 weeks", mode: "Hybrid" },
-            { name: "Videography", weeks: "12 weeks", mode: "Physical" },
-            { name: "Content Creation", weeks: "8 weeks", mode: "Hybrid" },
-            { name: "Animation", weeks: "12 weeks", mode: "Virtual" },
-            { name: "Motion Graphics", weeks: "10 weeks", mode: "Hybrid" },
+            {
+              name: "Photography",
+              icon: "camera",
+              duration: "10 weeks",
+              mode: "Hybrid",
+              description:
+                "Camera fundamentals, lighting and composition through to a portfolio-ready editorial shoot.",
+            },
+            {
+              name: "Videography",
+              icon: "video",
+              duration: "12 weeks",
+              mode: "Physical",
+              description:
+                "Camera operation, shot-listing and on-set craft for narrative, commercial and event film.",
+            },
+            {
+              name: "Content Creation",
+              icon: "pen",
+              duration: "8 weeks",
+              mode: "Hybrid",
+              description:
+                "Planning, filming and editing short-form content for brands and personal platforms.",
+            },
+            {
+              name: "Animation",
+              icon: "film",
+              duration: "12 weeks",
+              mode: "Virtual",
+              description:
+                "2D animation principles, storyboarding and production workflow from concept to render.",
+            },
+            {
+              name: "Motion Graphics",
+              icon: "sparkle",
+              duration: "10 weeks",
+              mode: "Hybrid",
+              description:
+                "Typography, compositing and animation for title sequences, ads and social content.",
+            },
           ],
         },
         {
           name: "School of Digital Technology",
+          image: IMG(4144923, 1400),
+          imageAlt: "Students in a Betaminds Academy digital technology class",
           courses: [
-            { name: "Digital Marketing", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "UI/UX Design", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "Website Development", weeks: "16 weeks", mode: "Hybrid" },
-            { name: "AI Productivity", weeks: "6 weeks", mode: "Virtual" },
-            { name: "SEO", weeks: "6 weeks", mode: "Virtual" },
+            {
+              name: "Digital Marketing",
+              icon: "megaphone",
+              duration: "12 weeks",
+              mode: "Hybrid",
+              description:
+                "Strategy, paid media, social and analytics for running campaigns that convert.",
+            },
+            {
+              name: "UI/UX Design",
+              icon: "layout",
+              duration: "12 weeks",
+              mode: "Hybrid",
+              description:
+                "Research, wireframing and prototyping toward a shippable, user-tested product design.",
+            },
+            {
+              name: "Website Development",
+              icon: "code",
+              duration: "16 weeks",
+              mode: "Hybrid",
+              description:
+                "Front-end and back-end fundamentals through to a deployed, full-stack project.",
+            },
+            {
+              name: "AI Productivity",
+              icon: "cpu",
+              duration: "6 weeks",
+              mode: "Virtual",
+              description:
+                "Practical AI tooling for research, writing, design and workflow automation.",
+            },
+            {
+              name: "SEO",
+              icon: "search",
+              duration: "6 weeks",
+              mode: "Virtual",
+              description:
+                "Technical, on-page and content SEO to grow organic search visibility.",
+            },
           ],
+        },
+      ],
+    },
+    crashCourses: {
+      heading: "Crash courses",
+      body: "Short, intensive sessions for one specific skill — two to three days, hands-on, no long commitment.",
+      items: [
+        {
+          name: "Reels Editing Intensive",
+          icon: "video",
+          duration: "2 days",
+          mode: "Physical",
+          description:
+            "Hook, pace and edit short-form video that holds attention, using footage you bring on day one.",
+        },
+        {
+          name: "AI Prompt Workshop",
+          icon: "cpu",
+          duration: "2 days",
+          mode: "Virtual",
+          description:
+            "Practical prompting for research, writing and design work, with tools you'll use the same week.",
+        },
+        {
+          name: "Portfolio Sprint",
+          icon: "layout",
+          duration: "3 days",
+          mode: "Hybrid",
+          description:
+            "Leave with a finished, presentable portfolio built and critiqued over three focused days.",
         },
       ],
     },
@@ -1155,6 +1428,12 @@ export const defaults = {
       lead: "Tell us what you're building. We'll tell you honestly whether we're the right team for it, and what we'd do first.",
       ctaLabel: "Book a discovery call →",
       ctaHref: "/digital-ecosystem#book",
+      stepsLabel: "What happens next",
+      steps: [
+        "You send the brief, or book a call.",
+        "We reply within one working day.",
+        "We tell you what we'd do first, and what it costs.",
+      ],
     },
     form: {
       heading: "Send us a brief",

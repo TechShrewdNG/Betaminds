@@ -1,7 +1,7 @@
 import { getContent, defaults } from "@/lib/content";
 
 /**
- * Portfolio projects.
+ * Case-study projects.
  *
  * Entries are content, so nothing here trusts their shape: an entry without a
  * slug or a name can't have a page, and duplicate slugs would make one of them
@@ -23,6 +23,7 @@ export type Project = {
   outcome: string;
   results: { n: string; label: string }[];
   gallery: string[];
+  video: string;
   quote: string;
   quoteAuthor: string;
   published: boolean;
@@ -73,6 +74,7 @@ function normalise(raw: unknown): Project | null {
     outcome: str(item.outcome),
     results,
     gallery: Array.isArray(item.gallery) ? item.gallery.filter(str) : [],
+    video: str(item.video),
     quote: str(item.quote),
     quoteAuthor: str(item.quoteAuthor),
     // Absent means published — an editor adding a row shouldn't have to opt in.
@@ -99,7 +101,7 @@ function normaliseAll(raw: unknown): Project[] {
 export async function allProjects(): Promise<Project[]> {
   const doc = await getContent("projects");
   const projects = normaliseAll(doc.list.items);
-  // An emptied list would leave the portfolio pages blank; fall back to the
+  // An emptied list would leave the projects pages blank; fall back to the
   // handoff entries, as the rest of the content layer does.
   return projects.length > 0
     ? projects

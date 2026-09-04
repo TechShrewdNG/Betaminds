@@ -7,7 +7,7 @@
   display: flex;
   gap: 2px;
   padding: 4px;
-  background: rgba(23, 23, 27, 0.05);
+  background: rgba(var(--wash-rgb), 0.05);
   border-radius: var(--r-pill);
   flex-wrap: wrap;
 }
@@ -207,6 +207,13 @@
   padding: 0 32px 30px;
 }
 
+/* `display: flex` above outranks the UA's `[hidden] { display: none }`, so
+   without this the panel stayed on screen while aria-expanded reported it
+   collapsed — the toggle moved and nothing else did. */
+.expandPanel[hidden] {
+  display: none;
+}
+
 .deliverables {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -239,9 +246,14 @@
   color: var(--ink-88);
 }
 
+/* Gold, matching the identical tick list on the Academy page. The logo green
+   was used here and nowhere else, so the same pattern rendered in two colours
+   depending on which page you were on — and beside the accent numerals it
+   read as a status colour rather than part of the palette. */
 .tickMark {
   color: var(--accent);
   flex: none;
+  margin-top: 1px;
 }
 
 /* --- Plan cards ---------------------------------------------------------- */
@@ -289,21 +301,17 @@
   text-wrap: pretty;
 }
 
-.planToggle {
-  width: 100%;
-  text-align: left;
+/* Static label now the inclusions are always shown — no longer a control. */
+.planIncludesLabel {
   padding: 15px 28px;
-  border: 0;
   border-top: 1px solid var(--line);
-  background: rgba(23, 23, 27, 0.02);
+  background: rgba(var(--wash-rgb), 0.03);
   color: var(--accent);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 12.5px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   margin-top: auto;
 }
 
@@ -324,7 +332,29 @@
   gap: 11px;
 }
 
+.planCta {
+  padding: 20px 28px 26px;
+  border-top: 1px solid var(--line);
+}
+
+.planCta a {
+  width: 100%;
+}
+
 /* --- Testimonial carousel ------------------------------------------------ */
+
+@keyframes bmTestiFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.testiFade {
+  animation: bmTestiFade 0.35s ease both;
+}
 
 .testiFoot {
   display: flex;
@@ -356,7 +386,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(23, 23, 27, 0.18);
+  border: 1px solid rgba(var(--wash-rgb), 0.18);
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -391,7 +421,7 @@
   border-radius: 50%;
   border: 0;
   padding: 0;
-  background: rgba(23, 23, 27, 0.18);
+  background: rgba(var(--wash-rgb), 0.18);
   cursor: pointer;
 }
 
@@ -411,12 +441,17 @@
   animation: bmMarquee 26s linear infinite;
 }
 
+/* Pause on hover so a visitor can actually read a client name they spotted. */
+.marquee:hover .marqueeTrack {
+  animation-play-state: paused;
+}
+
 .logoSlot {
   width: 174px;
   height: 56px;
   margin: 0 14px;
   flex: none;
-  border: 1px dashed rgba(23, 23, 27, 0.14);
+  border: 1px dashed rgba(var(--wash-rgb), 0.16);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -441,7 +476,76 @@
   background: var(--surface);
 }
 
-/* --- Hover-reveal tiles (team, portfolio) -------------------------------- */
+/* --- Hover-reveal tiles (team, projects) --------------------------------- */
+
+/* Team grid: a swipeable carousel at every breakpoint, so the roster reads
+   as a browsable strip rather than a grid that crowds five-across on desktop.
+   flex-basis shrinks per breakpoint to keep 2–4 cards in view at once rather
+   than one edge-to-edge card.
+
+   Every card is the same width on purpose. The founder's card used to take a
+   much wider basis, and because flex stretches every item to the tallest one
+   while the portraits hold a fixed 3/4 ratio, the narrower cards ended up
+   with a card far taller than their picture — 271px of dead space under each
+   portrait at desktop, 233 at tablet, 96 at mobile. Equal widths make the
+   ratio resolve to one height for everyone, so the mismatch cannot arise.
+   The founder keeps a gold hairline instead, which costs no geometry. */
+.teamGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 14px;
+  margin-inline: calc(-1 * var(--pad-x));
+  padding-inline: var(--pad-x);
+  padding-bottom: 4px;
+}
+
+.teamGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.teamGrid > * {
+  flex: 0 0 23%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.tileFeatured {
+  border-color: var(--accent-line-strong);
+}
+
+@media (max-width: 1000px) {
+  .teamGrid > * {
+    flex-basis: 38%;
+  }
+}
+
+@media (max-width: 640px) {
+  .teamGrid > * {
+    flex-basis: 66%;
+  }
+}
+
+/* --- Team card ----------------------------------------------------------- */
+
+.teamTile {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Holds the portrait and the hover overlay, so the overlay covers the picture
+   and stops short of the caption. */
+.tileMedia {
+  position: relative;
+  display: block;
+}
+
+.tileCaption {
+  padding: 14px 16px 16px;
+}
 
 .tile {
   position: relative;
@@ -456,15 +560,24 @@
   display: block;
   width: 100%;
   object-fit: cover;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.tileScrim {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 16px 18px;
-  background: linear-gradient(to top, rgba(251, 250, 248, 0.96), transparent);
+/* A slow push-in under the hover overlay — enough to feel alive, short of the
+   swooping zoom that reads as a stock template. */
+.tile:hover .tileImg,
+.tile:focus-within .tileImg {
+  transform: scale(1.045);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tileImg {
+    transition: none;
+  }
+  .tile:hover .tileImg,
+  .tile:focus-within .tileImg {
+    transform: none;
+  }
 }
 
 .tileName {
@@ -517,26 +630,42 @@
   color: var(--accent-fill);
 }
 
-/* Portfolio overlay: canvas wash, meta, name, view pill. */
+/* Project and post tile caption.
+ *
+ * The meta and title are always legible. They used to live behind opacity:0
+ * and appear only on hover, which meant a mouse user saw a grid of untitled
+ * pictures — fatal on /blog, where the headline *is* the content and the
+ * cover image carries none of it.
+ *
+ * The gradient is weighted to the bottom so the photograph still reads above
+ * the caption, and hover deepens it and brings the "Read" cue up rather than
+ * being the only way to see anything at all. */
 .workHover {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(251, 250, 248, 0.96),
-    rgba(251, 250, 248, 0.2)
+    rgba(var(--scrim-rgb), 0.97) 0%,
+    rgba(var(--scrim-rgb), 0.88) 26%,
+    rgba(var(--scrim-rgb), 0.34) 56%,
+    rgba(var(--scrim-rgb), 0) 80%
   );
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 22px 22px 20px;
 }
 
 .tile:hover .workHover,
 .tile:focus-within .workHover {
-  opacity: 1;
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim-rgb), 0.98) 0%,
+    rgba(var(--scrim-rgb), 0.93) 46%,
+    rgba(var(--scrim-rgb), 0.66) 74%,
+    rgba(var(--scrim-rgb), 0.34) 100%
+  );
 }
 
 .workMeta {
@@ -556,31 +685,1498 @@
   letter-spacing: -0.02em;
   margin-bottom: 14px;
   color: var(--ink);
+  text-wrap: balance;
 }
 
+/* Kept in flow at rest, just invisible — reserving the space means the title
+   doesn't jump when the cue arrives. */
 .workView {
   align-self: flex-start;
   padding: 9px 16px;
   border-radius: var(--r-pill);
-  border: 1px solid rgba(23, 23, 27, 0.62);
+  border: 1px solid rgba(var(--wash-rgb), 0.62);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 11.5px;
   color: var(--ink);
+  opacity: 0;
+  transform: translateY(7px);
+  transition:
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tile:hover .workView,
+.tile:focus-within .workView {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workHover,
+  .workView {
+    transition: none;
+  }
+  .workView {
+    transform: none;
+  }
 }
 
 /* Touch devices have no hover, so reveal the overlays permanently. */
 @media (hover: none) {
+  /* No hover to reveal the socials, so they sit permanently as a bar across
+     the foot of the portrait. Pinned rather than static — pulling it into
+     flow would stretch the 3/4 media box and reintroduce the height mismatch
+     the caption split was meant to remove. */
   .tileHover {
     opacity: 1;
-    position: static;
-    background: rgba(232, 163, 61, 0.92);
-    padding: 14px;
+    inset: auto 0 0 0;
+    background: rgba(232, 163, 61, 0.94);
+    padding: 10px;
+    gap: 8px;
   }
 
-  .workHover {
+  /* The caption is legible over the image on its own now, so touch no longer
+     needs the overlay pulled out into its own block below the picture — it
+     just needs the "Read" cue, which has no hover to trigger it. */
+  .workView {
     opacity: 1;
-    position: static;
-    background: var(--surface);
+    transform: none;
   }
+}
+
+/* --- Opening hero slider -------------------------------------------------- */
+
+.slider {
+  position: relative;
+  /* svh, not vh: mobile browsers include the collapsing toolbar in vh, which
+     pushes the buttons under the fold on first paint. The header is sticky and
+     sits in flow above this, so its height comes off the top — without that the
+     arrows and counter land just past the bottom of the screen. */
+  height: calc(100svh - var(--header-h));
+  min-height: 520px;
+  overflow: hidden;
+  background: var(--surface-deep);
+}
+
+/*
+ * Wash over the slide's picture or video.
+ *
+ * Weighted to the bottom, where the copy sits: the top of the frame stays
+ * close to clear so the footage is actually visible, and the tint only builds
+ * up behind the headline and buttons, which are dark text and need it. The
+ * previous flat 0.72-0.97 wash was legible but left the background barely
+ * perceptible.
+ *
+ * `--wash` is set per slider from the CMS, so the studio can dial this without
+ * a developer. Alphas over 1 clamp, which is what makes the high end opaque.
+ */
+.slideWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
+  );
+}
+
+/* The splash screen has no header above it, so it takes the whole viewport.
+   svh as a floor keeps the arrows/counter clear of the fold on first paint
+   (see the comment on .slider above), but locking to svh alone leaves a gap
+   at the bottom on mobile once the browser's toolbar auto-hides and the real
+   viewport grows past it. dvh tracks that growth in real time, so the slider
+   fills the screen either way. */
+.slider[data-full="true"] {
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100svh;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 700ms ease,
+    visibility 0s linear 700ms;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 700ms ease,
+    visibility 0s;
+}
+
+.slideMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slideBody {
+  position: relative;
+  align-self: flex-end;
+  max-width: 1180px;
+  text-align: center;
+  padding-top: 120px;
+  /* Clears the controls sitting along the bottom edge. */
+  padding-bottom: 132px;
+}
+
+.slideEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: var(--r-pill);
+  margin-bottom: 24px;
+}
+
+.slideDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+}
+
+.sliderControls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.sliderArrow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border: 1px solid var(--line-outline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.sliderArrow:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.sliderCount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-55);
+  margin: 0;
+  min-width: 68px;
+  text-align: center;
+}
+
+.sliderCountNow {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .slideBody {
+    padding-top: 104px;
+    padding-bottom: 116px;
+  }
+
+  .sliderControls {
+    bottom: 32px;
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .slide[data-active="true"] {
+    transition: none;
+  }
+
+  .sliderArrow {
+    transition: none;
+  }
+}
+
+/* --- Course cards + detail modal ------------------------------------------ */
+
+.courseCard {
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 26px 26px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.courseCard:hover {
+  border-color: var(--accent-line-strong);
+  background: linear-gradient(150deg, var(--surface), var(--surface-alt));
+}
+
+/* Accent, like the rest of the page. Five saturated blue tiles sat on the ink
+   band beside gold pills and gold numerals, reading as a different system
+   rather than part of one — the same problem the green ticks had. */
+.courseIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(232, 163, 61, 0.16);
+  color: var(--accent);
+}
+
+.courseCardName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.courseCardCta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@keyframes bmModalBack {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bmModalPanel {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The backdrop centres the dialog and never scrolls itself — scrolling lives
+   on .modalBody. Previously the backdrop was the scroll container while the
+   page behind it also scrolled, which is what made the dialog feel like a
+   stuck frame: the wheel often moved the page, not the form. */
+.modalBack {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 23, 27, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  overflow: hidden;
+  z-index: 100;
+  animation: bmModalBack 0.25s ease both;
+}
+
+.modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 660px;
+  /* Never taller than the viewport, so the body always has somewhere to
+     scroll instead of overflowing off-screen. */
+  max-height: min(90vh, 940px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  overflow: hidden;
+  animation: bmModalPanel 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Title and close stay put while the form scrolls under them. */
+.modalHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 24px 20px 26px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  flex: none;
+}
+
+.modalIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--brand-blue-tint);
+  color: var(--brand-blue-ink);
+  flex: none;
+}
+
+.modalBody {
+  padding: 26px 26px 30px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* A slim, always-visible track: the dialog is a scroll container inside an
+     overlay, and an overlay scrollbar that only appears mid-gesture leaves no
+     hint that there is more form below the fold. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(23, 23, 27, 0.24) transparent;
+  scroll-behavior: smooth;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(23, 23, 27, 0.24);
+  border-radius: 999px;
+  border: 3px solid var(--surface);
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-50);
+}
+
+.modalClose {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line-outline);
+  background: transparent;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.modalClose:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.modalName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+  min-width: 0;
+}
+
+.modalDescription {
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--ink-82);
+  margin: 0 0 20px;
+  text-wrap: pretty;
+}
+
+.modalDivider {
+  height: 1px;
+  background: var(--line);
+  margin: 28px 0;
+}
+
+.modalFormHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.modalFormBody {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-74);
+  margin: 0 0 24px;
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  /* Full-height sheet on phones: a centred box with margins wastes the space
+     a long form needs. */
+  .modalBack {
+    padding: 0;
+  }
+
+  .modal {
+    max-width: none;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  .modalHead {
+    padding: 16px 16px 14px 18px;
+  }
+
+  .modalBody {
+    padding: 20px 18px 32px;
+  }
+
+  .modalName {
+    font-size: 18px;
+  }
+}
+
+/* --- Monthly free slot ---------------------------------------------------- */
+
+/* The offer panel, given real presence: a slow accent wash moving behind the
+   copy, a live pulse on the label and a countdown to the next slot. Depth is
+   still borders and tints — the wash is the only moving part, and it stops
+   entirely under prefers-reduced-motion. */
+.freeSlot {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: var(--r-panel);
+  background: linear-gradient(
+    145deg,
+    rgba(232, 163, 61, 0.14),
+    rgba(232, 163, 61, 0.03) 55%,
+    transparent
+  );
+  isolation: isolate;
+}
+
+/* A wide, very soft accent sweep drifting across the panel. */
+.freeSlotGlow {
+  position: absolute;
+  z-index: -1;
+  top: -60%;
+  left: -30%;
+  width: 60%;
+  height: 220%;
+  background: radial-gradient(
+    closest-side,
+    rgba(232, 163, 61, 0.34),
+    transparent 100%
+  );
+  filter: blur(12px);
+  animation: bmSlotDrift 9s ease-in-out infinite alternate;
+}
+
+.freeSlotInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 48px;
+  padding: 48px 46px 50px;
+}
+
+.freeSlotCopy {
+  min-width: 0;
+}
+
+.freeSlotLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+/* Live dot with an expanding ring — the "slot is open" signal. */
+.freeSlotPulse {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  flex: none;
+}
+
+.freeSlotPulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-fill);
+  animation: bmSlotPing 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.freeSlotHeading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(26px, 2.9vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+  max-width: 20ch;
+}
+
+.freeSlotBody {
+  font-size: 16px;
+  line-height: 1.64;
+  color: var(--ink-84);
+  margin: 0 0 30px;
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+
+/* The clock sits opposite the copy so the panel reads across its full width
+   rather than trailing off into empty gold on the right. */
+.freeSlotCountdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex: none;
+}
+
+.freeSlotCountLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+
+.freeSlotUnits {
+  display: flex;
+  gap: 10px;
+}
+
+.freeSlotUnit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 92px;
+  padding: 18px 14px 14px;
+  border: 1px solid var(--accent-line-strong);
+  border-radius: 12px;
+  background: rgba(var(--scrim-rgb), 0.72);
+}
+
+.freeSlotNum {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.freeSlotCaption {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+
+.freeSlotWhen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--ink-74);
+}
+
+.freeSlotCta {
+  align-self: start;
+}
+
+/* Below the two-column threshold the clock drops under the copy and goes
+   full-width, so the numerals stay large instead of being squeezed. */
+@media (max-width: 900px) {
+  .freeSlotInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .freeSlotCountdown {
+    align-items: flex-start;
+  }
+
+  .freeSlotUnits {
+    width: 100%;
+  }
+
+  .freeSlotUnit {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .freeSlotInner {
+    padding: 32px 24px 34px;
+  }
+
+  .freeSlotUnit {
+    padding: 14px 8px 11px;
+  }
+
+  .freeSlotNum {
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .freeSlotGlow,
+  .freeSlotPulse::after {
+    animation: none;
+  }
+  .freeSlotPulse::after {
+    opacity: 0.45;
+  }
+}
+
+@keyframes bmSlotDrift {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(190%) scale(1.15);
+  }
+}
+
+@keyframes bmSlotPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: scale(2.9);
+    opacity: 0;
+  }
+}
+
+/* --- "Brands we don't work with" disclosure -------------------------------- */
+
+.notForDrop {
+  cursor: default;
+}
+
+.notForSummary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notForSummary::-webkit-details-marker {
+  display: none;
+}
+
+.notForChevron {
+  flex: none;
+  color: var(--accent);
+  transform: rotate(90deg);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.notForDrop[open] .notForChevron {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notForChevron {
+    transition: none;
+  }
+}
+
+/* --- Academy: school classroom banner, crash courses -------------------- */
+
+.schoolBanner {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  height: clamp(170px, 20vw, 280px);
+  border-radius: var(--r-card);
+  margin-bottom: 30px;
+  animation: bmTestiFade 0.4s ease both;
+}
+
+.schoolBannerImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.schoolBannerWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim-rgb), 0.88) 0%,
+    rgba(var(--scrim-rgb), 0.45) 42%,
+    rgba(var(--scrim-rgb), 0.12) 100%
+  );
+}
+
+.schoolBannerName {
+  position: relative;
+  padding: 22px 26px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(20px, 2.4vw, 30px);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.crashSection {
+  margin-top: 56px;
+  padding-top: 48px;
+  border-top: 1px solid var(--line);
+}
+
+.crashHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.1vw, 25px);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.crashBody {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-72);
+  max-width: 56ch;
+  margin-bottom: 26px;
+  text-wrap: pretty;
+}
+
+.crashCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.crashCard:hover {
+  border-color: var(--accent-line-strong);
+  background: rgba(232, 163, 61, 0.04);
+}
+
+.crashIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.crashMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.crashName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.crashMeta {
+  font-size: 12.5px;
+  color: var(--ink-62);
+}
+
+.crashArrow {
+  flex: none;
+  color: var(--accent);
+}
+
+/* --- Promo video (click-to-play commercials) ----------------------------- */
+
+.promo {
+  display: flex;
+  flex-direction: column;
+}
+
+.promoCopy {
+  margin-bottom: 22px;
+}
+
+.promoHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.2vw, 26px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.promoBody {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-74);
+  margin: 0;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+.promoFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--surface-deep);
+  border: 1px solid var(--line-strong);
+}
+
+.promoVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.promoPoster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: var(--surface-deep);
+}
+
+.promoPosterImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promoPlay {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(var(--scrim-rgb), 0.94);
+  color: var(--accent-fill);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease;
+}
+
+.promoPlay svg {
+  margin-left: 4px;
+}
+
+.promoPoster:hover .promoPlay,
+.promoPoster:focus-visible .promoPlay {
+  transform: scale(1.08);
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promoPlay {
+    transition: none;
+  }
+}
+
+/* --- Display numerals: hairline package rows ----------------------------- */
+
+.pkgList {
+  display: flex;
+  flex-direction: column;
+}
+
+.pkgRow {
+  border-top: 1px solid var(--line);
+  transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Clears the sticky header when the hero's contents rail jumps here. */
+  scroll-margin-top: 96px;
+}
+
+.pkgRow:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.pkgRow:hover,
+.pkgRow[data-open="true"] {
+  background: linear-gradient(
+    100deg,
+    rgba(232, 163, 61, 0.07),
+    transparent 58%
+  );
+}
+
+/* Outlined by default, filling solid when the row opens — the numeral is the
+   open/closed cue as much as the +/− is. */
+.pkgNum {
+  flex: none;
+  width: 132px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 74px;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--accent-fill);
+  transition:
+    color 0.3s ease,
+    -webkit-text-stroke-color 0.3s ease;
+}
+
+.pkgRow:hover .pkgNum,
+.pkgRow[data-open="true"] .pkgNum {
+  color: var(--accent-fill);
+}
+
+.pkgLink {
+  align-self: flex-start;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--accent);
+  border-bottom: 1.5px solid var(--accent-line-strong);
+  padding-bottom: 3px;
+  transition: border-color 0.25s ease;
+}
+
+.pkgLink span {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pkgLink:hover {
+  border-bottom-color: var(--accent-fill);
+}
+
+.pkgLink:hover span {
+  transform: translateX(4px);
+}
+
+/* The panel lines up with the title, clear of the numeral column. */
+.pkgRow .expandPanel {
+  padding-left: 154px;
+}
+
+@media (max-width: 900px) {
+  .pkgNum {
+    width: 84px;
+    font-size: 46px;
+  }
+  .pkgRow .expandPanel {
+    padding-left: 104px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pkgNum {
+    width: 58px;
+    font-size: 34px;
+  }
+  .pkgRow .expandPanel {
+    padding-left: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pkgRow,
+  .pkgNum,
+  .pkgLink span {
+    transition: none;
+  }
+}
+
+/* --- Statement band ------------------------------------------------------- */
+
+.stmtBand {
+  overflow: hidden;
+  background: var(--canvas);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.stmtTrack {
+  display: flex;
+  width: max-content;
+  animation: bmMarquee 30s linear infinite;
+}
+
+/* Reading a line that is sliding past is hard; pausing on hover makes it
+   readable without stopping the motion for everyone. */
+.stmtBand:hover .stmtTrack {
+  animation-play-state: paused;
+}
+
+.stmtRun {
+  display: flex;
+  align-items: center;
+}
+
+.stmtItem {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 26px 20px;
+  white-space: nowrap;
+}
+
+.stmtWord {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.6vw, 50px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stmtWord[data-style="solid"] {
+  color: var(--accent);
+}
+
+/* Outlined, so every other line reads as a counter-rhythm. The fallback
+   colour matters: without -webkit-text-stroke the transparent fill would
+   leave the line invisible, so the colour is only cleared where the stroke
+   is actually supported. */
+.stmtWord[data-style="hollow"] {
+  color: var(--accent-fill);
+}
+
+@supports (-webkit-text-stroke: 1px black) {
+  .stmtWord[data-style="hollow"] {
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--accent-fill);
+    /* Outlined type needs the opposite treatment to filled type: lighter and
+       wider. At the solid line's 800/-0.03em the contours touch, and the
+       crossbars of t/e/g/f — which share a height — fuse into what looks
+       like a strikethrough running the length of the word. */
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+}
+
+.stmtDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  flex: none;
+}
+
+/* --- Marked type ---------------------------------------------------------- */
+
+/* A marker sweep behind the phrase. Sits behind the glyphs via a negative
+   z-index on the pseudo-element, with the span establishing its own stacking
+   context so the bar can never escape and cover neighbouring text. */
+.markSweep {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+  padding: 0 0.12em;
+}
+
+.markSweep::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.1em;
+  height: 0.4em;
+  background: var(--accent-fill);
+  border-radius: 2px;
+  transform: skewY(-1.2deg);
+  z-index: -1;
+}
+
+/* A rule that fades out along its length, so it reads as a drawn stroke
+   rather than a border. */
+.markRule {
+  position: relative;
+  display: inline-block;
+}
+
+.markRule::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.05em;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-fill),
+    rgba(232, 163, 61, 0.28)
+  );
+}
+
+/* --- Display statistics --------------------------------------------------- */
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 44px 40px;
+}
+
+.statNum {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 5.2vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The trailing +, % or K carries the accent, so the figure itself stays ink
+   and the row still reads as one family rather than a wall of gold. */
+.statUnit {
+  color: var(--accent-fill);
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+  margin-top: 12px;
+}
+
+/* --- Full-bleed break ----------------------------------------------------- */
+
+/* Escapes the shell entirely — the only element on the site that runs edge to
+   edge — so it reads as a change of gear rather than another section. */
+.bleedBand {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 460px;
+  overflow: hidden;
+  background: var(--surface-deep);
+  color: var(--ink);
+  isolation: isolate;
+}
+
+.bleedImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bleedBand:hover .bleedImg,
+.bleedBand:focus-visible .bleedImg {
+  transform: scale(1.04);
+}
+
+/* Weighted to the left, where the copy sits, so the picture stays visible on
+   the other side instead of being flattened under a full-width tint. */
+.bleedWash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(21, 18, 14, 0.95) 0%,
+    rgba(21, 18, 14, 0.82) 38%,
+    rgba(21, 18, 14, 0.34) 72%,
+    rgba(21, 18, 14, 0.12) 100%
+  );
+}
+
+.bleedInner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 96px var(--pad-x);
+  min-height: 460px;
+  justify-content: center;
+}
+
+.bleedEyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-fill);
+}
+
+.bleedName {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(34px, 4.4vw, 60px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: #fbfaf8;
+  text-wrap: balance;
+  max-width: 16ch;
+}
+
+.bleedMeta {
+  font-size: 14.5px;
+  color: rgba(251, 250, 248, 0.74);
+}
+
+.bleedGo {
+  margin-top: 14px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--accent-fill);
+  border-bottom: 1.5px solid rgba(232, 163, 61, 0.45);
+  padding-bottom: 3px;
+}
+
+.bleedGo span {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bleedBand:hover .bleedGo span {
+  transform: translateX(4px);
+}
+
+@media (max-width: 640px) {
+  .bleedBand,
+  .bleedInner {
+    min-height: 340px;
+  }
+  .bleedInner {
+    padding: 62px var(--pad-x);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bleedImg,
+  .bleedGo span {
+    transition: none;
+  }
+  .bleedBand:hover .bleedImg {
+    transform: none;
+  }
+}
+
+/* --- Index page heroes --------------------------------------------------- */
+
+/* Copy left, a rail of real information right. `end` alignment sits the rail
+   on the lead's baseline rather than floating it beside the heading. */
+.idxGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: 56px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .idxGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* The rule sits on each group rather than on the rail, so a rail whose only
+   group is hidden (the contents list, on a phone) leaves no orphaned line. */
+.idxGroup,
+.idxContents {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+
+.idxFact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.idxFact:last-child {
+  border-bottom: 0;
+}
+
+.idxFactValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+}
+
+.idxFactValue[data-long="true"] {
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.idxFactLabel {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+  text-align: right;
+}
+
+.idxRailLabel {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+  margin-bottom: 10px;
+}
+
+@media (max-width: 900px) {
+  .idxContents {
+    display: none;
+  }
+}
+
+.idxTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.idxTag {
+  padding: 6px 12px;
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-pill);
+  font-size: 12.5px;
+  color: var(--ink-84);
+  white-space: nowrap;
+}
+
+.idxList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.idxLink {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 14px;
+  color: var(--ink-88);
+  transition: color 0.2s ease;
+}
+
+.idxLink:hover {
+  color: var(--accent);
+}
+
+/* A step, not a destination — nothing to hover towards. */
+.idxLink[data-static="true"] {
+  cursor: default;
+}
+
+.idxLink[data-static="true"]:hover {
+  color: var(--ink-88);
+}
+
+.idxLink[data-static="true"]:hover .idxLinkNum {
+  color: var(--ink-50);
+}
+
+.idxLinkNum {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-50);
+  flex: none;
+}
+
+.idxLink:hover .idxLinkNum {
+  color: var(--accent);
 }

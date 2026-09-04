@@ -13,6 +13,7 @@ export type Field =
   | { kind: "number"; label: string; help?: string }
   | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
+  | { kind: "video"; label: string; help?: string }
   | { kind: "images"; label: string; help?: string }
   | { kind: "list"; label: string; help?: string; placeholder?: string }
   | { kind: "select"; label: string; options: string[]; help?: string }
@@ -202,6 +203,26 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "whatsapp",
+        title: "Floating WhatsApp button",
+        note: "Shown bottom-right on every public page once a number is set. Turning this off hides it even with a number saved.",
+        fields: {
+          enabled: { kind: "boolean", label: "Show the button" },
+          number: {
+            kind: "text",
+            label: "WhatsApp number",
+            mono: true,
+            help: "Include the country code, e.g. 2348012345678. Spaces, dashes and a leading + are fine — they're stripped automatically.",
+          },
+          message: {
+            kind: "textarea",
+            label: "Pre-filled message",
+            rows: 2,
+            help: "Opens already typed into the chat, ready to send.",
+          },
+        },
+      },
+      {
         key: "footer",
         title: "Footer",
         note: "The envelope flap opens to reveal the back face.",
@@ -249,35 +270,69 @@ export const schemas: DocSchema[] = [
     sections: [
       seo,
       {
-        key: "hero",
-        title: "Hero",
-        note: "Full-height photograph with bottom-anchored, centred content.",
+        key: "heroSlider",
+        title: "Opening slider",
+        note: "These slides run twice: as the full-screen splash visitors land on at betaminds.africa, and as the homepage hero once they are inside the site.",
         fields: {
-          ...heroImage("16 / 9", "Cropped to cover. Landscape works best."),
-          eyebrow: { kind: "text", label: "Pill label", mono: true },
-          heading: { kind: "textarea", label: "Headline", rows: 2 },
-          accentTail: {
-            kind: "text",
-            label: "Headline accent tail",
-            help: "Rendered in the gold accent, straight after the headline. The prototype uses a full stop.",
+          enabled: {
+            kind: "boolean",
+            label: "Show the splash screen",
+            help: "Off sends visitors straight to the homepage. The slides still open the homepage itself — this only controls the full-screen splash at the front.",
           },
-          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
-          promise: { kind: "text", label: "Promise line", mono: true },
-          ctas: {
+          autoplay: {
+            kind: "boolean",
+            label: "Advance automatically",
+            help: "Visitors who ask their device to reduce motion never get autoplay, whatever this is set to.",
+          },
+          interval: {
+            kind: "number",
+            label: "Seconds per slide",
+            help: "Only used when advancing automatically. Below 2 is ignored.",
+          },
+          overlay: {
+            kind: "number",
+            label: "Background tint (0-100)",
+            help: "How much the picture or video is faded behind the words. Lower shows more of it; raise it if a headline gets hard to read against busy footage. The tint is weighted to the bottom, so the top of the frame always stays clearer.",
+          },
+          slides: {
             kind: "repeater",
-            label: "Buttons",
-            itemLabel: "Button",
-            titleKey: "label",
+            label: "Slides",
+            itemLabel: "Slide",
+            titleKey: "heading",
             fields: {
-              label: { kind: "text", label: "Label" },
-              href: { kind: "text", label: "Link" },
-              style: {
-                kind: "select",
-                label: "Style",
-                options: ["accent", "outline"],
+              eyebrow: { kind: "text", label: "Pill label", mono: true },
+              heading: { kind: "textarea", label: "Headline", rows: 2 },
+              body: { kind: "textarea", label: "Body", rows: 3 },
+              video: {
+                kind: "video",
+                label: "Background video",
+                help: "Plays muted and looping, cropped to cover. Leave empty to use the picture instead. Keep it short and compressed — visitors download it before they see anything.",
               },
+              image: {
+                kind: "image",
+                label: "Background picture",
+                ratio: "16 / 9",
+                help: "Shown while the video loads, when there's no video, and on devices that won't autoplay it. Always set one.",
+              },
+              imageAlt: { kind: "text", label: "Picture alt text" },
+              primaryLabel: { kind: "text", label: "Button label" },
+              primaryHref: { kind: "text", label: "Button link" },
+              secondaryLabel: {
+                kind: "text",
+                label: "Second button label",
+                help: "Leave empty for a single button.",
+              },
+              secondaryHref: { kind: "text", label: "Second button link" },
             },
           },
+        },
+      },
+      {
+        key: "statement",
+        title: "Statement band",
+        note: "A scrolling strip of short brand lines, set large on ink between two sections. Keep them short — they move while you read them. Empty the list to remove the band.",
+        fields: {
+          lines: { kind: "list", label: "Lines" },
         },
       },
       {
@@ -331,7 +386,6 @@ export const schemas: DocSchema[] = [
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
-          note: { kind: "text", label: "Aside" },
           members: {
             kind: "repeater",
             label: "Team",
@@ -350,7 +404,7 @@ export const schemas: DocSchema[] = [
       {
         key: "marketplace",
         title: "03 / Digital marketplace",
-        note: "The three plan cards on the right are pulled from Digital Ecosystem → Engagement plans, so there is one place to edit them.",
+        note: "The three plan cards on the right are pulled from Digital Marketplace → Engagement plans, so there is one place to edit them.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -385,8 +439,8 @@ export const schemas: DocSchema[] = [
       },
       {
         key: "portfolio",
-        title: "06 / Portfolio",
-        note: "The tiles come from the Portfolio document, so each one links to its own case study. This section only controls the heading and how many are shown.",
+        title: "Projects",
+        note: "The tiles come from the Projects document, so each one links to its own case study. This section only controls the heading and how many are shown.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -395,7 +449,7 @@ export const schemas: DocSchema[] = [
           limit: {
             kind: "number",
             label: "How many to show",
-            help: "The rest are still on /portfolio.",
+            help: "The rest are still on /projects.",
           },
           allLinkLabel: { kind: "text", label: "Link to all work" },
         },
@@ -441,6 +495,35 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "commercials",
+        title: "Commercials",
+        note: "Two videos, side by side. A side with no video is skipped, and the whole section disappears if both are empty.",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          marketplace: {
+            kind: "group",
+            label: "Digital Marketplace commercial",
+            fields: {
+              label: { kind: "text", label: "Caption", mono: true },
+              video: { kind: "video", label: "Video" },
+              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              posterAlt: { kind: "text", label: "Poster description" },
+            },
+          },
+          academy: {
+            kind: "group",
+            label: "Academy commercial",
+            fields: {
+              label: { kind: "text", label: "Caption", mono: true },
+              video: { kind: "video", label: "Video" },
+              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              posterAlt: { kind: "text", label: "Poster description" },
+            },
+          },
+        },
+      },
+      {
         key: "finalCta",
         title: "08 / Final CTA",
         fields: {
@@ -456,15 +539,15 @@ export const schemas: DocSchema[] = [
 
   {
     id: "projects",
-    title: "Portfolio",
-    route: "/portfolio",
+    title: "Projects",
+    route: "/projects",
     blurb:
-      "Case studies. Each project gets its own page at /portfolio/<slug>, and the homepage grid is drawn from this list.",
+      "Case studies. Each project gets its own page at /projects/<slug>, and the homepage grid is drawn from this list.",
     sections: [
       seo,
       {
         key: "index",
-        title: "Portfolio index page",
+        title: "Projects index page",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -488,6 +571,7 @@ export const schemas: DocSchema[] = [
           approachLabel: { kind: "text", label: "Approach heading" },
           outcomeLabel: { kind: "text", label: "Outcome heading" },
           resultsLabel: { kind: "text", label: "Results heading" },
+          videoLabel: { kind: "text", label: "Commercial label", mono: true },
           galleryLabel: { kind: "text", label: "Gallery heading" },
           nextLabel: { kind: "text", label: "Next-project label", mono: true },
           ctaHeading: { kind: "text", label: "Closing CTA heading" },
@@ -511,7 +595,7 @@ export const schemas: DocSchema[] = [
                 kind: "text",
                 label: "URL slug",
                 mono: true,
-                help: "Lowercase words separated by hyphens — this becomes /portfolio/<slug>. Changing it breaks any link already shared.",
+                help: "Lowercase words separated by hyphens — this becomes /projects/<slug>. Changing it breaks any link already shared.",
               },
               published: { kind: "boolean", label: "Published" },
               industry: { kind: "text", label: "Industry" },
@@ -541,6 +625,11 @@ export const schemas: DocSchema[] = [
                 },
               },
               gallery: { kind: "images", label: "Gallery" },
+              video: {
+                kind: "video",
+                label: "Commercial",
+                help: "A promo or campaign video for this project. Shown on the case study with the hero image as its poster. Leave empty to skip it.",
+              },
               quote: { kind: "textarea", label: "Client quote", rows: 3 },
               quoteAuthor: { kind: "text", label: "Quote attribution" },
             },
@@ -551,8 +640,84 @@ export const schemas: DocSchema[] = [
   },
 
   {
+    id: "blog",
+    title: "Blog",
+    route: "/blog",
+    blurb:
+      "Posts. Each one gets its own page at /blog/<slug>, listed newest-first as added below.",
+    sections: [
+      seo,
+      {
+        key: "index",
+        title: "Blog index page",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          accentTail: { kind: "text", label: "Heading accent tail" },
+          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
+          readLabel: { kind: "text", label: "Card link label" },
+          emptyMessage: {
+            kind: "textarea",
+            label: "Shown when nothing is published",
+            rows: 2,
+          },
+        },
+      },
+      {
+        key: "detail",
+        title: "Post page labels",
+        note: "Section labels used on every post page.",
+        fields: {
+          backLabel: { kind: "text", label: "Back-to-index label", mono: true },
+          nextLabel: { kind: "text", label: "Next-post label", mono: true },
+          ctaHeading: { kind: "text", label: "Closing CTA heading" },
+          ctaLabel: { kind: "text", label: "Closing CTA button" },
+          ctaHref: { kind: "text", label: "Closing CTA link" },
+        },
+      },
+      {
+        key: "list",
+        title: "Posts",
+        note: "Untick Published to keep a post off the site while you write it. New posts add to the end of this list — reorder rows to change display order.",
+        fields: {
+          items: {
+            kind: "repeater",
+            label: "Posts",
+            itemLabel: "Post",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Title" },
+              slug: {
+                kind: "text",
+                label: "URL slug",
+                mono: true,
+                help: "Lowercase words separated by hyphens — this becomes /blog/<slug>. Changing it breaks any link already shared.",
+              },
+              published: { kind: "boolean", label: "Published" },
+              author: { kind: "text", label: "Author" },
+              date: {
+                kind: "text",
+                label: "Date",
+                help: "Free text, e.g. \"January 2026\" — shown as written.",
+              },
+              coverImage: { kind: "image", label: "Cover image", ratio: "16 / 9" },
+              excerpt: { kind: "textarea", label: "Excerpt", rows: 3 },
+              body: {
+                kind: "textarea",
+                label: "Post body",
+                rows: 12,
+                help: "A blank line starts a new paragraph.",
+              },
+            },
+          },
+        },
+      },
+    ],
+  },
+
+  {
     id: "ecosystem",
-    title: "Digital Ecosystem",
+    title: "Digital Marketplace",
     route: "/digital-ecosystem",
     blurb:
       "Digital Commerce & Marketplace Solutions, engagement plans and the discovery questionnaire.",
@@ -594,6 +759,24 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "promo",
+        title: "Commercial",
+        note: "Shown before the engagement plans. Leave the video empty to skip this section entirely.",
+        fields: {
+          label: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          video: { kind: "video", label: "Video" },
+          poster: {
+            kind: "image",
+            label: "Poster frame",
+            ratio: "16 / 9",
+            help: "Shown before the visitor presses play.",
+          },
+          posterAlt: { kind: "text", label: "Poster description" },
+        },
+      },
+      {
         key: "plans",
         title: "Engagement plans",
         note: "Also rendered on the homepage. The featured plan gets the accent border and tint.",
@@ -603,6 +786,11 @@ export const schemas: DocSchema[] = [
             kind: "number",
             label: "Featured plan",
             help: "Zero-based. 1 highlights the second card (Growth), as designed.",
+          },
+          selectLabel: {
+            kind: "text",
+            label: "Select-plan button label",
+            help: "Jumps to the questionnaire below with this plan pre-selected.",
           },
           items: {
             kind: "repeater",
@@ -682,10 +870,25 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "proof",
+        title: "Work",
+        note: "Shows the three newest published projects.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          linkLabel: { kind: "text", label: "Link label" },
+        },
+      },
+      {
         key: "packages",
         title: "Packages",
         note: "Also drives the homepage media tabs.",
         fields: {
+          contentsLabel: {
+            kind: "text",
+            label: "Hero contents label",
+            mono: true,
+            help: "Sits above the package list in the hero rail.",
+          },
           deliverablesLabel: {
             kind: "text",
             label: "Deliverables label",
@@ -750,6 +953,12 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "School name" },
+              image: {
+                kind: "image",
+                label: "Classroom photo",
+                ratio: "16 / 9",
+              },
+              imageAlt: { kind: "text", label: "Photo description" },
               courses: {
                 kind: "repeater",
                 label: "Courses",
@@ -757,9 +966,58 @@ export const schemas: DocSchema[] = [
                 titleKey: "name",
                 fields: {
                   name: { kind: "text", label: "Course" },
-                  weeks: { kind: "text", label: "Duration" },
+                  icon: {
+                    kind: "select",
+                    label: "Icon",
+                    options: [
+                      "camera", "video", "pen", "film", "sparkle",
+                      "megaphone", "layout", "code", "cpu", "search",
+                      "chart", "share", "identity", "strategy", "spark",
+                    ],
+                    help: "Shown on the course card and in its pop-up.",
+                  },
+                  duration: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
+                  description: {
+                    kind: "textarea",
+                    label: "Description",
+                    help: "Shown in the course's detail pop-up.",
+                  },
                 },
+              },
+            },
+          },
+        },
+      },
+      {
+        key: "crashCourses",
+        title: "Crash courses",
+        note: "Short, 2-3 day sessions shown in their own row below the main schools — not a tab of their own.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Intro", rows: 2 },
+          items: {
+            kind: "repeater",
+            label: "Crash courses",
+            itemLabel: "Course",
+            titleKey: "name",
+            fields: {
+              name: { kind: "text", label: "Course" },
+              icon: {
+                kind: "select",
+                label: "Icon",
+                options: [
+                  "camera", "video", "pen", "film", "sparkle",
+                  "megaphone", "layout", "code", "cpu", "search",
+                  "chart", "share", "identity", "strategy", "spark",
+                ],
+              },
+              duration: { kind: "text", label: "Duration", help: "e.g. \"2 days\"" },
+              mode: { kind: "text", label: "Format" },
+              description: {
+                kind: "textarea",
+                label: "Description",
+                help: "Shown in the course's detail pop-up.",
               },
             },
           },
@@ -1064,6 +1322,12 @@ export const schemas: DocSchema[] = [
           lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
+          stepsLabel: { kind: "text", label: "Steps label", mono: true },
+          steps: {
+            kind: "list",
+            label: "What happens next",
+            help: "Shown beside the headline. Three works best.",
+          },
         },
       },
       {

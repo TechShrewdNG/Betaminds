@@ -44,7 +44,7 @@ export default async function NotFound() {
             </p>
 
             <div className="row-wrap" style={{ gap: 11 }}>
-              <Link href="/" className="pill pill--accent">
+              <Link href="/home" className="pill pill--accent">
                 Back to the homepage
               </Link>
               <Link href="/lets-work" className="pill pill--outline">

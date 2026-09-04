@@ -35,12 +35,38 @@
   --ink-55: rgba(23, 23, 27, 0.55);
   --ink-50: rgba(23, 23, 27, 0.5);
 
+  /* Ground and figure as raw RGB triplets, for the places that need the
+     colour at several alphas: gradient scrims over photography, and the
+     faint washes behind tab tracks and table headers. Kept as triplets so
+     .band--ink can swap the pair and every alpha follows. */
+  --scrim-rgb: 251, 250, 248;
+  --wash-rgb: 23, 23, 27;
+
   /* Hairlines */
   --line: rgba(23, 23, 27, 0.08);
   --line-soft: rgba(23, 23, 27, 0.06);
   --line-strong: rgba(23, 23, 27, 0.09);
   --line-input: rgba(23, 23, 27, 0.14);
   --line-outline: rgba(23, 23, 27, 0.46);
+
+  /* Logo palette — the three figures in the mark, sampled from the artwork.
+     These are supporting accents for icons, category cues and graphic marks.
+     The gold --accent-fill below stays the single action colour: the handoff
+     calls it a deliberate neighbour to the logo's orange, not a match, so the
+     two are kept in their own lanes rather than blended. Because all three are
+     bright, they are used for graphics and tints — never as text on canvas,
+     where they would fail contrast. --brand-*-ink are the readable partners. */
+  --brand-blue: #0ca8fc;
+  --brand-orange: #fc900c;
+  --brand-green: #54cc48;
+
+  --brand-blue-ink: #0a6491;
+  --brand-orange-ink: #94540a;
+  --brand-green-ink: #2c7324;
+
+  --brand-blue-tint: rgba(12, 168, 252, 0.12);
+  --brand-orange-tint: rgba(252, 144, 12, 0.12);
+  --brand-green-tint: rgba(84, 204, 72, 0.14);
 
   /* Accent */
   --accent: #8a5a0f;
@@ -59,6 +85,13 @@
   --r-feature: 22px;
   --r-panel: 18px;
   --r-card: 14px;
+
+  /* The sticky header's height. It sits in flow rather than over the page, so
+     anything meant to fill the screen below it has to subtract this. Tracks
+     .bar's padding plus its content in Header.module.css — keep them in step,
+     and round up: over-subtracting leaves a hairline gap, under-subtracting
+     pushes the slider's controls off the bottom of the screen. */
+  --header-h: 68px;
 
   /* Type */
   --font-display: var(--font-sora), "Sora", system-ui, sans-serif;
@@ -88,6 +121,8 @@
     --h2: 29px;
     --quote: 22px;
     --section-y: 72px;
+    /* The bar's contents are smaller here, so it sits shorter than desktop. */
+    --header-h: 63px;
   }
 }
 
@@ -133,8 +168,13 @@ a:hover {
   color: var(--accent-hover);
 }
 
+/* Buttons take the UA's own `buttontext` colour unless told otherwise, which
+   resolves to black — harmless-looking on a cream ground, but it means any
+   button that doesn't set a colour renders black-on-black inside an ink band.
+   Inheriting is what the rest of the document already assumes. */
 button {
   font-family: inherit;
+  color: inherit;
 }
 
 ::selection {
@@ -185,6 +225,62 @@ button {
   animation: bmRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Staggered children. ScrollReveal.tsx tags the items inside any
+   [data-stagger] container once their section reveals, and sets --bm-delay
+   per item so they arrive in sequence instead of as one slab. */
+@keyframes bmStagger {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bm-stagger {
+  animation: bmStagger 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--bm-delay, 0ms);
+}
+
+/* Photographs settle rather than appearing at rest. Opt in with .bm-settle.
+
+   Scoped to the reveal system: the image only starts scaled if .js-reveal is
+   on <html>, and only settles once its section is tagged .bm-rise — so with JS
+   off, or before hydration, every image is simply at 1. The wrapper must clip
+   (.frame sets overflow: hidden) so the 1.06 start doesn't spill past the
+   corner radius.
+
+   Deliberately not applied to .tileImg: those already animate transform on
+   hover, and two rules driving one property on the same element fight. */
+.js-reveal [data-reveal] .bm-settle {
+  transform: scale(1.06);
+}
+
+[data-reveal].bm-rise .bm-settle {
+  transform: none;
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A word in a split heading. inline-block so the rise transform applies —
+   transforms do nothing on an inline box. The spaces between words are real
+   text nodes outside these spans, so wrapping and text-wrap: balance are
+   unchanged from the same heading set as plain text. */
+.bm-word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Scroll reveal: ScrollReveal.tsx adds .bm-rise to [data-reveal] sections as
+   they enter the viewport, once. Elements only go invisible-until-revealed
+   once .js-reveal (added by that same script) lands on <html> — so a page
+   with JS disabled, or before hydration, just shows everything normally
+   rather than getting stuck hidden. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -194,7 +290,11 @@ button {
     animation: none !important;
     transform: none !important;
   }
-  .bm-rise {
+  .js-reveal [data-reveal] .bm-settle {
+    transform: none !important;
+  }
+  .bm-rise,
+  .bm-stagger {
     animation: none !important;
   }
   *,
@@ -246,15 +346,36 @@ button {
   gap: 16px;
 }
 
+/* align-items: start keeps each column's own height — without it, grid's
+   default stretch forces a shorter panel's border/background to match its
+   taller sibling, leaving a block of dead space inside the shorter card.
+   Sections that genuinely want matched-height columns (e.g. a hero image
+   beside copy) opt back into stretch/center with an inline override. */
 .col2 {
   grid-template-columns: 1fr 1fr;
   gap: 64px;
+  align-items: start;
 }
 .col2--tight {
   gap: 14px;
 }
 .col2--mid {
   gap: 56px;
+}
+
+/* For a short intro column beside a much taller sibling (e.g. a long form)
+   that would otherwise strand at the top with a lot of blank space below
+   it as the page scrolls — keeps it in view instead. Desktop/tablet only:
+   .col2's 1000px breakpoint stacks columns, where sticking would float the
+   intro over the content now sitting below it. */
+.sticky-col {
+  align-self: start;
+}
+@media (min-width: 1001px) {
+  .sticky-col {
+    position: sticky;
+    top: 96px;
+  }
 }
 .col3 {
   grid-template-columns: repeat(3, 1fr);
@@ -292,6 +413,38 @@ button {
   .col4,
   .col5 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Opt a `.grid` into a swipeable, snap-scrolling carousel at mobile widths
+   instead of letting it collapse into a single stacked column. Bleeds to the
+   viewport edge (via the shell's own --pad-x) so the next card peeks in. */
+@media (max-width: 640px) {
+  .carousel-mobile {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    margin-inline: calc(-1 * var(--pad-x));
+    padding-inline: var(--pad-x);
+    padding-bottom: 4px;
+  }
+
+  .carousel-mobile::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-mobile > * {
+    flex: 0 0 78%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .carousel-mobile[data-peek="small"] > * {
+    flex-basis: 46%;
   }
 }
 
@@ -359,6 +512,36 @@ button {
   font-size: var(--h2);
   line-height: 1.04;
   letter-spacing: -0.03em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* Homepage section names: the label above each section's headline (e.g.
+   "Who we are", "Digital marketplace"). Sized and weighted like .h1 rather
+   than the small mono eyebrow style, per the brief. */
+.section-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--h1);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-transform: none;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* The supporting line under a .section-name. Deliberately light and mid-sized
+   so the section name stays the section's one shout: two competing bold
+   headings per section left neither of them carrying. Also fills the gap in
+   the scale between the display sizes and 16.5px body copy. */
+.section-lede {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(21px, 2.15vw, 31px);
+  line-height: 1.24;
+  letter-spacing: -0.022em;
+  color: var(--ink-84);
   margin: 0;
   text-wrap: balance;
 }
@@ -433,6 +616,45 @@ button {
   max-width: 740px;
 }
 
+/* Narrow reading and form columns, kept on the site's one left edge.
+
+   `.shell` centres itself, so putting a max-width straight on the shell pulls
+   the column into the middle of the page. Full-width sections above and below
+   stay flush left, so the reader's left margin jumps as they scroll past —
+   measured at x=60 for most sections but x=270/310/340 for these. Constraining
+   the shell's children instead keeps the column narrow *and* flush. */
+/* Contact details that are links now look like links on interaction, without
+   an underline sitting under every phone number at rest. */
+.contact-link {
+  display: block;
+  /* Padded to a comfortable tap target — these are phone numbers and email
+     addresses on a phone, and at their natural 24px line height they were a
+     small thing to hit. The negative margin keeps the row's spacing as it
+     was, so only the hit area grows. */
+  padding: 8px 0;
+  margin: -8px 0;
+  transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.col-760 > * {
+  max-width: 760px;
+}
+.col-820 > * {
+  max-width: 820px;
+}
+.col-900 > * {
+  max-width: 900px;
+}
+.col-920 > * {
+  max-width: 920px;
+}
+
 /* --- Buttons ------------------------------------------------------------- */
 
 .pill {
@@ -452,7 +674,23 @@ button {
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
-    color 0.25s ease;
+    color 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pill:hover {
+  transform: translateY(-2px);
+}
+
+/* The trailing arrow in a CTA travels a little on hover. Scoped to the
+   decorative span the buttons already carry, so it never touches label text. */
+.pill span[aria-hidden="true"] {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pill:hover span[aria-hidden="true"] {
+  transform: translateX(4px);
 }
 
 .pill--accent {
@@ -515,6 +753,22 @@ button {
   border: 1px solid var(--line-strong);
   border-radius: var(--r-card);
   padding: 22px 24px;
+  transition:
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Depth on hover comes from the border warming and the surface tinting, plus
+   a small lift — the handoff rules out shadows, so those are the levers. */
+.card:hover {
+  border-color: var(--accent-line-strong);
+  background: linear-gradient(
+    160deg,
+    rgba(232, 163, 61, 0.055),
+    var(--surface) 70%
+  );
+  transform: translateY(-3px);
 }
 
 .panel {
@@ -566,6 +820,184 @@ button {
   background: var(--surface-alt);
   border-top: 1px solid var(--line-soft);
   border-bottom: 1px solid var(--line-soft);
+}
+
+/* --- Icon chips ---------------------------------------------------------- */
+
+/* A rounded tile behind an inline SVG icon. `data-tone` picks one of the three
+   logo colours; the tint carries the hue while the darker -ink partner keeps
+   the glyph readable, since the raw logo colours are too bright on canvas. */
+.icon-chip {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  flex: none;
+}
+
+.icon-chip[data-tone="blue"] {
+  background: var(--brand-blue-tint);
+  color: var(--brand-blue-ink);
+}
+
+.icon-chip[data-tone="orange"] {
+  background: var(--brand-orange-tint);
+  color: var(--brand-orange-ink);
+}
+
+.icon-chip[data-tone="green"] {
+  background: var(--brand-green-tint);
+  color: var(--brand-green-ink);
+}
+
+.icon-chip--sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+/* --- Section bands ------------------------------------------------------- */
+
+/* A full-bleed surface band. The <section> carries the background and the
+   gold opening rule; a .shell inside keeps content on the grid. Alternating
+   the three warm surfaces gives each section its own "chapter", which is the
+   handoff's rule stated positively: depth comes from surface tints and
+   hairlines, never shadows. */
+.band {
+  position: relative;
+}
+
+.band--alt {
+  background: var(--surface-alt);
+}
+
+.band--deep {
+  background: var(--surface-deep);
+}
+
+/* Accent-tinted band — reserved for the one or two sections that should read
+   as a feature rather than another chapter. This is where the brand gold
+   finally gets to work at full-section scale instead of only in pills. */
+.band--accent {
+  background: linear-gradient(
+    155deg,
+    rgba(232, 163, 61, 0.11),
+    rgba(232, 163, 61, 0.04) 48%,
+    var(--surface-alt) 100%
+  );
+}
+
+/* --- Ink bands ------------------------------------------------------------
+   Deep near-black sections cut between the warm ones. Photography and the
+   brand gold both read far hotter against ink than against cream, so the
+   image-led and feature sections live here while the reading sections stay
+   light.
+
+   The whole thing works by re-pointing the palette tokens inside the band
+   rather than restyling components: anything built on --ink-*, --surface,
+   --line-* or --accent inverts on its own, including the inline styles
+   scattered through the page files. Three deliberate choices in here:
+
+     - the black is warm (#15120e), not neutral — a blue-grey black beside
+       #FBFAF8 cream reads as two unrelated palettes;
+     - --accent flips from the dark #8a5a0f (a text colour for light grounds,
+       nearly invisible on black) to the bright fill, which is what actually
+       carries on ink;
+     - --on-accent is untouched, so gold pills keep their dark text and the
+       handoff's "never white on gold" rule survives the inversion.       */
+.band--ink {
+  --canvas: #15120e;
+  --surface: #1f1a14;
+  --surface-alt: #1a1611;
+  --surface-deep: #100e0b;
+
+  --ink: #fbfaf8;
+  --ink-94: rgba(251, 250, 248, 0.94);
+  --ink-90: rgba(251, 250, 248, 0.9);
+  --ink-88: rgba(251, 250, 248, 0.88);
+  --ink-86: rgba(251, 250, 248, 0.86);
+  --ink-84: rgba(251, 250, 248, 0.82);
+  --ink-82: rgba(251, 250, 248, 0.8);
+  --ink-78: rgba(251, 250, 248, 0.76);
+  --ink-76: rgba(251, 250, 248, 0.74);
+  --ink-74: rgba(251, 250, 248, 0.72);
+  --ink-72: rgba(251, 250, 248, 0.7);
+  --ink-70: rgba(251, 250, 248, 0.68);
+  --ink-62: rgba(251, 250, 248, 0.6);
+  --ink-55: rgba(251, 250, 248, 0.54);
+  --ink-50: rgba(251, 250, 248, 0.5);
+
+  --scrim-rgb: 21, 18, 14;
+  --wash-rgb: 251, 250, 248;
+
+  --line: rgba(251, 250, 248, 0.14);
+  --line-soft: rgba(251, 250, 248, 0.09);
+  --line-strong: rgba(251, 250, 248, 0.16);
+  --line-input: rgba(251, 250, 248, 0.2);
+  --line-outline: rgba(251, 250, 248, 0.5);
+
+  --accent: #f0b862;
+  --accent-hover: #f5cb89;
+  --accent-line: rgba(232, 163, 61, 0.34);
+  --accent-line-soft: rgba(232, 163, 61, 0.28);
+  --accent-line-strong: rgba(232, 163, 61, 0.52);
+  --accent-tint: rgba(232, 163, 61, 0.16);
+
+  /* The logo tints are mixed for a light ground; on ink they need the bright
+     hues and a stronger wash to stay visible. */
+  --brand-blue-ink: #6cc4fa;
+  --brand-orange-ink: #f6b25e;
+  --brand-green-ink: #86dc7c;
+  --brand-blue-tint: rgba(12, 168, 252, 0.2);
+  --brand-orange-tint: rgba(252, 144, 12, 0.2);
+  --brand-green-tint: rgba(84, 204, 72, 0.22);
+
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+/* Two ink bands running back to back would show a seam where the hairline
+   sits; between them the rule is redundant, so it goes. */
+.band--ink + .band--ink.band--ruled {
+  border-top-color: transparent;
+}
+
+/* An ink band's own alt/deep modifiers must not fall back to the light
+   surfaces defined above them in the cascade. */
+.band--ink.band--alt {
+  background: var(--surface-alt);
+}
+
+.band--ink.band--deep {
+  background: var(--surface-deep);
+}
+
+/* Gold rule opening a section — the chapter marker that replaces the old
+   numbered eyebrows. A full-width hairline carries across the band edge, and
+   a short accent bar sits on top of it, inset to the content grid so it
+   aligns with the section name below. */
+.band--ruled {
+  border-top: 1px solid var(--line-soft);
+}
+
+.band--ruled::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: min(220px, 26vw);
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-fill) 0%,
+    var(--accent-fill) 55%,
+    var(--accent-line-strong) 100%
+  );
+  /* Align the bar with the shell's content edge rather than the viewport. */
+  margin-left: max(var(--pad-x), calc((100% - var(--max-w)) / 2 + var(--pad-x)));
 }
 
 /* --- Media --------------------------------------------------------------- */
@@ -632,23 +1064,58 @@ button {
   object-fit: cover;
 }
 
+/*
+ * Wash over a hero's photograph.
+ *
+ * Weighted towards wherever the copy sits rather than flat across the frame:
+ * the old 0.62-0.97 tint kept text legible but left the photography barely
+ * perceptible. Strong behind the words, opening up to near-clear elsewhere.
+ *
+ * `--wash` scales the whole thing, so a page can dial it without new rules —
+ * the splash screen sets it from the CMS. Alphas over 1 clamp, which is what
+ * gives the strong end its opacity.
+ */
+.hero {
+  --wash: 0.5;
+}
+
+/* Inner heroes: copy is a left-aligned column, so the tint falls away to the
+   right and lets the photograph through there. */
 .hero__wash {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    115deg,
-    rgba(251, 250, 248, 0.95),
-    rgba(251, 250, 248, 0.62)
+    105deg,
+    rgba(251, 250, 248, calc(var(--wash) * 1.8)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.5)) 38%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.66)) 70%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.26)) 100%
   );
 }
 
+/* The homepage hero centres its copy along the bottom edge, so the tint
+   builds from the bottom instead. */
 .hero__wash--up {
   background: linear-gradient(
     to top,
-    rgba(251, 250, 248, 0.97) 0%,
-    rgba(251, 250, 248, 0.86) 42%,
-    rgba(251, 250, 248, 0.72) 100%
+    rgba(251, 250, 248, calc(var(--wash) * 1.7)) 0%,
+    rgba(251, 250, 248, calc(var(--wash) * 1.3)) 26%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.75)) 58%,
+    rgba(251, 250, 248, calc(var(--wash) * 0.34)) 100%
   );
+}
+
+/* On a phone the copy spans the full width, so there's no clear side to open
+   up — go bottom-weighted there too rather than leaving text over bare photo. */
+@media (max-width: 640px) {
+  .hero__wash {
+    background: linear-gradient(
+      to top,
+      rgba(251, 250, 248, calc(var(--wash) * 1.75)) 0%,
+      rgba(251, 250, 248, calc(var(--wash) * 1.4)) 45%,
+      rgba(251, 250, 248, calc(var(--wash) * 0.8)) 100%
+    );
+  }
 }
 
 .hero__body {
@@ -665,6 +1132,41 @@ button {
 }
 
 /* --- Utility ------------------------------------------------------------- */
+
+/* Skip link. Sits off screen until it takes focus, then lands as a normal
+   accent pill in the top-left. Above the sticky header's z-index so it isn't
+   covered at the moment it appears. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  transform: translateY(-160%);
+  padding: 12px 20px;
+  border-radius: var(--r-pill);
+  background: var(--accent-fill);
+  color: var(--on-accent);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+/* :focus as well as :focus-visible. A skip link is reached by keyboard and
+   nothing else, so there is no stray-mouse-focus case that :focus-visible
+   needs to filter out here, and the plain :focus is the wider-supported of
+   the two. */
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* The target takes focus programmatically, so it must not draw a ring of its
+   own around the whole page. */
+main:focus,
+main:focus-visible {
+  outline: none;
+}
 
 .sr-only {
   position: absolute;
@@ -688,6 +1190,9 @@ button {
 
 .mt-14 {
   margin-top: 14px;
+}
+.mt-40 {
+  margin-top: 40px;
 }
 .mt-56 {
   margin-top: 56px;

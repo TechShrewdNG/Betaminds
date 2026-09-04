@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMedia } from "./media-context";
+import { ACCEPT_ATTR, isVideoUrl } from "@/lib/media";
 import { deleteImage, updateImageAlt } from "@/app/admin/actions";
 
 type Row = {
@@ -26,6 +27,7 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function handleFiles(files: FileList | null) {
@@ -34,7 +36,8 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
     setError("");
     let uploaded = 0;
     for (const file of Array.from(files)) {
-      const result = await upload(file);
+      setProgress(0);
+      const result = await upload(file, setProgress);
       if ("error" in result) {
         setError(result.error);
         break;
@@ -42,6 +45,7 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
       uploaded += 1;
     }
     setBusy(false);
+    setProgress(0);
     if (fileInput.current) fileInput.current.value = "";
     // The grid below is server-rendered, so refresh to pick up the new rows.
     if (uploaded > 0) router.refresh();
@@ -54,7 +58,7 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
           <input
             ref={fileInput}
             type="file"
-            accept="image/*"
+            accept={ACCEPT_ATTR.both}
             multiple
             hidden
             onChange={(event) => handleFiles(event.target.files)}
@@ -65,10 +69,15 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
             onClick={() => fileInput.current?.click()}
             disabled={busy}
           >
-            {busy ? "Uploading…" : "Upload images"}
+            {busy
+              ? progress > 0 && progress < 100
+                ? `Uploading… ${Math.round(progress)}%`
+                : "Uploading…"
+              : "Upload media"}
           </button>
           <span className="a-dim" style={{ fontSize: 12.5 }}>
-            JPEG, PNG, WebP, AVIF, GIF or SVG. Up to 10 MB each.
+            Pictures: JPEG, PNG, WebP, AVIF, GIF or SVG, up to 10 MB. Video:
+            MP4, WebM, OGG or MOV, up to 64 MB.
           </span>
         </div>
         {error ? (
@@ -81,15 +90,26 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
       {assets.length === 0 ? (
         <div className="a-card a-empty">
           Nothing here yet. Every image on the site is currently a placeholder
-          from the design handoff — upload the real photography to replace them.
+          from the design handoff — upload the real photography to replace them,
+          and any video you want behind the splash screen's slides.
         </div>
       ) : (
         <div className="a-grid a-grid-3">
           {assets.map((asset) => (
             <div className="a-card" key={asset.id} style={{ padding: 12 }}>
               <div className="a-thumb" style={{ cursor: "default" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={asset.url} alt={asset.alt || asset.filename} />
+                {isVideoUrl(asset.url) ? (
+                  <video
+                    src={asset.url}
+                    controls
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={asset.url} alt={asset.alt || asset.filename} />
+                )}
               </div>
 
               <div className="a-thumb-meta" style={{ marginTop: 8 }}>
