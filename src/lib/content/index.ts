@@ -86,12 +86,60 @@ async function readDoc(id: string): Promise<unknown> {
 
 const readDocCached = unstable_cache(readDoc, ["content-doc"], { tags: [TAG] });
 
+/**
+ * Puts back any nav entry the defaults define that a saved menu is missing.
+ *
+ * Arrays replace wholesale on merge — deliberately, so removing a repeater row
+ * actually removes it. The navigation is the one array where that rule bites:
+ * a menu saved in the admin is a frozen copy of the routes that existed the day
+ * it was saved, so adding a page to the site leaves it unreachable from every
+ * menu until someone retypes the row by hand. That is how /pr shipped with no
+ * way to get to it.
+ *
+ * Matching is on href, so an editor's own ordering, renaming and extra links
+ * all survive — a missing route is appended after its neighbour in the
+ * defaults, or at the end.
+ *
+ * The trade-off, stated plainly: a default route cannot be deleted from the
+ * menu in the admin, because this puts it back. Say the word and the schema
+ * grows a "hidden" toggle for that; until it does, the defaults decide which
+ * routes exist and the CMS decides what they are called and in what order.
+ */
+type NavItem = { label: string; href: string };
+
+function withMissingRoutes(saved: unknown): unknown {
+  if (!isPlainObject(saved)) return saved;
+  const nav = saved.nav;
+  if (!isPlainObject(nav) || !Array.isArray(nav.items)) return saved;
+
+  const items = nav.items as NavItem[];
+  const hrefs = new Set(
+    items.map((item) => (isPlainObject(item) ? String(item.href ?? "") : "")),
+  );
+  const fallback = defaults.global.nav.items as readonly NavItem[];
+  if (fallback.every((item) => hrefs.has(item.href))) return saved;
+
+  const merged = [...items];
+  for (const [index, item] of fallback.entries()) {
+    if (hrefs.has(item.href)) continue;
+    // Slot it in beside whichever neighbour the saved menu still has, so a new
+    // route lands where the defaults put it rather than always at the end.
+    const before = fallback[index - 1]?.href;
+    const at = before ? merged.findIndex((m) => m.href === before) : -1;
+    if (at === -1) merged.push({ ...item });
+    else merged.splice(at + 1, 0, { ...item });
+  }
+
+  return { ...saved, nav: { ...nav, items: merged } };
+}
+
 /** Content for one document, defaults merged with whatever the admin saved. */
 export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  return stripSectionNumbering(merge(defaults[id], saved));
+  const patched = id === "global" ? withMissingRoutes(saved) : saved;
+  return stripSectionNumbering(merge(defaults[id], patched));
 }
 
 /** Site-wide chrome. Every page needs it, so it gets its own helper. */
