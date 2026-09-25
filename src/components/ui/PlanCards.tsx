@@ -1,21 +1,16 @@
 import Link from "next/link";
-import { Icon } from "./Icon";
 import styles from "./ui.module.css";
 
 export type Plan = {
   name: string;
   tag: string;
   short: string;
-  includes: string[];
   /** Optional closing line — who the package suits. */
   bestFor?: string;
 };
 
 /**
- * Engagement plans. Every plan lists what it includes up front rather than
- * behind a toggle: the lists are what a visitor is comparing, so hiding them
- * made the three cards look identical and forced a click per plan just to see
- * the difference. The featured plan (Growth by default) still carries the
+ * Engagement plans. The featured plan (Growth by default) still carries the
  * accent border and tint. Each card's CTA jumps to the questionnaire with
  * `?plan=<name>`, which ConsultationForm reads to pre-select the matching
  * option in its own Plan field.
@@ -26,7 +21,6 @@ export function PlanCards({
   plans,
   featuredIndex = 1,
   selectLabel = "Select Plan",
-  includesLabel = "What's included",
   bestForLabel = "Best for",
   columns = 3,
   ctaHref = (plan) =>
@@ -35,17 +29,17 @@ export function PlanCards({
   plans: Plan[];
   featuredIndex?: number;
   selectLabel?: string;
-  includesLabel?: string;
   bestForLabel?: string;
   /** PR runs two of these side by side; the plans grid runs three. */
   columns?: 2 | 3;
   ctaHref?: (plan: Plan) => string;
 }) {
   return (
-    // Stretched cards need every card to fill its height, which the inclusions
-    // block does with margin-top: auto. Where the cards differ a lot — the PR
-    // pair, one with a "best for" line and one without — that auto margin opens
-    // a void inside the shorter card instead, so those sit at natural height.
+    // Stretched cards need every card to fill its height, which whichever
+    // block follows the head does with margin-top: auto (see .planHead + …
+    // in ui.module.css). Where the cards differ a lot — the PR pair, one with
+    // a "best for" line and one without — that auto margin opens a void
+    // inside the shorter card instead, so those sit at natural height.
     <div
       className={`grid col${columns}`}
       style={{ alignItems: columns === 2 ? "start" : "stretch" }}
@@ -61,17 +55,6 @@ export function PlanCards({
               <div className={styles.planTag}>{plan.tag}</div>
               <div className={styles.planName}>{plan.name}</div>
               <div className={styles.planShort}>{plan.short}</div>
-            </div>
-
-            <div className={styles.planIncludesLabel}>{includesLabel}</div>
-
-            <div className={styles.planIncludes}>
-              {plan.includes.map((item) => (
-                <div key={item} className={styles.planInclude}>
-                  <Icon name="check" size={16} className={styles.tickMark} />
-                  {item}
-                </div>
-              ))}
             </div>
 
             {plan.bestFor ? (

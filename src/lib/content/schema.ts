@@ -802,7 +802,6 @@ export const schemas: DocSchema[] = [
               name: { kind: "text", label: "Name" },
               tag: { kind: "text", label: "Tag", mono: true },
               short: { kind: "textarea", label: "Summary", rows: 3 },
-              includes: { kind: "list", label: "What's included" },
             },
           },
         },
@@ -1394,7 +1393,6 @@ export const schemas: DocSchema[] = [
           name: { kind: "text", label: "Package name" },
           tag: { kind: "text", label: "Tag", mono: true },
           short: { kind: "textarea", label: "Who it's for", rows: 2 },
-          includes: { kind: "list", label: "Monthly deliverables" },
           bestFor: {
             kind: "textarea",
             label: "Best for",
@@ -1421,7 +1419,6 @@ export const schemas: DocSchema[] = [
           name: { kind: "text", label: "Package name" },
           tag: { kind: "text", label: "Tag", mono: true },
           short: { kind: "textarea", label: "Who it's for", rows: 2 },
-          includes: { kind: "list", label: "Monthly deliverables" },
           bestFor: {
             kind: "textarea",
             label: "Best for",
