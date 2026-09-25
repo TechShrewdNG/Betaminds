@@ -87,11 +87,29 @@ export function ViewportReadout() {
         { label: "main width", value: w(main), flag: w(header) !== w(main) },
       ]);
 
-      // Everything sticking out past the right edge, widest overhang first.
+      // A tile four cards deep in a horizontal carousel legitimately has a
+      // right edge past the viewport — that is the whole point of
+      // `overflow-x: auto`, and it was never the bug. The first run of this
+      // page flagged those tiles as the culprit, because it checked only an
+      // element's own position and not whether some ancestor already scrolls
+      // it. Walk up to <main> and skip anything a real scroller already
+      // accounts for, so what is left is only what could actually be
+      // widening the document.
+      const scrollClips = (el: Element) => {
+        let parent = el.parentElement;
+        while (parent && parent.tagName !== "MAIN" && parent !== doc.body) {
+          const { overflowX } = win.getComputedStyle(parent);
+          if (overflowX === "auto" || overflowX === "scroll") return true;
+          parent = parent.parentElement;
+        }
+        return false;
+      };
+
       const over: { name: string; right: number; w: number }[] = [];
       for (const el of Array.from(doc.querySelectorAll("body *"))) {
         const r = el.getBoundingClientRect();
         if (r.right <= width + 1) continue;
+        if (scrollClips(el)) continue;
         const cls = (el.className || "").toString().replace(/\s+/g, " ").trim();
         over.push({
           name: `${el.tagName.toLowerCase()}${cls ? "." + cls.split(" ").slice(0, 2).join(".") : ""}`,
