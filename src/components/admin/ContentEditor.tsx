@@ -318,6 +318,28 @@ function FieldView({
         />
       );
 
+    case "video":
+      return (
+        <ImageField
+          label={field.label}
+          help={field.help}
+          media="video"
+          value={typeof raw === "string" ? raw : ""}
+          onChange={(url) => update(path, url)}
+        />
+      );
+
+    case "doc":
+      return (
+        <ImageField
+          label={field.label}
+          help={field.help}
+          media="doc"
+          value={typeof raw === "string" ? raw : ""}
+          onChange={(url) => update(path, url)}
+        />
+      );
+
     case "images":
       return (
         <ImagesField

@@ -1,0 +1,66 @@
+/* The splash screen at `/`: logo, slider, nothing else. */
+
+.splash {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--surface-deep);
+}
+
+/* Top right, over the slider — the page's only chrome, and the way in. */
+.brand {
+  position: absolute;
+  top: 26px;
+  right: var(--pad-x);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+
+.brand:hover {
+  color: var(--ink);
+}
+
+/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph. */
+.mark {
+  height: 30px;
+  aspect-ratio: 876 / 400;
+  overflow: hidden;
+  flex: none;
+  display: block;
+}
+
+.mark img {
+  width: 100%;
+  display: block;
+}
+
+.lockup {
+  line-height: 1.05;
+  display: block;
+}
+
+.wordmark {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+}
+
+.wordmarkSub {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .brand {
+    top: 18px;
+  }
+}

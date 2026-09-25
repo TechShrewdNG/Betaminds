@@ -1,32 +1,50 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
 import styles from "./ui.module.css";
 
 export type Plan = {
   name: string;
   tag: string;
   short: string;
-  includes: string[];
+  /** Optional closing line — who the package suits. */
+  bestFor?: string;
 };
 
 /**
- * Engagement plans. The featured plan (Growth by default) starts expanded and
- * carries the accent border and tint.
+ * Engagement plans. The featured plan (Growth by default) still carries the
+ * accent border and tint. Each card's CTA jumps to the questionnaire with
+ * `?plan=<name>`, which ConsultationForm reads to pre-select the matching
+ * option in its own Plan field.
+ *
+ * No longer a client component — with the accordion gone there is no state.
  */
 export function PlanCards({
   plans,
   featuredIndex = 1,
+  selectLabel = "Select Plan",
+  bestForLabel = "Best for",
+  columns = 3,
+  ctaHref = (plan) =>
+    `/digital-ecosystem?plan=${encodeURIComponent(plan.name)}#book`,
 }: {
   plans: Plan[];
   featuredIndex?: number;
+  selectLabel?: string;
+  bestForLabel?: string;
+  /** PR runs two of these side by side; the plans grid runs three. */
+  columns?: 2 | 3;
+  ctaHref?: (plan: Plan) => string;
 }) {
-  const [open, setOpen] = useState<number | null>(featuredIndex);
-
   return (
-    <div className="grid col3" style={{ alignItems: "stretch" }}>
+    // Stretched cards need every card to fill its height, which whichever
+    // block follows the head does with margin-top: auto (see .planHead + …
+    // in ui.module.css). Where the cards differ a lot — the PR pair, one with
+    // a "best for" line and one without — that auto margin opens a void
+    // inside the shorter card instead, so those sit at natural height.
+    <div
+      className={`grid col${columns}`}
+      style={{ alignItems: columns === 2 ? "start" : "stretch" }}
+    >
       {plans.map((plan, index) => {
-        const isOpen = open === index;
         return (
           <div
             key={plan.name}
@@ -39,30 +57,17 @@ export function PlanCards({
               <div className={styles.planShort}>{plan.short}</div>
             </div>
 
-            <button
-              type="button"
-              className={styles.planToggle}
-              aria-expanded={isOpen}
-              aria-controls={`plan-${index}`}
-              onClick={() => setOpen(isOpen ? null : index)}
-            >
-              {isOpen ? "What's included" : "See what's included"}
-              <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
-            </button>
+            {plan.bestFor ? (
+              <div className={styles.planBestFor}>
+                <span className={styles.planBestForLabel}>{bestForLabel}</span>
+                {plan.bestFor}
+              </div>
+            ) : null}
 
-            <div
-              id={`plan-${index}`}
-              className={styles.planIncludes}
-              hidden={!isOpen}
-            >
-              {plan.includes.map((item) => (
-                <div key={item} className={styles.planInclude}>
-                  <span className={styles.tickMark} aria-hidden="true">
-                    ✓
-                  </span>
-                  {item}
-                </div>
-              ))}
+            <div className={styles.planCta}>
+              <Link href={ctaHref(plan)} className="pill pill--accent pill--sm">
+                {selectLabel}
+              </Link>
             </div>
           </div>
         );
