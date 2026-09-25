@@ -3,13 +3,18 @@ import { getContent, defaults } from "@/lib/content";
 /**
  * Case-study projects.
  *
+ * There is no longer a page per project — a tile on the grid opens the PDF
+ * uploaded for it instead. `key` exists only so React and the de-duplication
+ * below have a stable identity per entry; it is derived from the name, not
+ * editable, and never appears in a URL.
+ *
  * Entries are content, so nothing here trusts their shape: an entry without a
- * slug or a name can't have a page, and duplicate slugs would make one of them
- * unreachable. Both are dropped rather than rendered broken.
+ * name can't have a tile, and two entries that reduce to the same key would
+ * make one of them invisible. Both are dropped rather than rendered broken.
  */
 
 export type Project = {
-  slug: string;
+  key: string;
   name: string;
   industry: string;
   service: string;
@@ -17,20 +22,12 @@ export type Project = {
   client: string;
   image: string;
   heroImage: string;
-  summary: string;
-  challenge: string;
-  approach: string;
-  outcome: string;
-  results: { n: string; label: string }[];
-  gallery: string[];
-  video: string;
-  quote: string;
-  quoteAuthor: string;
+  pdf: string;
   published: boolean;
 };
 
-/** URL-safe segment. Mirrors what the admin's help text tells editors to type. */
-export function slugify(value: string) {
+/** Collision-safe internal identifier. Never shown or linked to. */
+function keyify(value: string) {
   return value
     .toLowerCase()
     .trim()
@@ -46,21 +43,11 @@ function normalise(raw: unknown): Project | null {
   const item = raw as Record<string, unknown>;
 
   const name = str(item.name);
-  // Fall back to the name so an entry someone forgot to slug is still reachable.
-  const slug = slugify(str(item.slug) || name);
-  if (!slug || !name) return null;
-
-  const results = Array.isArray(item.results)
-    ? item.results
-        .map((entry) => {
-          const row = (entry ?? {}) as Record<string, unknown>;
-          return { n: str(row.n), label: str(row.label) };
-        })
-        .filter((row) => row.n !== "" || row.label !== "")
-    : [];
+  const key = keyify(name);
+  if (!key || !name) return null;
 
   return {
-    slug,
+    key,
     name,
     industry: str(item.industry),
     service: str(item.service),
@@ -68,15 +55,7 @@ function normalise(raw: unknown): Project | null {
     client: str(item.client) || name,
     image: str(item.image),
     heroImage: str(item.heroImage) || str(item.image),
-    summary: str(item.summary),
-    challenge: str(item.challenge),
-    approach: str(item.approach),
-    outcome: str(item.outcome),
-    results,
-    gallery: Array.isArray(item.gallery) ? item.gallery.filter(str) : [],
-    video: str(item.video),
-    quote: str(item.quote),
-    quoteAuthor: str(item.quoteAuthor),
+    pdf: str(item.pdf),
     // Absent means published — an editor adding a row shouldn't have to opt in.
     published: item.published !== false,
   };
@@ -89,8 +68,8 @@ function normaliseAll(raw: unknown): Project[] {
 
   for (const entry of raw) {
     const project = normalise(entry);
-    if (!project || seen.has(project.slug)) continue;
-    seen.add(project.slug);
+    if (!project || seen.has(project.key)) continue;
+    seen.add(project.key);
     projects.push(project);
   }
 
@@ -111,11 +90,6 @@ export async function allProjects(): Promise<Project[]> {
 /** What the public site shows. */
 export async function publishedProjects(): Promise<Project[]> {
   return (await allProjects()).filter((project) => project.published);
-}
-
-export async function projectBySlug(slug: string): Promise<Project | null> {
-  const projects = await publishedProjects();
-  return projects.find((project) => project.slug === slug) ?? null;
 }
 
 /** "Industry · Service", skipping either half if it's blank. */

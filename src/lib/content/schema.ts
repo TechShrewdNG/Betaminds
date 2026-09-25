@@ -543,7 +543,7 @@ export const schemas: DocSchema[] = [
     title: "Projects",
     route: "/projects",
     blurb:
-      "Case studies. Each project gets its own page at /projects/<slug>, and the homepage grid is drawn from this list.",
+      "Case studies. Every tile opens the PDF uploaded for it, in a new tab — there's no page per project. The homepage and media-services grids are drawn from this same list.",
     sections: [
       seo,
       {
@@ -554,7 +554,11 @@ export const schemas: DocSchema[] = [
           heading: { kind: "text", label: "Heading" },
           accentTail: { kind: "text", label: "Heading accent tail" },
           lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
-          readLabel: { kind: "text", label: "Card link label" },
+          readLabel: {
+            kind: "text",
+            label: "Card link label",
+            help: "Shown only on tiles that have a PDF uploaded.",
+          },
           emptyMessage: {
             kind: "textarea",
             label: "Shown when nothing is published",
@@ -563,27 +567,9 @@ export const schemas: DocSchema[] = [
         },
       },
       {
-        key: "detail",
-        title: "Case-study page labels",
-        note: "Section headings used on every project page.",
-        fields: {
-          briefLabel: { kind: "text", label: "Brief label", mono: true },
-          challengeLabel: { kind: "text", label: "Challenge heading" },
-          approachLabel: { kind: "text", label: "Approach heading" },
-          outcomeLabel: { kind: "text", label: "Outcome heading" },
-          resultsLabel: { kind: "text", label: "Results heading" },
-          videoLabel: { kind: "text", label: "Commercial label", mono: true },
-          galleryLabel: { kind: "text", label: "Gallery heading" },
-          nextLabel: { kind: "text", label: "Next-project label", mono: true },
-          ctaHeading: { kind: "text", label: "Closing CTA heading" },
-          ctaLabel: { kind: "text", label: "Closing CTA button" },
-          ctaHref: { kind: "text", label: "Closing CTA link" },
-        },
-      },
-      {
         key: "list",
         title: "Projects",
-        note: "Untick Published to keep a project off the site while you write it.",
+        note: "Untick Published to keep a project off the site while you write it. A project with no PDF yet still shows its tile — it just isn't clickable until one is uploaded.",
         fields: {
           items: {
             kind: "repeater",
@@ -592,12 +578,6 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "Project / client name" },
-              slug: {
-                kind: "text",
-                label: "URL slug",
-                mono: true,
-                help: "Lowercase words separated by hyphens — this becomes /projects/<slug>. Changing it breaks any link already shared.",
-              },
               published: { kind: "boolean", label: "Published" },
               industry: { kind: "text", label: "Industry" },
               service: { kind: "text", label: "Service" },
@@ -606,33 +586,15 @@ export const schemas: DocSchema[] = [
               image: { kind: "image", label: "Grid thumbnail", ratio: "4 / 3" },
               heroImage: {
                 kind: "image",
-                label: "Case-study hero",
+                label: "Featured hero",
                 ratio: "16 / 9",
-                help: "Falls back to the thumbnail if empty.",
+                help: "Falls back to the thumbnail if empty. Used when this is the newest project, as the /projects page's hero photograph.",
               },
-              summary: { kind: "textarea", label: "Summary", rows: 3 },
-              challenge: { kind: "textarea", label: "The challenge", rows: 5 },
-              approach: { kind: "textarea", label: "What we did", rows: 5 },
-              outcome: { kind: "textarea", label: "The outcome", rows: 5 },
-              results: {
-                kind: "repeater",
-                label: "Results",
-                itemLabel: "Result",
-                titleKey: "label",
-                help: "Only add figures the client is happy to publish.",
-                fields: {
-                  n: { kind: "text", label: "Figure" },
-                  label: { kind: "text", label: "Label" },
-                },
+              pdf: {
+                kind: "doc",
+                label: "Case study PDF",
+                help: "Opens in a new tab when a visitor clicks the tile.",
               },
-              gallery: { kind: "images", label: "Gallery" },
-              video: {
-                kind: "video",
-                label: "Commercial",
-                help: "A promo or campaign video for this project. Shown on the case study with the hero image as its poster. Leave empty to skip it.",
-              },
-              quote: { kind: "textarea", label: "Client quote", rows: 3 },
-              quoteAuthor: { kind: "text", label: "Quote attribution" },
             },
           },
         },

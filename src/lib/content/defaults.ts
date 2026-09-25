@@ -51,20 +51,18 @@ const f = (
 /**
  * Shorthand for a case-study project.
  *
- * The structure is real; the narrative copy is placeholder, and `results` is left
- * empty on purpose. Inventing performance figures for a client's case study would
- * put fabricated claims on a live marketing site — the editor fills those in with
- * numbers they can stand behind.
+ * The structure is real; the PDF is not — there's no case-study document to
+ * link to until one is uploaded in /admin, so this leaves `pdf` empty. A
+ * project with no PDF yet still gets its tile on the site; the tile just
+ * isn't a link until then.
  */
 const proj = (
-  slug: string,
   name: string,
   industry: string,
   service: string,
   thumb: string,
   hero: string,
 ) => ({
-  slug,
   name,
   industry,
   service,
@@ -72,14 +70,7 @@ const proj = (
   client: name,
   image: thumb,
   heroImage: hero,
-  summary: `A ${service.toLowerCase()} engagement for ${name}. Replace this with the real project summary.`,
-  challenge: "What the brand was up against when they came to us.",
-  approach: "What we did, in the order we did it, and why.",
-  outcome: "What changed for the business afterwards.",
-  results: [] as { n: string; label: string }[],
-  gallery: [] as string[],
-  quote: "",
-  quoteAuthor: "",
+  pdf: "",
   published: true,
 });
 
@@ -468,27 +459,14 @@ export const defaults = {
       emptyMessage: "Case studies are on their way. In the meantime, tell us what you're building.",
       readLabel: "Read the case study →",
     },
-    detail: {
-      briefLabel: "The brief",
-      challengeLabel: "The challenge",
-      approachLabel: "What we did",
-      outcomeLabel: "The outcome",
-      resultsLabel: "Results",
-      videoLabel: "The commercial",
-      galleryLabel: "From the work",
-      nextLabel: "Next project",
-      ctaHeading: "Something like this in mind?",
-      ctaLabel: "Let's work →",
-      ctaHref: "/lets-work",
-    },
     list: {
       items: [
-        proj("sunset-hospitality", "Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
-        proj("nourish-med", "Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
-        proj("charoite-homes", "Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
-        proj("mama-africa-foods", "Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
-        proj("mkr-logistics", "MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
-        proj("glams-beauty", "Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
+        proj("Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
+        proj("Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
+        proj("Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
+        proj("Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
+        proj("MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
+        proj("Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
       ],
     },
   },

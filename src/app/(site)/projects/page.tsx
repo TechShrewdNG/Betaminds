@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
-import { publishedProjects, projectMeta } from "@/lib/projects";
+import { publishedProjects } from "@/lib/projects";
 import { IndexHero, IndexTags } from "@/components/ui/IndexHero";
-import styles from "@/components/ui/ui.module.css";
+import { ProjectTile } from "@/components/ui/ProjectTile";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("projects");
@@ -50,28 +50,11 @@ export default async function ProjectsPage() {
           ) : (
             <div className="grid col3 carousel-mobile" data-stagger>
               {projects.map((project) => (
-                <Link
-                  key={project.slug}
-                  href={`/projects/${project.slug}`}
-                  className={styles.tile}
-                >
-                  {project.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={project.image}
-                      alt={project.name}
-                      className={`${styles.tileImg} ratio-4-3`}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="ratio-4-3" style={{ background: "var(--surface-alt)" }} />
-                  )}
-                  <div className={styles.workHover}>
-                    <div className={styles.workMeta}>{projectMeta(project)}</div>
-                    <div className={styles.workName}>{project.name}</div>
-                    <span className={styles.workView}>{index.readLabel}</span>
-                  </div>
-                </Link>
+                <ProjectTile
+                  key={project.key}
+                  project={project}
+                  readLabel={index.readLabel}
+                />
               ))}
             </div>
           )}

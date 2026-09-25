@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
-import { publishedProjects, projectMeta } from "@/lib/projects";
+import { publishedProjects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 import { HeroSlider } from "@/components/ui/HeroSlider";
 import { Marquee } from "@/components/ui/Marquee";
@@ -11,6 +11,7 @@ import { MediaTabs } from "@/components/ui/MediaTabs";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { PromoVideo } from "@/components/ui/PromoVideo";
+import { ProjectTile } from "@/components/ui/ProjectTile";
 import styles from "@/components/ui/ui.module.css";
 import { SplitText } from "@/components/ui/SplitText";
 
@@ -420,26 +421,11 @@ export default async function HomePage() {
           </div>
           <div className="grid col3 carousel-mobile">
             {projects.slice(0, home.portfolio.limit).map((project) => (
-              <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                className={styles.tile}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={project.image}
-                  alt={project.name}
-                  className={`${styles.tileImg} ratio-4-3`}
-                  loading="lazy"
-                />
-                <div className={styles.workHover}>
-                  <div className={styles.workMeta}>{projectMeta(project)}</div>
-                  <div className={styles.workName}>{project.name}</div>
-                  <span className={styles.workView}>
-                    {home.portfolio.viewLabel}
-                  </span>
-                </div>
-              </Link>
+              <ProjectTile
+                key={project.key}
+                project={project}
+                readLabel={home.portfolio.viewLabel}
+              />
             ))}
           </div>
         </div>

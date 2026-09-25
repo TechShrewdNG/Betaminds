@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
-import { publishedProjects, projectMeta } from "@/lib/projects";
+import { publishedProjects } from "@/lib/projects";
 import { PackageCards } from "@/components/ui/PackageCards";
 import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
+import { ProjectTile } from "@/components/ui/ProjectTile";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,30 +65,7 @@ export default async function MediaServicesPage() {
             </div>
             <div className="grid col3 carousel-mobile" data-stagger>
               {proof.map((project) => (
-                <Link
-                  key={project.slug}
-                  href={`/projects/${project.slug}`}
-                  className={styles.tile}
-                >
-                  {project.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={project.image}
-                      alt={project.name}
-                      className={`${styles.tileImg} ratio-4-3`}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div
-                      className="ratio-4-3"
-                      style={{ background: "var(--surface-alt)" }}
-                    />
-                  )}
-                  <div className={styles.workHover}>
-                    <div className={styles.workMeta}>{projectMeta(project)}</div>
-                    <div className={styles.workName}>{project.name}</div>
-                  </div>
-                </Link>
+                <ProjectTile key={project.key} project={project} />
               ))}
             </div>
           </div>
