@@ -205,7 +205,7 @@ export default async function EcosystemPage() {
                           width: 23,
                           height: 23,
                           borderRadius: "50%",
-                          border: "1px solid rgba(232,163,61,.5)",
+                          border: "1px solid rgba(var(--accent-rgb),.5)",
                           color: "var(--accent)",
                           fontFamily: "var(--font-body)",
                           fontWeight: 600,

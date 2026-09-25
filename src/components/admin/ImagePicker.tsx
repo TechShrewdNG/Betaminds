@@ -2,14 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMedia } from "./media-context";
-import { ACCEPT_ATTR, isVideoUrl } from "@/lib/media";
+import { ACCEPT_ATTR, isVideoUrl, mediaKindOf } from "@/lib/media";
 
-export type MediaKind = "image" | "video";
+export type MediaKind = "image" | "video" | "doc";
 
 /** Wording and file-input filter, so one picker serves both media kinds. */
 const COPY = {
   image: { noun: "image", accept: ACCEPT_ATTR.image, empty: "No image" },
   video: { noun: "video", accept: ACCEPT_ATTR.video, empty: "No video" },
+  doc: { noun: "PDF", accept: ACCEPT_ATTR.doc, empty: "No PDF" },
 } as const;
 
 /**
@@ -41,7 +42,7 @@ export function ImagePickerModal({
   // Picking a background video shouldn't mean scrolling past every still, and
   // vice versa.
   const assets = allAssets.filter(
-    (asset) => isVideoUrl(asset.url) === (media === "video"),
+    (asset) => mediaKindOf(asset.url) === media,
   );
 
   useEffect(() => {
@@ -167,13 +168,15 @@ export function ImagePickerModal({
                       onClose();
                     }}
                   >
-                    {isVideoUrl(asset.url) ? (
+                    {mediaKindOf(asset.url) === "video" ? (
                       <video
                         src={asset.url}
                         muted
                         playsInline
                         preload="metadata"
                       />
+                    ) : mediaKindOf(asset.url) === "doc" ? (
+                      <span className="a-preview-empty">PDF</span>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={asset.url} alt={asset.alt || asset.filename} />
@@ -226,6 +229,15 @@ export function ImageField({
                 playsInline
                 preload="metadata"
               />
+            ) : mediaKindOf(value) === "doc" ? (
+              <a
+                href={value}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="a-preview-empty"
+              >
+                Open PDF
+              </a>
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={value} alt="" />

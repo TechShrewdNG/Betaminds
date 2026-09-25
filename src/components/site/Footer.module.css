@@ -113,7 +113,7 @@
 }
 
 .panel {
-  border: 1px solid rgba(232, 163, 61, 0.28);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
   border-top: none;
   border-radius: 0 0 16px 16px;
   background: var(--surface);
@@ -127,7 +127,7 @@
   text-align: center;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(232, 163, 61, 0.28);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
   background: var(--surface);
   cursor: pointer;
   min-height: 260px;
@@ -149,8 +149,8 @@
   height: 150px;
   background: linear-gradient(
     160deg,
-    rgba(232, 163, 61, 0.16),
-    rgba(232, 163, 61, 0.04)
+    rgba(var(--accent-rgb), 0.16),
+    rgba(var(--accent-rgb), 0.04)
   );
   clip-path: polygon(0 0, 50% 100%, 100% 0);
   transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);

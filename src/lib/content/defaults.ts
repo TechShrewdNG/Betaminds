@@ -120,6 +120,7 @@ export const defaults = {
         { label: "Projects", href: "/projects" },
         { label: "Digital Marketplace", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
+        { label: "PR & Events", href: "/pr" },
         { label: "Academy", href: "/academy" },
         { label: "Summit", href: "/summit" },
         { label: "Blog", href: "/blog" },
@@ -1172,18 +1173,6 @@ export const defaults = {
         },
       ],
     },
-    partners: {
-      eyebrow: "Partners",
-      heading: "Trusted by the institutions that hire our graduates",
-      logos: [
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-      ],
-    },
     foundation: {
       eyebrow: "Coming soon · Betaminds Creative Foundations",
       heading: "Unlocking rural and less-privileged potential",
@@ -1457,6 +1446,162 @@ export const defaults = {
         project:
           "Where you are now, where you want to be, and by when.",
       },
+    },
+  },
+
+  pr: {
+    seo: {
+      title: "PR & Event Coverage — Betaminds Africa",
+      description:
+        "Public relations packages, event PR and coverage, The Pinnacle Magazine, press features and billboard placements.",
+    },
+    hero: {
+      image: IMG(3184291, 1800),
+      imageAlt: "Press conference under lights",
+      eyebrow: "Public relations",
+      heading: "Coverage that puts you in the room",
+      accentTail: ".",
+      lead: "Media placements, launches, executive profile and event coverage — planned against a target, not a hunch.",
+      ctaLabel: "Talk to the PR team →",
+      ctaHref: "/lets-work?need=Public%20relations",
+    },
+    packages: {
+      heading: "PR packages",
+      lead: "Monthly retainers. Each tier carries everything in the one before it.",
+      selectLabel: "Enquire →",
+      bestForLabel: "Best for",
+      featuredIndex: 1,
+      items: [
+        {
+          name: "Starter",
+          tag: "Establish",
+          short: "For startups, SMEs and emerging brands.",
+          includes: [
+            "PR strategy and monthly media plan",
+            "1 professionally written press release",
+            "3–5 online media placements",
+            "Brand/company profile feature",
+            "Social media PR amplification",
+            "PR performance report",
+          ],
+          bestFor:
+            "Brands looking to establish credibility and begin building media presence.",
+        },
+        {
+          name: "Growth",
+          tag: "Build",
+          short: "For growing businesses ready for stronger visibility.",
+          includes: [
+            "Everything in Starter",
+            "2 press releases",
+            "6–10 media placements",
+            "1 executive interview opportunity",
+            "Digital PR campaign",
+            "Influencer/creator outreach",
+            "Social media amplification",
+            "Media opportunity sourcing",
+            "Brand reputation monitoring",
+            "Monthly PR strategy meeting",
+            "Detailed monthly performance report",
+          ],
+          bestFor:
+            "SMEs, founders, startups, real estate, hospitality, technology, creative and lifestyle brands.",
+        },
+        {
+          name: "Authority",
+          tag: "Lead",
+          short: "For established brands, executives and organisations.",
+          includes: [
+            "Everything in Growth",
+            "3–4 strategic press releases",
+            "10–15+ targeted media placements",
+            "TV/Radio interview pitching",
+            "Opinion/editorial placements",
+            "Podcast and digital interview opportunities",
+            "Awards & recognition strategy",
+            "Speaking opportunity sourcing",
+            "Influencer/KOL partnerships",
+            "Detailed monthly performance report",
+          ],
+          bestFor:
+            "CEOs, corporate brands, institutions and organisations seeking industry authority.",
+        },
+      ],
+    },
+    special: {
+      heading: "One-off and personal",
+      lead: "Two engagements that sit outside the monthly retainer.",
+      items: [
+        {
+          name: "Launch PR Package",
+          tag: "One-off",
+          short:
+            "For product, company, service, event or brand launches.",
+          includes: [
+            "Launch PR strategy",
+            "Press release development",
+            "5–9 media placements",
+            "Founder/CEO interview positioning",
+            "Online publication features",
+            "Influencer/creator amplification",
+            "Event videography",
+            "Photography",
+            "Red carpet hosting",
+            "Post-launch media report",
+          ],
+          bestFor:
+            "New business launches, product launches, events and campaigns.",
+        },
+        {
+          name: "Founder & Executive PR",
+          tag: "Personal",
+          short: "For the person in front of the brand.",
+          includes: [
+            "Media profile",
+            "Monthly opinion article",
+            "Media interview pitching",
+            "Podcast opportunities",
+            "Speaking opportunity sourcing",
+            "Personal reputation monitoring",
+            "Executive media coaching",
+          ],
+          bestFor: "",
+        },
+      ],
+    },
+    event: {
+      eyebrow: "Event PR",
+      heading: "Event PR and event coverage",
+      body: "One package covering the run-up, the day itself and everything published straight after.",
+      items: [
+        "Story post of the event poster before the day",
+        "2 feed posts of the event before the day (graphics & reel)",
+        "Story post of the event activities during the day",
+        "Event coverage — 6 posts of the event, published within 12 hours",
+        "Red carpet hosting",
+      ],
+    },
+    magazine: {
+      eyebrow: "The Pinnacle Magazine",
+      heading: "Read the latest issue",
+      body: "Our own title, covering the founders, brands and ideas moving African business.",
+      cover: "",
+      coverAlt: "The Pinnacle Magazine, latest issue cover",
+      pdf: "",
+      ctaLabel: "Read the magazine →",
+    },
+    press: {
+      heading: "Press",
+      lead: "Newspaper and magazine features we have placed and appeared in.",
+      readLabel: "Read publication",
+      items: [
+        { title: "", cover: "", href: "" },
+      ],
+    },
+    billboards: {
+      heading: "Billboard placements",
+      lead: "Out-of-home work, in market.",
+      images: [] as string[],
     },
   },
 };

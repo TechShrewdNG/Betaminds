@@ -19,7 +19,10 @@ export default async function AcademyPage() {
   const { fields: applyFields } = await resolveForm("academy");
 
   return (
-    <>
+    // Every accent on this page is red rather than the site's gold. The marker
+    // is what globals.css matches on to re-point the accent tokens for the
+    // whole document, chrome included.
+    <div data-theme="red">
       <section
         style={{
           background: "var(--surface-deep)",
@@ -160,7 +163,7 @@ export default async function AcademyPage() {
                           borderRadius: "50%",
                           background: last
                             ? "var(--accent-fill)"
-                            : "rgba(232,163,61,.4)",
+                            : "rgba(var(--accent-rgb),.4)",
                           flex: "none",
                         }}
                       />
@@ -278,107 +281,40 @@ export default async function AcademyPage() {
         </div>
       </section>
 
-      {/* Partners and Creative Foundations. */}
+      {/* Creative Foundations, on its own. The partner-logo panel that used to
+          sit beside it was six empty placeholder tiles, and it halved the width
+          of the one thing in the band with something to say. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
-          <div className="grid col2 col2--tight">
-            <div className="panel" style={{ padding: "44px 40px" }}>
-              <div className="eyebrow eyebrow--tight mb-18">
-                {academy.partners.eyebrow}
+          <div className="panel panel--accent" style={{ padding: "56px 52px" }}>
+            <div className="grid col2 col2--tight" style={{ alignItems: "start" }}>
+              <div>
+                <div className="eyebrow eyebrow--tight mb-18">
+                  {academy.foundation.eyebrow}
+                </div>
+                <h2 className="h2" style={{ marginBottom: 16, textWrap: "balance" }}>
+                  {academy.foundation.heading}
+                </h2>
+                <p
+                  className="body measure-520"
+                  style={{ margin: 0, fontSize: 16.5 }}
+                >
+                  {academy.foundation.body}
+                </p>
               </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 24,
-                }}
-              >
-                {academy.partners.heading}
-              </div>
-              <div className="grid col3" style={{ gap: 10 }}>
-                {academy.partners.logos.map((logo, index) => (
-                  <div
-                    key={`${logo.name}-${index}`}
-                    style={{
-                      height: 56,
-                      border: logo.logo
-                        ? "1px solid var(--line)"
-                        : "1px dashed rgba(var(--wash-rgb),.2)",
-                      borderRadius: 8,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: "var(--font-mono)",
-                      fontWeight: 500,
-                      fontSize: 9.5,
-                      letterSpacing: "0.1em",
-                      color: "var(--ink-50)",
-                      textTransform: "uppercase",
-                      background: logo.logo ? "var(--surface)" : "transparent",
-                    }}
-                  >
-                    {logo.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={logo.logo}
-                        alt={logo.name}
-                        style={{
-                          maxWidth: "82%",
-                          maxHeight: "70%",
-                          objectFit: "contain",
-                        }}
-                        loading="lazy"
-                      />
-                    ) : (
-                      logo.name
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div
-              className="panel panel--accent"
-              style={{ padding: "44px 40px" }}
-            >
-              <div className="eyebrow eyebrow--tight mb-18">
-                {academy.foundation.eyebrow}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 24,
-                  letterSpacing: "-0.02em",
-                  marginBottom: 14,
-                  textWrap: "balance",
-                }}
-              >
-                {academy.foundation.heading}
-              </div>
-              <p
-                style={{
-                  fontSize: 15.5,
-                  lineHeight: 1.64,
-                  color: "var(--ink-84)",
-                  margin: "0 0 20px",
-                  textWrap: "pretty",
-                }}
-              >
-                {academy.foundation.body}
-              </p>
-              <div className="grid" style={{ gap: 9 }}>
+              <div className="grid" style={{ gap: 12 }} data-stagger>
                 {academy.foundation.points.map((point) => (
                   <div
                     key={point}
                     style={{
                       display: "flex",
-                      gap: 11,
-                      fontSize: 15,
+                      gap: 13,
+                      fontSize: 16,
                       lineHeight: 1.55,
                       color: "var(--ink-88)",
+                      paddingBottom: 12,
+                      borderBottom: "1px solid var(--line-soft)",
                     }}
                   >
                     <span style={{ color: "var(--accent)", flex: "none" }}>·</span>
@@ -410,6 +346,6 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

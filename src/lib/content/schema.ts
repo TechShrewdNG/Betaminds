@@ -14,6 +14,7 @@ export type Field =
   | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
   | { kind: "video"; label: string; help?: string }
+  | { kind: "doc"; label: string; help?: string }
   | { kind: "images"; label: string; help?: string }
   | { kind: "list"; label: string; help?: string; placeholder?: string }
   | { kind: "select"; label: string; options: string[]; help?: string }
@@ -1076,24 +1077,6 @@ export const schemas: DocSchema[] = [
       },
       faqSection("Five rows, one open at a time."),
       {
-        key: "partners",
-        title: "Partners",
-        fields: {
-          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
-          heading: { kind: "text", label: "Heading" },
-          logos: {
-            kind: "repeater",
-            label: "Partner logos",
-            itemLabel: "Partner",
-            titleKey: "name",
-            fields: {
-              name: { kind: "text", label: "Name" },
-              logo: { kind: "image", label: "Logo" },
-            },
-          },
-        },
-      },
-      {
         key: "foundation",
         title: "Creative Foundations",
         fields: {
@@ -1362,6 +1345,150 @@ export const schemas: DocSchema[] = [
               project: { kind: "text", label: "Project" },
             },
           },
+        },
+      },
+    ],
+  },
+
+  {
+    id: "pr",
+    title: "PR & Events",
+    route: "/pr",
+    blurb: "PR packages, event coverage, the magazine, press and billboards.",
+    sections: [
+      seo,
+      {
+        key: "hero",
+        title: "Hero",
+        fields: {
+          image: { kind: "image", label: "Hero image", ratio: "16 / 9" },
+          imageAlt: { kind: "text", label: "Image alt text" },
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "textarea", label: "Headline", rows: 2 },
+          accentTail: { kind: "text", label: "Headline accent tail" },
+          lead: { kind: "textarea", label: "Lead paragraph", rows: 3 },
+          ctaLabel: { kind: "text", label: "Button label" },
+          ctaHref: { kind: "text", label: "Button link" },
+        },
+      },
+      {
+        key: "packages",
+        title: "PR packages",
+        note: "The monthly retainers, set as cards like the Digital Marketplace plans.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          selectLabel: { kind: "text", label: "Card button label" },
+          bestForLabel: { kind: "text", label: "\"Best for\" label", mono: true },
+          featuredIndex: {
+            kind: "number",
+            label: "Highlighted card",
+            help: "Zero-based. 1 highlights the second card.",
+          },
+          items: {
+            kind: "repeater",
+            label: "Packages",
+            itemLabel: "Package",
+            titleKey: "name",
+            fields: {
+          name: { kind: "text", label: "Package name" },
+          tag: { kind: "text", label: "Tag", mono: true },
+          short: { kind: "textarea", label: "Who it's for", rows: 2 },
+          includes: { kind: "list", label: "Monthly deliverables" },
+          bestFor: {
+            kind: "textarea",
+            label: "Best for",
+            rows: 2,
+            help: "Optional. Shown at the foot of the card.",
+          },
+            },
+          },
+        },
+      },
+      {
+        key: "special",
+        title: "One-off and personal",
+        note: "The launch package and executive PR.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          items: {
+            kind: "repeater",
+            label: "Packages",
+            itemLabel: "Package",
+            titleKey: "name",
+            fields: {
+          name: { kind: "text", label: "Package name" },
+          tag: { kind: "text", label: "Tag", mono: true },
+          short: { kind: "textarea", label: "Who it's for", rows: 2 },
+          includes: { kind: "list", label: "Monthly deliverables" },
+          bestFor: {
+            kind: "textarea",
+            label: "Best for",
+            rows: 2,
+            help: "Optional. Shown at the foot of the card.",
+          },
+            },
+          },
+        },
+      },
+      {
+        key: "event",
+        title: "Event PR and coverage",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          items: { kind: "list", label: "Deliverables" },
+        },
+      },
+      {
+        key: "magazine",
+        title: "The Pinnacle Magazine",
+        note: "Upload the cover and the issue PDF. The section stays hidden until both a cover and a PDF are set.",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          cover: { kind: "image", label: "Front cover", ratio: "3 / 4" },
+          coverAlt: { kind: "text", label: "Cover alt text" },
+          pdf: { kind: "doc", label: "Issue PDF", help: "Opens in a new tab." },
+          ctaLabel: { kind: "text", label: "Button label" },
+        },
+      },
+      {
+        key: "press",
+        title: "Press",
+        note: "Newspaper and magazine covers. A row without a cover image is skipped.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          readLabel: { kind: "text", label: "Link label" },
+          items: {
+            kind: "repeater",
+            label: "Publications",
+            itemLabel: "Publication",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Publication" },
+              cover: { kind: "image", label: "Cover image", ratio: "3 / 4" },
+              href: {
+                kind: "text",
+                label: "Link",
+                help: "A URL, or paste the address of a PDF from the media library.",
+              },
+            },
+          },
+        },
+      },
+      {
+        key: "billboards",
+        title: "Billboard placements",
+        note: "Landscape photographs. No links — this section is a showcase.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          images: { kind: "images", label: "Billboard photographs" },
         },
       },
     ],

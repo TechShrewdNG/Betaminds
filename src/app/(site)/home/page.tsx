@@ -283,7 +283,7 @@ export default async function HomePage() {
                           : "var(--line-strong)",
                       background:
                         index === featured
-                          ? "rgba(232,163,61,.06)"
+                          ? "rgba(var(--accent-rgb),.06)"
                           : "var(--surface)",
                     }}
                   >

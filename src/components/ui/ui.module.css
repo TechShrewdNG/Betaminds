@@ -141,7 +141,7 @@
 
 .expandCard[data-open="true"] {
   border-color: var(--accent-line-strong);
-  background: rgba(232, 163, 61, 0.04);
+  background: rgba(var(--accent-rgb), 0.04);
 }
 
 .expandButton {
@@ -192,7 +192,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid rgba(232, 163, 61, 0.45);
+  border: 1px solid rgba(var(--accent-rgb), 0.45);
   color: var(--accent);
   display: flex;
   align-items: center;
@@ -269,7 +269,7 @@
 
 .planCard[data-featured="true"] {
   border-color: var(--accent-line-strong);
-  background: rgba(232, 163, 61, 0.05);
+  background: rgba(var(--accent-rgb), 0.05);
 }
 
 .planHead {
@@ -330,6 +330,27 @@
   color: var(--ink-86);
   display: flex;
   gap: 11px;
+}
+
+/* Who the package suits. Sits between the inclusions and the button, set apart
+   from the list so it reads as a verdict rather than one more bullet. */
+.planBestFor {
+  padding: 18px 28px 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-72);
+  text-wrap: pretty;
+}
+
+.planBestForLabel {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
 }
 
 .planCta {
@@ -597,7 +618,7 @@
 .tileHover {
   position: absolute;
   inset: 0;
-  background: rgba(232, 163, 61, 0.92);
+  background: rgba(var(--accent-rgb), 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -731,7 +752,7 @@
   .tileHover {
     opacity: 1;
     inset: auto 0 0 0;
-    background: rgba(232, 163, 61, 0.94);
+    background: rgba(var(--accent-rgb), 0.94);
     padding: 10px;
     gap: 8px;
   }
@@ -954,7 +975,7 @@
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: rgba(232, 163, 61, 0.16);
+  background: rgba(var(--accent-rgb), 0.16);
   color: var(--accent);
 }
 
@@ -1179,8 +1200,8 @@
   border-radius: var(--r-panel);
   background: linear-gradient(
     145deg,
-    rgba(232, 163, 61, 0.14),
-    rgba(232, 163, 61, 0.03) 55%,
+    rgba(var(--accent-rgb), 0.14),
+    rgba(var(--accent-rgb), 0.03) 55%,
     transparent
   );
   isolation: isolate;
@@ -1196,7 +1217,7 @@
   height: 220%;
   background: radial-gradient(
     closest-side,
-    rgba(232, 163, 61, 0.34),
+    rgba(var(--accent-rgb), 0.34),
     transparent 100%
   );
   filter: blur(12px);
@@ -1521,7 +1542,7 @@
 
 .crashCard:hover {
   border-color: var(--accent-line-strong);
-  background: rgba(232, 163, 61, 0.04);
+  background: rgba(var(--accent-rgb), 0.04);
 }
 
 .crashIcon {
@@ -1681,7 +1702,7 @@
 .pkgRow[data-open="true"] {
   background: linear-gradient(
     100deg,
-    rgba(232, 163, 61, 0.07),
+    rgba(var(--accent-rgb), 0.07),
     transparent 58%
   );
 }
@@ -1884,7 +1905,7 @@
   background: linear-gradient(
     90deg,
     var(--accent-fill),
-    rgba(232, 163, 61, 0.28)
+    rgba(var(--accent-rgb), 0.28)
   );
 }
 
@@ -2010,7 +2031,7 @@
   font-weight: 600;
   font-size: 13.5px;
   color: var(--accent-fill);
-  border-bottom: 1.5px solid rgba(232, 163, 61, 0.45);
+  border-bottom: 1.5px solid rgba(var(--accent-rgb), 0.45);
   padding-bottom: 3px;
 }
 
@@ -2179,4 +2200,116 @@
 
 .idxLink:hover .idxLinkNum {
   color: var(--accent);
+}
+
+/* --- PR & Events --------------------------------------------------------- */
+
+.prDeliverable {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink-88);
+  text-wrap: pretty;
+}
+
+.prDeliverable:last-child {
+  border-bottom: 0;
+}
+
+/* The magazine: cover on the left at its own scale, the pitch beside it. */
+.magGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .magGrid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .magCover {
+    max-width: 260px;
+  }
+}
+
+.magCover {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  aspect-ratio: 3 / 4;
+}
+
+.magCover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pressCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.pressCover {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  aspect-ratio: 3 / 4;
+}
+
+.pressCover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pressTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Billboards run landscape, two up — a hoarding squeezed into a portrait tile
+   stops reading as a billboard at all. */
+.boardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+@media (max-width: 760px) {
+  .boardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.board {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  aspect-ratio: 16 / 9;
+}
+
+.board img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

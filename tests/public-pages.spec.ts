@@ -5,6 +5,7 @@ const ROUTES = [
   "/home",
   "/digital-ecosystem",
   "/media-services",
+  "/pr",
   "/academy",
   "/summit",
   "/lets-work",

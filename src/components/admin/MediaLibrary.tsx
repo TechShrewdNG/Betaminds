@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMedia } from "./media-context";
-import { ACCEPT_ATTR, isVideoUrl } from "@/lib/media";
+import { ACCEPT_ATTR, mediaKindOf } from "@/lib/media";
 import { deleteImage, updateImageAlt } from "@/app/admin/actions";
 
 type Row = {
@@ -98,7 +98,7 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
           {assets.map((asset) => (
             <div className="a-card" key={asset.id} style={{ padding: 12 }}>
               <div className="a-thumb" style={{ cursor: "default" }}>
-                {isVideoUrl(asset.url) ? (
+                {mediaKindOf(asset.url) === "video" ? (
                   <video
                     src={asset.url}
                     controls
@@ -106,6 +106,16 @@ export function MediaLibrary({ assets }: { assets: Row[] }) {
                     playsInline
                     preload="metadata"
                   />
+                ) : mediaKindOf(asset.url) === "doc" ? (
+                  // A PDF has no thumbnail to show, so offer the thing itself.
+                  <a
+                    href={asset.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="a-preview-empty"
+                  >
+                    Open PDF
+                  </a>
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={asset.url} alt={asset.alt || asset.filename} />

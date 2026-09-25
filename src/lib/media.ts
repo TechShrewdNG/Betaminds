@@ -23,9 +23,17 @@ export const ACCEPTED_VIDEO_TYPES = [
   "video/quicktime",
 ] as const;
 
+/**
+ * Documents. Just PDF for now — the magazine and press publications are things
+ * a reader opens, not something the site renders, so there is nothing to gain
+ * from accepting a second format.
+ */
+export const ACCEPTED_DOC_TYPES = ["application/pdf"] as const;
+
 export const ACCEPTED_TYPES: readonly string[] = [
   ...ACCEPTED_IMAGE_TYPES,
   ...ACCEPTED_VIDEO_TYPES,
+  ...ACCEPTED_DOC_TYPES,
 ];
 
 /**
@@ -35,11 +43,18 @@ export const ACCEPTED_TYPES: readonly string[] = [
  */
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
+/** A magazine issue is a lot of pages of print-quality artwork. */
+export const MAX_DOC_BYTES = 48 * 1024 * 1024;
 
 export const isVideoType = (mimeType: string) => mimeType.startsWith("video/");
+export const isDocType = (mimeType: string) =>
+  (ACCEPTED_DOC_TYPES as readonly string[]).includes(mimeType);
 
-export const maxBytesFor = (mimeType: string) =>
-  isVideoType(mimeType) ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+export const maxBytesFor = (mimeType: string) => {
+  if (isVideoType(mimeType)) return MAX_VIDEO_BYTES;
+  if (isDocType(mimeType)) return MAX_DOC_BYTES;
+  return MAX_IMAGE_BYTES;
+};
 
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -52,6 +67,7 @@ const EXT: Record<string, string> = {
   "video/webm": "webm",
   "video/ogg": "ogv",
   "video/quicktime": "mov",
+  "application/pdf": "pdf",
 };
 
 export const extensionFor = (mimeType: string) => EXT[mimeType] ?? "bin";
@@ -75,13 +91,26 @@ export function slugifyName(name: string) {
  * is what reaches the admin previews and the hero slider.
  */
 const VIDEO_EXT = /\.(mp4|webm|ogv|ogg|mov)(?:[?#]|$)/i;
+const DOC_EXT = /\.pdf(?:[?#]|$)/i;
 
 export const isVideoUrl = (url: string) => VIDEO_EXT.test(url);
+export const isDocUrl = (url: string) => DOC_EXT.test(url);
+
+/**
+ * Which kind of thing a stored URL points at.
+ *
+ * The pickers used to ask "is this a video?" and treat everything else as an
+ * image, which put PDFs into the image grid as broken thumbnails the moment a
+ * third kind existed.
+ */
+export const mediaKindOf = (url: string): "image" | "video" | "doc" =>
+  isVideoUrl(url) ? "video" : isDocUrl(url) ? "doc" : "image";
 
 /** The `accept` attribute for a file input, per media kind. */
 export const ACCEPT_ATTR = {
   image: ACCEPTED_IMAGE_TYPES.join(","),
   video: ACCEPTED_VIDEO_TYPES.join(","),
+  doc: ACCEPTED_DOC_TYPES.join(","),
   both: ACCEPTED_TYPES.join(","),
 } as const;
 
@@ -90,12 +119,14 @@ export function rejectReason(file: {
   size: number;
 }): string | null {
   if (!ACCEPTED_TYPES.includes(file.type)) {
-    return `${file.type || "That file type"} isn't supported. Use JPEG, PNG, WebP, AVIF, GIF or SVG for pictures, or MP4, WebM, OGG or MOV for video.`;
+    return `${file.type || "That file type"} isn't supported. Use JPEG, PNG, WebP, AVIF, GIF or SVG for pictures, MP4, WebM, OGG or MOV for video, or PDF for a document.`;
   }
   if (file.size > maxBytesFor(file.type)) {
-    return isVideoType(file.type)
-      ? "That video is over 64 MB. Compress it, or host it elsewhere and paste the URL instead."
-      : "That image is over 10 MB. Please compress it first.";
+    if (isVideoType(file.type))
+      return "That video is over 64 MB. Compress it, or host it elsewhere and paste the URL instead.";
+    if (isDocType(file.type))
+      return "That PDF is over 48 MB. Compress it, or host it elsewhere and paste the URL instead.";
+    return "That image is over 10 MB. Please compress it first.";
   }
   return null;
 }

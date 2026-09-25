@@ -423,9 +423,9 @@ export default async function SummitPage() {
               className="panel panel--accent"
               style={{
                 padding: "44px 40px",
-                borderColor: "rgba(232,163,61,.3)",
+                borderColor: "rgba(var(--accent-rgb),.3)",
                 background:
-                  "linear-gradient(145deg, rgba(232,163,61,.1), transparent 70%)",
+                  "linear-gradient(145deg, rgba(var(--accent-rgb),.1), transparent 70%)",
               }}
             >
               <h3

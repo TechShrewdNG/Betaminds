@@ -7,6 +7,8 @@ export type Plan = {
   tag: string;
   short: string;
   includes: string[];
+  /** Optional closing line — who the package suits. */
+  bestFor?: string;
 };
 
 /**
@@ -24,13 +26,30 @@ export function PlanCards({
   plans,
   featuredIndex = 1,
   selectLabel = "Select Plan",
+  includesLabel = "What's included",
+  bestForLabel = "Best for",
+  columns = 3,
+  ctaHref = (plan) =>
+    `/digital-ecosystem?plan=${encodeURIComponent(plan.name)}#book`,
 }: {
   plans: Plan[];
   featuredIndex?: number;
   selectLabel?: string;
+  includesLabel?: string;
+  bestForLabel?: string;
+  /** PR runs two of these side by side; the plans grid runs three. */
+  columns?: 2 | 3;
+  ctaHref?: (plan: Plan) => string;
 }) {
   return (
-    <div className="grid col3" style={{ alignItems: "stretch" }}>
+    // Stretched cards need every card to fill its height, which the inclusions
+    // block does with margin-top: auto. Where the cards differ a lot — the PR
+    // pair, one with a "best for" line and one without — that auto margin opens
+    // a void inside the shorter card instead, so those sit at natural height.
+    <div
+      className={`grid col${columns}`}
+      style={{ alignItems: columns === 2 ? "start" : "stretch" }}
+    >
       {plans.map((plan, index) => {
         return (
           <div
@@ -44,7 +63,7 @@ export function PlanCards({
               <div className={styles.planShort}>{plan.short}</div>
             </div>
 
-            <div className={styles.planIncludesLabel}>What's included</div>
+            <div className={styles.planIncludesLabel}>{includesLabel}</div>
 
             <div className={styles.planIncludes}>
               {plan.includes.map((item) => (
@@ -55,11 +74,15 @@ export function PlanCards({
               ))}
             </div>
 
+            {plan.bestFor ? (
+              <div className={styles.planBestFor}>
+                <span className={styles.planBestForLabel}>{bestForLabel}</span>
+                {plan.bestFor}
+              </div>
+            ) : null}
+
             <div className={styles.planCta}>
-              <Link
-                href={`/digital-ecosystem?plan=${encodeURIComponent(plan.name)}#book`}
-                className="pill pill--accent pill--sm"
-              >
+              <Link href={ctaHref(plan)} className="pill pill--accent pill--sm">
                 {selectLabel}
               </Link>
             </div>

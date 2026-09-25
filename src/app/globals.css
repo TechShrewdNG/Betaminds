@@ -73,10 +73,13 @@
   --accent-hover: #b8791a;
   --accent-fill: #e8a33d;
   --on-accent: #1a1206;
-  --accent-line: rgba(232, 163, 61, 0.26);
-  --accent-line-soft: rgba(232, 163, 61, 0.22);
-  --accent-line-strong: rgba(232, 163, 61, 0.4);
-  --accent-tint: rgba(232, 163, 61, 0.14);
+  --accent-line: rgba(var(--accent-rgb), 0.26);
+  --accent-line-soft: rgba(var(--accent-rgb), 0.22);
+  --accent-line-strong: rgba(var(--accent-rgb), 0.4);
+  --accent-tint: rgba(var(--accent-rgb), 0.14);
+  /* The accent as a raw triplet, so every tint and hairline derived from it
+     follows a re-pointed accent instead of staying gold. */
+  --accent-rgb: 232, 163, 61;
 
   /* Geometry */
   --max-w: 1320px;
@@ -741,7 +744,7 @@ button {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 13.5px;
-  border-bottom: 1px solid rgba(232, 163, 61, 0.5);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.5);
   padding-bottom: 3px;
   white-space: nowrap;
 }
@@ -765,7 +768,7 @@ button {
   border-color: var(--accent-line-strong);
   background: linear-gradient(
     160deg,
-    rgba(232, 163, 61, 0.055),
+    rgba(var(--accent-rgb), 0.055),
     var(--surface) 70%
   );
   transform: translateY(-3px);
@@ -786,12 +789,12 @@ button {
 
 .panel--accent {
   border-color: var(--accent-line);
-  background: linear-gradient(150deg, rgba(232, 163, 61, 0.08), transparent 65%);
+  background: linear-gradient(150deg, rgba(var(--accent-rgb), 0.08), transparent 65%);
 }
 
 .panel--accent-soft {
   border-color: var(--accent-line-soft);
-  background: linear-gradient(120deg, rgba(232, 163, 61, 0.07), transparent 60%);
+  background: linear-gradient(120deg, rgba(var(--accent-rgb), 0.07), transparent 60%);
   border-radius: 16px;
   padding: 30px 32px;
 }
@@ -884,8 +887,8 @@ button {
 .band--accent {
   background: linear-gradient(
     155deg,
-    rgba(232, 163, 61, 0.11),
-    rgba(232, 163, 61, 0.04) 48%,
+    rgba(var(--accent-rgb), 0.11),
+    rgba(var(--accent-rgb), 0.04) 48%,
     var(--surface-alt) 100%
   );
 }
@@ -941,10 +944,10 @@ button {
 
   --accent: #f0b862;
   --accent-hover: #f5cb89;
-  --accent-line: rgba(232, 163, 61, 0.34);
-  --accent-line-soft: rgba(232, 163, 61, 0.28);
-  --accent-line-strong: rgba(232, 163, 61, 0.52);
-  --accent-tint: rgba(232, 163, 61, 0.16);
+  --accent-line: rgba(var(--accent-rgb), 0.34);
+  --accent-line-soft: rgba(var(--accent-rgb), 0.28);
+  --accent-line-strong: rgba(var(--accent-rgb), 0.52);
+  --accent-tint: rgba(var(--accent-rgb), 0.16);
 
   /* The logo tints are mixed for a light ground; on ink they need the bright
      hues and a stronger wash to stay visible. */
@@ -998,6 +1001,57 @@ button {
   );
   /* Align the bar with the shell's content edge rather than the viewport. */
   margin-left: max(var(--pad-x), calc((100% - var(--max-w)) / 2 + var(--pad-x)));
+}
+
+/* --- Red accent theme (Academy) ------------------------------------------ */
+
+/*
+ * The Academy runs on red instead of the site's gold.
+ *
+ * Re-points the accent family rather than restyling components, the same trick
+ * `.band--ink` uses: everything downstream reads `var(--accent…)`, including
+ * inline styles, so the whole page turns over from here. That is why the tints
+ * and hairlines derive from `--accent-rgb` — hardcoded rgba would have stayed
+ * gold and left stray amber edges across the page.
+ *
+ * Hung off `body:has(…)` rather than a class on the page, because the header,
+ * footer and floating button are rendered by the shared layout and sit outside
+ * anything the page itself can wrap. Matching on the body is what lets the
+ * chrome turn red too. Where :has() is unsupported the page simply stays gold.
+ *
+ * Values are measured, not picked: #b3261e is 6.27:1 on cream and 5.70:1 on the
+ * alt surface; #ff9c8d is 9.24:1 on the ink band.
+ */
+body:has([data-theme="red"]) {
+  --accent-rgb: 204, 42, 30;
+  --accent: #b3261e;
+  --accent-hover: #c62d22;
+  --accent-fill: #cc2a1e;
+  /* The gold fill takes near-black text; red cannot — #1a1206 on this red is
+     3.65:1 and fails. Cream on it is 5.18:1, so the red theme flips the
+     relationship the site's gold ground rule describes. */
+  --on-accent: #fffaf8;
+
+  /* These have to be restated, not just inherited. A custom property's value is
+     substituted where it is *declared*, so --accent-line resolving
+     rgba(var(--accent-rgb), .26) on :root bakes in gold there and keeps it
+     however the scope below re-points --accent-rgb. Declaring them here makes
+     them resolve against this block's triplet instead. */
+  --accent-line: rgba(var(--accent-rgb), 0.26);
+  --accent-line-soft: rgba(var(--accent-rgb), 0.22);
+  --accent-line-strong: rgba(var(--accent-rgb), 0.4);
+  --accent-tint: rgba(var(--accent-rgb), 0.14);
+}
+
+/* On an ink band the accent has to lift off the dark ground instead of sitting
+   on cream, exactly as the gold does. */
+body:has([data-theme="red"]) .band--ink {
+  --accent: #ff9c8d;
+  --accent-hover: #ffb3a6;
+  --accent-line: rgba(var(--accent-rgb), 0.34);
+  --accent-line-soft: rgba(var(--accent-rgb), 0.28);
+  --accent-line-strong: rgba(var(--accent-rgb), 0.52);
+  --accent-tint: rgba(var(--accent-rgb), 0.16);
 }
 
 /* --- Media --------------------------------------------------------------- */

@@ -26,6 +26,7 @@ export const PUBLIC_ROUTES = [
   { path: "/home", doc: "home", priority: 0.9 },
   { path: "/digital-ecosystem", doc: "ecosystem", priority: 0.9 },
   { path: "/media-services", doc: "media", priority: 0.9 },
+  { path: "/pr", doc: "pr", priority: 0.9 },
   { path: "/academy", doc: "academy", priority: 0.9 },
   { path: "/summit", doc: "summit", priority: 0.8 },
   { path: "/projects", doc: "projects", priority: 0.8 },
