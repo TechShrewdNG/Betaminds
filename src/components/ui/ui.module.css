@@ -2340,3 +2340,63 @@
   height: 100%;
   object-fit: cover;
 }
+
+/* --- Mobile: nothing wider than the screen ------------------------------- */
+
+/*
+ * The marquee and the statement band are the only two elements on the site
+ * that are deliberately wider than the viewport *and* animated — a 2424px and
+ * a 2599px track, each translated forever by a transform.
+ *
+ * On iOS that combination kept extending the document however it was clipped:
+ * overflow: hidden, then position: relative, then contain: paint, each of
+ * which holds in Chromium and none of which held there. Rather than keep
+ * hunting for the property that makes a promoted layer behave, the tracks stop
+ * being over-wide at all on a phone. They wrap into the space available and sit
+ * still, which is also the more sensible reading of a strip of client names on
+ * a 428px screen — a marquee you cannot read as it slides past is decoration
+ * that costs legibility.
+ *
+ * Desktop keeps the motion exactly as it was.
+ */
+@media (max-width: 640px) {
+  .marqueeTrack,
+  .stmtTrack {
+    animation: none;
+    transform: none;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* The duplicates exist only to make the loop seamless. With no loop they are
+     the same words, and the same clients, a second time. */
+  .stmtRun[aria-hidden="true"],
+  .logoSlot[aria-hidden="true"] {
+    display: none;
+  }
+
+  .stmtRun {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stmtItem {
+    padding: 10px 14px;
+    gap: 22px;
+    /* nowrap is what keeps a phrase together while it slides past. With the
+       slide gone it only makes a long phrase wider than the phone. */
+    white-space: normal;
+    max-width: 100%;
+  }
+
+  /* A single phrase still must not out-run the screen. */
+  .stmtWord {
+    font-size: clamp(19px, 6.2vw, 26px);
+  }
+
+  .marqueeTrack {
+    gap: 10px 0;
+    padding: 4px 0;
+  }
+}

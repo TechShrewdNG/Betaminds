@@ -336,6 +336,16 @@ button {
   padding-right: var(--pad-x);
 }
 
+/* Second belt. `clip` on one axis only is legal and leaves the other alone, so
+   this stops anything inside the page extending the document sideways while
+   the decorative bleeds that overhang a section vertically — the free-slot
+   glow, for one — still show. Unlike `hidden` it creates no scroll container,
+   so the sticky header is unaffected. */
+main {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
 .section {
   padding-top: var(--section-y);
   padding-bottom: var(--section-y);
