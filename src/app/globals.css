@@ -438,6 +438,11 @@ button {
    viewport edge (via the shell's own --pad-x) so the next card peeks in. */
 @media (max-width: 640px) {
   .carousel-mobile {
+    /* Containing block, so WebKit actually clips this scroller's contents.
+       Its children animate in on reveal, and an animated transform gets
+       promoted by the compositor — which escapes the clip of a statically
+       positioned ancestor in WebKit, though not in Chromium. */
+    position: relative;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;

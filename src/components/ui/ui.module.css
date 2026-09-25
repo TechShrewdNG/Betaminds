@@ -452,7 +452,17 @@
 
 /* --- Client logo marquee ------------------------------------------------- */
 
+/* `position: relative` is load-bearing, not decoration.
+
+   WebKit does not clip a descendant the compositor has promoted — and an
+   infinite transform animation promotes one — unless the clipping ancestor
+   establishes a containing block. Without this the 2424px track escaped
+   `overflow: hidden` on iOS and stretched the document to 1053px on a 428px
+   phone, which let Safari zoom out to fit and drew the whole page at about
+   40% width with the sticky header spanning the screen. Chromium clips it
+   either way, so nothing here reproduced it. */
 .marquee {
+  position: relative;
   overflow: hidden;
 }
 
@@ -512,6 +522,8 @@
    ratio resolve to one height for everyone, so the mismatch cannot arise.
    The founder keeps a gold hairline instead, which costs no geometry. */
 .teamGrid {
+  /* Same containing-block requirement as .carousel-mobile. */
+  position: relative;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -1789,6 +1801,9 @@
 /* --- Statement band ------------------------------------------------------- */
 
 .stmtBand {
+  /* Same reason as .marquee: this band's track is animated, so the clip only
+     holds in WebKit if this element is a containing block. */
+  position: relative;
   overflow: hidden;
   background: var(--canvas);
   color: var(--ink);
