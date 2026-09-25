@@ -139,6 +139,20 @@
 
 html {
   scroll-behavior: smooth;
+  /* Nothing may widen the document sideways.
+
+     The page has several tracks far wider than the screen — the client
+     marquee, the statement band, the mobile carousels — each clipped or
+     scrolled by its own container. That holds in Chromium, measured at every
+     width from 320 to 1000. This is the belt to that braces: if any one of
+     them escapes its container in an engine that resolves a min-width
+     differently, the document cannot grow with it and drag the layout out of
+     shape.
+
+     `clip`, not `hidden`: hidden makes html a scroll container, which breaks
+     the sticky header. Engines without `clip` ignore the line and behave
+     exactly as they do today. */
+  overflow-x: clip;
 }
 
 html,
