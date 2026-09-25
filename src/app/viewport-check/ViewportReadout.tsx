@@ -101,15 +101,30 @@ export function ViewportReadout() {
       }
       over.sort((a, b) => b.right - a.right);
 
-      setOffenders(
-        over.length === 0
+      // The document only grows to whatever reaches furthest, so name that one
+      // outright rather than leaving a list to interpret.
+      const widest = over[0];
+      const culprit: Row[] =
+        widest && de.scrollWidth > width + 1
+          ? [
+              {
+                label: "▶ CULPRIT",
+                value: widest.name.slice(0, 40),
+                flag: true,
+              },
+            ]
+          : [];
+
+      setOffenders([
+        ...culprit,
+        ...(over.length === 0
           ? [{ label: "nothing past the right edge", value: "clean" }]
           : over.slice(0, 6).map((o) => ({
               label: o.name.slice(0, 44),
               value: `right ${o.right} · w ${o.w}`,
-              flag: true,
-            })),
-      );
+              flag: o.right >= de.scrollWidth - 2,
+            }))),
+      ]);
     }, 400);
     return () => window.clearInterval(id);
   }, []);
