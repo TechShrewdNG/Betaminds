@@ -438,11 +438,14 @@ button {
    viewport edge (via the shell's own --pad-x) so the next card peeks in. */
 @media (max-width: 640px) {
   .carousel-mobile {
-    /* Containing block, so WebKit actually clips this scroller's contents.
+    /* Stacking context, so WebKit actually clips this scroller's contents.
        Its children animate in on reveal, and an animated transform gets
-       promoted by the compositor — which escapes the clip of a statically
-       positioned ancestor in WebKit, though not in Chromium. */
+       promoted by the compositor — which escapes the clip of an ancestor that
+       is merely positioned, though not in Chromium. `contain: paint` makes
+       this a stacking context and a containing block and confines painting to
+       the box, which positioning alone does not. */
     position: relative;
+    contain: paint;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;

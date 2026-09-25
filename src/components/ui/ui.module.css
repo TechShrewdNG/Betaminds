@@ -464,6 +464,16 @@
 .marquee {
   position: relative;
   overflow: hidden;
+  /* `contain: paint` is doing the real work, not `overflow: hidden`.
+
+     WebKit will not clip a descendant the compositor has promoted — and an
+     infinite transform animation promotes one — unless the clipping ancestor
+     is a stacking context as well as a containing block. `position: relative`
+     with `z-index: auto` is not a stacking context, which is why adding it
+     alone only reduced the escape instead of stopping it. `contain: paint`
+     establishes both and confines painting to this box, so the 2424px track
+     cannot extend the document however the layer is composited. */
+  contain: paint;
 }
 
 .marqueeTrack {
@@ -522,8 +532,9 @@
    ratio resolve to one height for everyone, so the mismatch cannot arise.
    The founder keeps a gold hairline instead, which costs no geometry. */
 .teamGrid {
-  /* Same containing-block requirement as .carousel-mobile. */
+  /* Same stacking-context requirement as .carousel-mobile. */
   position: relative;
+  contain: paint;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -1801,10 +1812,11 @@
 /* --- Statement band ------------------------------------------------------- */
 
 .stmtBand {
-  /* Same reason as .marquee: this band's track is animated, so the clip only
-     holds in WebKit if this element is a containing block. */
+  /* Same as .marquee: an animated track needs this element to be a stacking
+     context, not merely positioned, for WebKit to clip it. */
   position: relative;
   overflow: hidden;
+  contain: paint;
   background: var(--canvas);
   color: var(--ink);
   border-top: 1px solid var(--line);
