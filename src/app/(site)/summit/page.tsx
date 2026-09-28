@@ -4,6 +4,9 @@ import styles from "@/components/ui/ui.module.css";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { Accordion } from "@/components/ui/Accordion";
+import { Marquee } from "@/components/ui/Marquee";
+import { VideoSlider } from "@/components/ui/VideoSlider";
+import { SplitText } from "@/components/ui/SplitText";
 import {
   SummitInterestForm,
   NewsletterForm,
@@ -19,6 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SummitPage() {
   const summit = await getContent("summit");
   const { fields: interestFields } = await resolveForm("summit");
+
+  // Each showcase section quietly skips itself until there is something in
+  // it, same convention as the PR page's magazine/press/billboards.
+  const press = summit.press.items.filter((item) => item.cover !== "");
+  const partners = summit.participants.logos;
+  const hasProposal = summit.hero.deckUrl !== "";
 
   return (
     <>
@@ -82,7 +91,7 @@ export default async function SummitPage() {
               <a href="#interest" className="pill pill--accent pill--lg">
                 {summit.hero.ctaPrimary}
               </a>
-              {summit.hero.deckUrl ? (
+              {hasProposal ? (
                 <a
                   href={summit.hero.deckUrl}
                   className="pill pill--outline pill--lg"
@@ -264,51 +273,82 @@ export default async function SummitPage() {
             ))}
           </div>
 
-          <div
-            className="panel mt-14"
-            style={{
-              borderRadius: 16,
-              padding: "26px 30px",
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 22,
-            }}
-          >
-            <div className="eyebrow eyebrow--tight">{summit.press.label}</div>
-            <div className="row-wrap" style={{ gap: 10 }}>
-              {summit.press.items.map((item) => {
-                const chip = (
-                  <span
-                    style={{
-                      padding: "10px 18px",
-                      border: "1px dashed rgba(var(--wash-rgb),.2)",
-                      borderRadius: 8,
-                      fontSize: 13.5,
-                      color: "var(--ink-84)",
-                      display: "inline-block",
-                    }}
-                  >
-                    {item.name}
-                  </span>
-                );
-                return item.href ? (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {chip}
-                  </a>
-                ) : (
-                  <span key={item.name}>{chip}</span>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </section>
+
+      {/* From the press. Newspaper and magazine covers — same pattern as
+          PR & Events → Press, so a visitor sees the same evidence either
+          place they land. Quietly hidden until a cover is uploaded. */}
+      {press.length > 0 ? (
+        <section data-reveal className="band band--ruled">
+          <div className="shell section">
+            <h2 className="h2 mb-18">
+              <SplitText text={summit.press.heading} />
+            </h2>
+            <p className="body measure-620 mb-34">{summit.press.lead}</p>
+
+            <div className="grid col4 carousel-mobile" data-stagger>
+              {press.map((item, index) => (
+                <div key={`${item.title}-${index}`} className={styles.pressCard}>
+                  <div className={styles.pressCover}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.cover}
+                      alt={item.title}
+                      className="bm-settle"
+                      loading="lazy"
+                    />
+                  </div>
+                  {item.title ? (
+                    <div className={styles.pressTitle}>{item.title}</div>
+                  ) : null}
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className={styles.pkgLink}
+                    >
+                      {summit.press.readLabel} <span aria-hidden="true">→</span>
+                    </a>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Partners & participants. Reuses the homepage's logo marquee, with
+          logos that link out — hidden entirely until real partners are
+          added, rather than a strip of invented names. */}
+      {partners.length > 0 ? (
+        <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
+          <div
+            className="eyebrow eyebrow--muted center"
+            style={{ marginBottom: 26 }}
+          >
+            {summit.participants.label}
+          </div>
+          <Marquee logos={partners} />
+        </section>
+      ) : null}
+
+      {/* Watch highlights. A slider once there's more than one video; hidden
+          entirely until a link is added. */}
+      {summit.videos.items.some((item) => item.youtubeUrl !== "") ? (
+        <section data-reveal className="band band--ink band--ruled">
+          <div className="shell section col-920">
+            <div className="mb-34">
+              <h2 className="h2 mb-18">
+                <SplitText text={summit.videos.heading} />
+              </h2>
+              <p className="body measure-620">{summit.videos.lead}</p>
+            </div>
+            <VideoSlider items={summit.videos.items} />
+          </div>
+        </section>
+      ) : null}
 
       {/* Agenda beside success stories. */}
       <section data-reveal className="band band--ruled">
@@ -453,15 +493,28 @@ export default async function SummitPage() {
                 {summit.sponsor.body}
               </p>
               <div className="row-wrap" style={{ gap: 10 }}>
-                {summit.hero.deckUrl ? (
-                  <a
-                    href={summit.hero.deckUrl}
-                    className="pill pill--accent pill--sm"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {summit.sponsor.ctaPrimary}
-                  </a>
+                {hasProposal ? (
+                  <>
+                    <a
+                      href={summit.hero.deckUrl}
+                      className="pill pill--accent pill--sm"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {summit.sponsor.ctaPrimary}
+                    </a>
+                    {/* Same file as "View" above. `download` only forces a
+                        save rather than a new tab when the PDF is served
+                        same-origin — for an external link the browser just
+                        opens it, which is still the right fallback. */}
+                    <a
+                      href={summit.hero.deckUrl}
+                      className="pill pill--outline pill--sm"
+                      download="Betaminds-Summit-Sponsorship-Proposal.pdf"
+                    >
+                      {summit.sponsor.ctaDownload}
+                    </a>
+                  </>
                 ) : null}
                 <Link
                   href={summit.sponsor.ctaSecondaryHref}

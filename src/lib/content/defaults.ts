@@ -349,6 +349,13 @@ export const defaults = {
         },
       ],
     },
+    pr: {
+      eyebrow: "PR & events",
+      heading: "Coverage that puts you in the room.",
+      body: "Media placements, launches, executive profile and event coverage — planned against a target, not a hunch.",
+      ctaLabel: "Talk to the PR team",
+      ctaHref: "/pr",
+    },
     marketplace: {
       eyebrow: "Digital marketplace",
       heading: "Build. Scale. Sell. Grow.",
@@ -535,52 +542,6 @@ export const defaults = {
       ctaLabel: "Book a discovery call →",
       ctaHref: "#book",
     },
-    solution: {
-      heading: "Our Digital Commerce Solution",
-      body: "The essential components required to build and grow a successful online business over time.",
-      items: [
-        {
-          name: "Brand identity development & refresh",
-          body: "Positioning, naming, identity systems and the guidelines that keep them consistent.",
-        },
-        {
-          name: "Brand strategy & planning",
-          body: "Where you play, how you win, and the quarterly plan that makes it happen.",
-        },
-        {
-          name: "Content creation & commercial production",
-          body: "Photography, film and copy produced at commercial standard, on a calendar.",
-        },
-        {
-          name: "Website design & management",
-          body: "Designed, built, maintained. Fast, clear and easy for your team to update.",
-        },
-        {
-          name: "Search engine optimization",
-          body: "Technical foundations and content that make you findable where buyers look.",
-        },
-        {
-          name: "Payment integration",
-          body: "Checkout that works for local and cross-border customers alike.",
-        },
-        {
-          name: "Social media management",
-          body: "Channel strategy, publishing, community and influencer coordination.",
-        },
-        {
-          name: "Sponsored ad placement",
-          body: "Meta, Google and TikTok campaigns planned against a target and optimized weekly.",
-        },
-        {
-          name: "Customer experience management",
-          body: "Enquiry handling, response systems and retention that protect the revenue you win.",
-        },
-        {
-          name: "Performance analytics",
-          body: "One dashboard, plain-language reporting, decisions you can defend.",
-        },
-      ],
-    },
     promo: {
       label: "See it in motion",
       heading: "What a Digital Marketplace build looks like",
@@ -591,6 +552,7 @@ export const defaults = {
     },
     plans: {
       heading: "Engagement plans",
+      lead: "Bundled packages, not a pile of standalone services — every tier below carries everything in the one before it.",
       /** The Growth plan is highlighted — index 1, matching the prototype's `plan: 1`. */
       featuredIndex: 1,
       selectLabel: "Select Plan",
@@ -627,11 +589,10 @@ export const defaults = {
     questionnaire: {
       eyebrow: "Before you book",
       heading: "Tell us about your brand",
-      body: "A few quick questions help us prepare a Digital Commerce Strategy that's actually relevant to your business before we sit down on the call.",
+      body: "A few direct questions — about a minute — so we can prepare for the call.",
       steps: [
-        "Fill in the questionnaire. It takes about three minutes.",
+        "Answer a few quick questions.",
         "You get a link to pick a time on our calendar.",
-        "We review your answers before your session.",
         "We meet, discuss, and recommend a plan.",
       ],
       ctaLabel: "Start the questionnaire →",
@@ -647,17 +608,21 @@ export const defaults = {
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
       /**
-       * The eight parts from structure.txt, as editable field definitions.
-       * Starred fields in the brief are the `required: true` ones here. The
-       * outline shown beside the form is derived from these labels, so there is
-       * one source of truth.
+       * Cut down from the original eight-part, 25-field version: brand basics
+       * and what's needed, nothing a call itself can't cover. The outline
+       * shown beside the form is derived from these labels, so there is one
+       * source of truth.
        */
       groups: [
         {
-          title: "Contact & brand",
+          title: "Your brand",
           fields: [
-            f("email", "Email", "email", { required: true, half: true, placeholder: "you@brand.com" }),
             f("brandName", "Brand name", "text", { required: true, half: true }),
+            f("email", "Email", "email", {
+              required: true,
+              half: true,
+              placeholder: "you@brand.com",
+            }),
             f("phone", "Phone", "tel", { required: true, half: true }),
             f("website", "Website / social media", "text", {
               required: true,
@@ -667,92 +632,7 @@ export const defaults = {
           ],
         },
         {
-          title: "Where is your brand based?",
-          fields: [
-            f("address1", "Address line 1", "text", { half: true }),
-            f("city", "City", "text", { half: true }),
-            f("region", "State / province / region", "text", { half: true }),
-            f("country", "Country", "text", { required: true, half: true }),
-          ],
-        },
-        {
-          title: "About your business",
-          fields: [
-            f("sells", "What does your brand sell?", "select", {
-              half: true,
-              options: ["Products", "Services", "Both"],
-            }),
-            f("industry", "Industry / category", "text", { half: true }),
-            f("yearsTrading", "How long have you been in business?", "text", {
-              required: true,
-              half: true,
-              placeholder: "e.g. 3 years",
-            }),
-            f("channel", "Do you sell online, offline, or both?", "select", {
-              half: true,
-              options: ["Online", "Offline", "Both"],
-            }),
-            f(
-              "reach",
-              "Do you sell locally, nationally, or across borders?",
-              "select",
-              { half: true, options: ["Locally", "Nationally", "Across borders"] },
-            ),
-          ],
-        },
-        {
-          title: "Current digital presence",
-          fields: [
-            f("marketplaces", "Marketplaces you currently sell through", "textarea", {
-              placeholder: "Jumia, Instagram Shop, WhatsApp Business…",
-            }),
-            f("paidAds", "Do you currently run paid ads anywhere?", "textarea"),
-            f("brandAssets", "Existing brand assets", "textarea", {
-              placeholder: "Logo, guidelines, product photos…",
-            }),
-          ],
-        },
-        {
-          title: "Team & decision-making",
-          fields: [
-            f("teamStructure", "What is your team's structure?", "textarea", {
-              required: true,
-            }),
-            f(
-              "internalOrOutsource",
-              "Internal team we'd work alongside, or fully outsourcing?",
-              "select",
-              {
-                options: [
-                  "We have an internal team",
-                  "Fully outsourcing to you",
-                  "A mix of both",
-                ],
-              },
-            ),
-            f("whoElseDecides", "Who else is involved in this decision?", "text", {
-              half: true,
-              placeholder: "Just me / a co-founder / a team",
-            }),
-            f(
-              "budgetAuthority",
-              "Are you the sole decision-maker for budget approval?",
-              "select",
-              { half: true, options: ["Yes", "No", "Shared"] },
-            ),
-          ],
-        },
-        {
-          title: "Why now?",
-          fields: [
-            f("whyNow", "What's prompting you to reach out now?", "textarea", {
-              required: true,
-              placeholder: "A launch, a rebrand, stalled sales…",
-            }),
-          ],
-        },
-        {
-          title: "Engagement details",
+          title: "What you need",
           fields: [
             f(
               "plan",
@@ -768,20 +648,20 @@ export const defaults = {
                 ],
               },
             ),
-            f("startDate", "Ideal services start date", "date", {
-              required: true,
-              half: true,
-            }),
             f("budget", "What is your budget?", "text", {
               required: true,
               half: true,
               placeholder: "Range is fine",
             }),
+            f("startDate", "Ideal start date", "date", {
+              required: true,
+              half: true,
+            }),
+            f("whyNow", "What's prompting you to reach out now?", "textarea", {
+              required: true,
+              placeholder: "A launch, a rebrand, stalled sales…",
+            }),
           ],
-        },
-        {
-          title: "Just one more",
-          fields: [f("howHeard", "How did you hear about us?", "text")],
         },
       ],
     },
@@ -1173,7 +1053,7 @@ export const defaults = {
       nextLabel: "Second edition",
       nextDetail: "17 July 2026 · Gracetone Studio, Yaba, Lagos",
       ctaPrimary: "Register interest",
-      ctaSecondary: "Download sponsorship deck",
+      ctaSecondary: "View sponsorship proposal",
       /** Point this at the real deck (upload it, or paste an external URL). */
       deckUrl: "",
     },
@@ -1248,11 +1128,24 @@ export const defaults = {
       ],
     },
     press: {
-      label: "From the press",
+      heading: "From the press",
+      lead: "Coverage from past editions.",
+      readLabel: "Read publication",
       items: [
-        { name: "Punch Newspaper", href: "" },
-        { name: "Independent Newspaper", href: "" },
+        { title: "Punch Newspaper", cover: "", href: "" },
+        { title: "Independent Newspaper", cover: "", href: "" },
       ],
+    },
+    /** No names invented — an empty list hides the strip until real partners
+     *  are added, rather than claiming partnerships that don't exist yet. */
+    participants: {
+      label: "Partners & participants",
+      logos: [] as { name: string; logo: string; href: string }[],
+    },
+    videos: {
+      heading: "Watch highlights",
+      lead: "Moments from past editions.",
+      items: [{ title: "", youtubeUrl: "" }],
     },
     agenda: {
       heading: "Summit agenda",
@@ -1311,7 +1204,8 @@ export const defaults = {
     sponsor: {
       heading: "Partner with Africa's leading creative movement",
       body: "Position your brand before thousands of students, professionals and entrepreneurs.",
-      ctaPrimary: "Download sponsorship deck",
+      ctaPrimary: "View proposal",
+      ctaDownload: "Download proposal",
       ctaSecondary: "Speak to our team",
       ctaSecondaryHref: "/lets-work",
     },

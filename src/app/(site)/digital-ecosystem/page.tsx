@@ -5,7 +5,6 @@ import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { FreeSlotCard } from "@/components/ui/FreeSlotCard";
 import { PromoVideo } from "@/components/ui/PromoVideo";
-import { Icon, type IconName } from "@/components/ui/Icon";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { resolveForm } from "@/lib/forms/resolve";
 
@@ -13,17 +12,6 @@ export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("ecosystem");
   return pageMetadata(seo, "/digital-ecosystem");
 }
-
-/** Capability cards, in the order the CMS lists them. Falls back to a neutral
- *  mark if an editor adds a tenth item. */
-const SOLUTION_ICONS: IconName[] = [
-  "identity", "strategy", "camera", "layout", "search",
-  "card", "share", "megaphone", "users", "chart",
-];
-
-/** Logo blue / orange / green, cycled so the grid carries the mark's palette
- *  instead of ten identical gold ticks. */
-const SOLUTION_TONES = ["blue", "orange", "green"] as const;
 
 export default async function EcosystemPage() {
   const eco = await getContent("ecosystem");
@@ -64,45 +52,6 @@ export default async function EcosystemPage() {
         </div>
       </section>
 
-      {/* Our Digital Commerce Solution — capability cards. */}
-      <section data-reveal className="band band--ink band--ruled">
-        <div className="shell section">
-          <h2 className="h2 measure-620" style={{ marginBottom: 16 }}>
-            {eco.solution.heading}
-          </h2>
-          <p
-            className="body measure-620"
-            style={{ marginBottom: 44, color: "var(--ink-78)" }}
-          >
-            {eco.solution.body}
-          </p>
-          <div className="grid col3" data-stagger>
-            {eco.solution.items.map((item, index) => (
-              <div
-                key={item.name}
-                className="card"
-                style={{ padding: "26px 26px 28px" }}
-              >
-                <span
-                  className="icon-chip"
-                  data-tone={SOLUTION_TONES[index % SOLUTION_TONES.length]}
-                  style={{ marginBottom: 16 }}
-                >
-                  <Icon name={SOLUTION_ICONS[index] ?? "spark"} size={21} />
-                </span>
-                <div
-                  className="card-title"
-                  style={{ marginBottom: 8, textWrap: "balance" }}
-                >
-                  {item.name}
-                </div>
-                <div className="card-body">{item.body}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Commercial — video only, so this quietly skips itself until one is
           uploaded. */}
       {eco.promo.video ? (
@@ -120,10 +69,12 @@ export default async function EcosystemPage() {
         </section>
       ) : null}
 
-      {/* Engagement plans. */}
+      {/* Engagement plans — bundled packages, not the standalone-capability
+          grid this page used to lead with. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
-          <h2 className="h2 mb-34">{eco.plans.heading}</h2>
+          <h2 className="h2 mb-18">{eco.plans.heading}</h2>
+          <p className="body measure-620 mb-34">{eco.plans.lead}</p>
           <PlanCards
             plans={eco.plans.items}
             featuredIndex={eco.plans.featuredIndex}

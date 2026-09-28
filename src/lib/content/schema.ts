@@ -267,7 +267,7 @@ export const schemas: DocSchema[] = [
     id: "home",
     title: "Homepage",
     route: "/",
-    blurb: "Positions the brand and routes visitors to the three business lines.",
+    blurb: "Positions the brand and routes visitors to the four business lines.",
     sections: [
       seo,
       {
@@ -403,8 +403,20 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "pr",
+        title: "03 / PR & events",
+        note: "The three package cards on the right are pulled from PR & Events → PR packages, so there is one place to edit them.",
+        fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          ctaLabel: { kind: "text", label: "Button label" },
+          ctaHref: { kind: "text", label: "Button link" },
+        },
+      },
+      {
         key: "marketplace",
-        title: "03 / Digital marketplace",
+        title: "04 / Digital marketplace",
         note: "The three plan cards on the right are pulled from Digital Marketplace → Engagement plans, so there is one place to edit them.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
@@ -416,7 +428,7 @@ export const schemas: DocSchema[] = [
       },
       {
         key: "media",
-        title: "04 / Media services",
+        title: "05 / Media services",
         note: "The tabs and deliverables come from the Media Services page.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
@@ -427,7 +439,7 @@ export const schemas: DocSchema[] = [
       },
       {
         key: "summit",
-        title: "05 / The Summit",
+        title: "06 / The Summit",
         note: "The stat row is pulled from the Summit page.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
@@ -704,24 +716,6 @@ export const schemas: DocSchema[] = [
         },
       },
       {
-        key: "solution",
-        title: "Our Digital Commerce Solution",
-        fields: {
-          heading: { kind: "text", label: "Heading" },
-          body: { kind: "textarea", label: "Body", rows: 3 },
-          items: {
-            kind: "repeater",
-            label: "Capabilities",
-            itemLabel: "Capability",
-            titleKey: "name",
-            fields: {
-              name: { kind: "text", label: "Name" },
-              body: { kind: "textarea", label: "Body", rows: 3 },
-            },
-          },
-        },
-      },
-      {
         key: "promo",
         title: "Commercial",
         note: "Shown before the engagement plans. Leave the video empty to skip this section entirely.",
@@ -745,6 +739,7 @@ export const schemas: DocSchema[] = [
         note: "Also rendered on the homepage. The featured plan gets the accent border and tint.",
         fields: {
           heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
           featuredIndex: {
             kind: "number",
             label: "Featured plan",
@@ -782,7 +777,7 @@ export const schemas: DocSchema[] = [
       {
         key: "questionnaire",
         title: "Discovery questionnaire",
-        note: "The eight-part form. Answers land in Submissions → Discovery consultation.",
+        note: "A short, direct form — brand basics and what's needed, nothing more. Answers land in Submissions → Discovery consultation.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -1070,7 +1065,7 @@ export const schemas: DocSchema[] = [
     id: "summit",
     title: "Creative Empowerment Summit",
     route: "/summit",
-    blurb: "Editions and galleries, agenda, highlights, FAQ and sponsorship.",
+    blurb: "Editions and galleries, press, partners, highlight videos, agenda, FAQ, the sponsorship proposal and registration.",
     sections: [
       seo,
       {
@@ -1087,9 +1082,9 @@ export const schemas: DocSchema[] = [
           ctaPrimary: { kind: "text", label: "Primary button label" },
           ctaSecondary: { kind: "text", label: "Secondary button label" },
           deckUrl: {
-            kind: "text",
-            label: "Sponsorship deck URL",
-            help: "Upload the PDF or paste a link. Empty hides the deck buttons.",
+            kind: "doc",
+            label: "Sponsorship & partnership proposal (PDF)",
+            help: "Empty hides every view/download button for it, here and in the sponsorship section below.",
           },
         },
       },
@@ -1161,16 +1156,71 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "From the press",
+        note: "Newspaper and magazine covers, set the same way as PR & Events → Press. A row without a cover image is skipped.",
         fields: {
-          label: { kind: "text", label: "Label", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          readLabel: { kind: "text", label: "Link label" },
           items: {
             kind: "repeater",
-            label: "Mentions",
-            itemLabel: "Mention",
+            label: "Publications",
+            itemLabel: "Publication",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Publication" },
+              cover: { kind: "image", label: "Cover image", ratio: "3 / 4" },
+              href: {
+                kind: "text",
+                label: "Link",
+                help: "A URL, or paste the address of a PDF from the media library.",
+              },
+            },
+          },
+        },
+      },
+      {
+        key: "participants",
+        title: "Partners & participants",
+        note: "Logos link out when a link is set. Leave the list empty to hide the strip entirely.",
+        fields: {
+          label: { kind: "text", label: "Strip label", mono: true },
+          logos: {
+            kind: "repeater",
+            label: "Partners",
+            itemLabel: "Partner",
             titleKey: "name",
             fields: {
-              name: { kind: "text", label: "Publication" },
-              href: { kind: "text", label: "Article URL" },
+              name: { kind: "text", label: "Name" },
+              logo: { kind: "image", label: "Logo" },
+              href: {
+                kind: "text",
+                label: "Link",
+                help: "Optional — the partner's website or profile.",
+              },
+            },
+          },
+        },
+      },
+      {
+        key: "videos",
+        title: "Highlight videos",
+        note: "YouTube links, shown one at a time with a slider once there's more than one. A row whose link doesn't parse to a video is skipped.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
+          items: {
+            kind: "repeater",
+            label: "Videos",
+            itemLabel: "Video",
+            titleKey: "title",
+            fields: {
+              title: { kind: "text", label: "Title" },
+              youtubeUrl: {
+                kind: "text",
+                label: "YouTube URL",
+                mono: true,
+                help: "Paste the full link — a watch, youtu.be or Shorts URL all work.",
+              },
             },
           },
         },
@@ -1204,12 +1254,14 @@ export const schemas: DocSchema[] = [
       {
         key: "sponsor",
         title: "Sponsorship CTA",
+        note: "The two proposal buttons both point at Hero → Sponsorship & partnership proposal, so there is one PDF to upload.",
         fields: {
           heading: { kind: "textarea", label: "Heading", rows: 2 },
           body: { kind: "textarea", label: "Body", rows: 3 },
-          ctaPrimary: { kind: "text", label: "Deck button label" },
-          ctaSecondary: { kind: "text", label: "Secondary button label" },
-          ctaSecondaryHref: { kind: "text", label: "Secondary button link" },
+          ctaPrimary: { kind: "text", label: "View-proposal button label" },
+          ctaDownload: { kind: "text", label: "Download-proposal button label" },
+          ctaSecondary: { kind: "text", label: "Talk-to-team button label" },
+          ctaSecondaryHref: { kind: "text", label: "Talk-to-team button link" },
         },
       },
       {

@@ -26,11 +26,13 @@ const PILLAR_ICONS: IconName[] = ["strategy", "spark", "users"];
 const PILLAR_TONES = ["blue", "orange", "green"] as const;
 
 export default async function HomePage() {
-  // Plans, media packages and summit stats are edited on their own pages; the
-  // homepage renders them so there is only ever one place to change them.
-  const [home, ecosystem, media, summit, projects] = await Promise.all([
+  // Plans, PR packages, media packages and summit stats are edited on their
+  // own pages; the homepage renders them so there is only ever one place to
+  // change them.
+  const [home, ecosystem, pr, media, summit, projects] = await Promise.all([
     getContent("home"),
     getContent("ecosystem"),
+    getContent("pr"),
     getContent("media"),
     getContent("summit"),
     publishedProjects(),
@@ -38,6 +40,8 @@ export default async function HomePage() {
 
   const plans = ecosystem.plans.items;
   const featured = ecosystem.plans.featuredIndex;
+  const prPackages = pr.packages.items;
+  const prFeatured = pr.packages.featuredIndex;
 
   return (
     <>
@@ -251,7 +255,79 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5 — 03 / Digital marketplace. */}
+      {/* 5 — 03 / PR & events. Same panel--feature/compact-card layout as
+          Digital Marketplace below, pulling PR & Events → PR packages the
+          same way that section pulls Digital Marketplace → Engagement
+          plans — one card list, one place to edit it. Comes first: PR is the
+          business line visitors should meet before the commerce build. */}
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <div className="panel--feature panel">
+            <div className="grid col2 col2--mid" style={{ alignItems: "center" }}>
+              <div>
+                <div className="section-name mb-18">{home.pr.eyebrow}</div>
+                <h2 className="section-lede" style={{ marginBottom: 22 }}>
+                  <SplitText text={home.pr.heading} />
+                </h2>
+                <p className="body" style={{ marginBottom: 28 }}>
+                  {home.pr.body}
+                </p>
+                <Link href={home.pr.ctaHref} className="pill pill--accent">
+                  {home.pr.ctaLabel} <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+
+              <div className="grid gap-12">
+                {prPackages.map((pkg, index) => (
+                  <div
+                    key={pkg.name}
+                    className="card"
+                    style={{
+                      borderColor:
+                        index === prFeatured
+                          ? "var(--accent-line-strong)"
+                          : "var(--line-strong)",
+                      background:
+                        index === prFeatured
+                          ? "rgba(var(--accent-rgb),.06)"
+                          : "var(--surface)",
+                    }}
+                  >
+                    <div
+                      className="row"
+                      style={{
+                        justifyContent: "space-between",
+                        gap: 12,
+                        marginBottom: 7,
+                      }}
+                    >
+                      <div className="card-title">{pkg.name}</div>
+                      <div
+                        className="eyebrow eyebrow--tight"
+                        style={{ letterSpacing: "0.14em" }}
+                      >
+                        {pkg.tag}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 14.5,
+                        lineHeight: 1.6,
+                        color: "var(--ink-78)",
+                        textWrap: "pretty",
+                      }}
+                    >
+                      {pkg.short}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6 — 04 / Digital marketplace. */}
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="panel--feature panel">
@@ -326,7 +402,7 @@ export default async function HomePage() {
           on the page by design — a second would turn it into wallpaper. */}
       <StatementBand lines={home.statement.lines} />
 
-      {/* 6 — 04 / Media services. */}
+      {/* 7 — 05 / Media services. */}
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.media.eyebrow}</div>
@@ -345,7 +421,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7 — 05 / The Summit. */}
+      {/* 8 — 06 / The Summit. */}
       <section data-reveal         className="hero"
         style={{ marginBottom: "var(--section-y)" }}
       >
@@ -402,7 +478,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8 — Projects. */}
+      {/* 9 — Projects. */}
       <section data-reveal id="projects" className="band band--ink band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
@@ -431,7 +507,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 9 — Testimonials. */}
+      {/* 10 — Testimonials. */}
       <section data-reveal className="band band--alt">
         <div className="shell section">
           <Testimonials
@@ -441,7 +517,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 10 — 07 / Betaminds Academy. */}
+      {/* 11 — 07 / Betaminds Academy. */}
       <section data-reveal className="band band--accent band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.academy.eyebrow}</div>
@@ -530,7 +606,7 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* 11 — 08 / Final CTA. */}
+      {/* 12 — 08 / Final CTA. */}
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div
