@@ -418,12 +418,17 @@ export const defaults = {
       heading: "Learn. Build. Earn.",
       ctaLabel: "Visit academy →",
       ctaHref: "/academy",
+      /**
+       * Real courses from the schools below, not generic training formats —
+       * a visitor should see what they'd actually be learning, not a label
+       * like "Masterclass" that could describe any of them.
+       */
       grid: [
-        { label: "Masterclass", image: IMG(9363120, 600) },
-        { label: "Training", image: IMG(8761715, 600) },
-        { label: "Workshop", image: IMG(7793169, 600) },
-        { label: "Community", image: IMG(3869639, 600) },
-        { label: "Bootcamp", image: IMG(5060991, 600) },
+        { label: "Photography", image: IMG(3184291, 600) },
+        { label: "Videography", image: IMG(2529159, 600) },
+        { label: "Content Creation", image: IMG(3869639, 600) },
+        { label: "Digital Marketing", image: IMG(7793169, 600) },
+        { label: "UI/UX Design", image: IMG(8761715, 600) },
       ],
     },
     commercials: {
@@ -560,18 +565,21 @@ export const defaults = {
         {
           name: "Starter Partnership",
           tag: "Establish",
+          duration: "3 months",
           short:
             "For businesses establishing, repositioning, or accelerating their digital presence with a focused commerce strategy and execution plan.",
         },
         {
           name: "Growth Partnership",
           tag: "Most chosen",
+          duration: "6 months",
           short:
             "For businesses seeking sustained digital growth, stronger market positioning, and continuous optimization across the ecosystem.",
         },
         {
           name: "Strategic Partnership",
           tag: "Scale",
+          duration: "1 year",
           short:
             "A long-term engagement for businesses scaling digital operations, deepening customer relationships, and driving consistent growth.",
         },

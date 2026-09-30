@@ -1221,13 +1221,23 @@ body:has([data-theme="red"]) .band--ink {
 
 /* Skip link. Sits off screen until it takes focus, then lands as a normal
    accent pill in the top-left. Above the sticky header's z-index so it isn't
-   covered at the moment it appears. */
+   covered at the moment it appears.
+
+   Off-screen via `top`, not `transform`. This is a `position: fixed`
+   element present on every route, rendered before <main> in the layout —
+   nothing in globals.css or ui.module.css reaches it. A *permanent*
+   transform (this one applied at all times, not just during a transient
+   animation) is a stronger version of the exact trigger that let the
+   marquee and the WhatsApp button extend the document sideways in WebKit:
+   an animated or continuously-transformed `position: fixed` element gets
+   promoted to its own compositor layer, and a promoted fixed element is
+   where Safari has a documented history of mis-sizing the containing
+   block. `top` moves the box the same way without ever promoting a layer. */
 .skip-link {
   position: fixed;
-  top: 12px;
+  top: -80px;
   left: 12px;
   z-index: 200;
-  transform: translateY(-160%);
   padding: 12px 20px;
   border-radius: var(--r-pill);
   background: var(--accent-fill);
@@ -1235,7 +1245,7 @@ body:has([data-theme="red"]) .band--ink {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
-  transition: transform 0.2s ease;
+  transition: top 0.2s ease;
 }
 
 /* :focus as well as :focus-visible. A skip link is reached by keyboard and
@@ -1244,7 +1254,7 @@ body:has([data-theme="red"]) .band--ink {
    the two. */
 .skip-link:focus,
 .skip-link:focus-visible {
-  transform: none;
+  top: 12px;
 }
 
 /* The target takes focus programmatically, so it must not draw a ring of its

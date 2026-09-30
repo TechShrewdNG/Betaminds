@@ -286,6 +286,12 @@
   margin-bottom: 12px;
 }
 
+/* Term length, e.g. "3 months" — muted, so the tag it sits beside keeps the
+   accent colour to itself. */
+.planDuration {
+  color: var(--ink-55);
+}
+
 .planName {
   font-family: var(--font-display);
   font-weight: 600;

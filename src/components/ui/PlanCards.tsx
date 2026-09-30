@@ -5,6 +5,8 @@ export type Plan = {
   name: string;
   tag: string;
   short: string;
+  /** Optional. e.g. "3 months" — shown beside the tag when set. */
+  duration?: string;
   /** Optional closing line — who the package suits. */
   bestFor?: string;
 };
@@ -52,7 +54,12 @@ export function PlanCards({
             data-featured={index === featuredIndex ? "true" : "false"}
           >
             <div className={styles.planHead}>
-              <div className={styles.planTag}>{plan.tag}</div>
+              <div className={styles.planTag}>
+                {plan.tag}
+                {plan.duration ? (
+                  <span className={styles.planDuration}> · {plan.duration}</span>
+                ) : null}
+              </div>
               <div className={styles.planName}>{plan.name}</div>
               <div className={styles.planShort}>{plan.short}</div>
             </div>

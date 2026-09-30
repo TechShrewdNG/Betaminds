@@ -490,6 +490,7 @@ export const schemas: DocSchema[] = [
       {
         key: "academy",
         title: "07 / Betaminds Academy",
+        note: "Caption each tile with a real course name from the Academy page — Photography, Videography — rather than a generic format like \"Masterclass\", and use a photograph that actually shows that craft.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -501,7 +502,11 @@ export const schemas: DocSchema[] = [
             itemLabel: "Tile",
             titleKey: "label",
             fields: {
-              label: { kind: "text", label: "Caption" },
+              label: {
+                kind: "text",
+                label: "Course name",
+                help: "A real course from the Academy page, e.g. \"Photography\".",
+              },
               image: { kind: "image", label: "Photograph", ratio: "3 / 4" },
             },
           },
@@ -758,6 +763,12 @@ export const schemas: DocSchema[] = [
             fields: {
               name: { kind: "text", label: "Name" },
               tag: { kind: "text", label: "Tag", mono: true },
+              duration: {
+                kind: "text",
+                label: "Term length",
+                mono: true,
+                help: "e.g. \"3 months\". Shown beside the tag. Leave empty to hide it.",
+              },
               short: { kind: "textarea", label: "Summary", rows: 3 },
             },
           },
