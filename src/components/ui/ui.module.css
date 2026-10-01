@@ -1948,9 +1948,15 @@
 
 /* --- Display statistics --------------------------------------------------- */
 
+/* minmax's floor is what decides the mobile column count, since auto-fit
+   otherwise packs in as many as fit — 180px left a 354px-wide phone (390px
+   viewport minus the 18px mobile gutters) room for exactly one, stacking
+   Summit's five stats and Academy's four into a long single file. 140px
+   lets two sit side by side down to ~320px content width without changing
+   anything wider, where there was already room for several. */
 .statRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 44px 40px;
 }
 
