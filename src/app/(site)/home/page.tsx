@@ -221,7 +221,12 @@ export default async function HomePage() {
                     src={member.image}
                     alt={member.name}
                     className={`${styles.tileImg} ratio-3-4`}
-                    loading="lazy"
+                    // Not lazy. This sits inside .teamGrid, a horizontally
+                    // scrolling carousel — native lazy-loading decides
+                    // whether to fetch an image from its on-screen
+                    // position, and that heuristic is built around normal
+                    // vertical scrolling, not a nested horizontal scroll
+                    // container. Ten portraits is nothing to just load.
                   />
                   <div className={styles.tileHover}>
                     {member.instagram ? (

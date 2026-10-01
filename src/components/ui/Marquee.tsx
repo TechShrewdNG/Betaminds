@@ -96,8 +96,12 @@ export function Marquee({ logos }: { logos: LogoItem[] }) {
           const duplicate = index >= logos.length;
           const className = `${styles.logoSlot} ${logo.logo ? styles["logoSlot--filled"] : ""}`;
           const content = logo.logo ? (
+            // Not lazy — this sits inside the marquee's own horizontal
+            // scroller, where native lazy-loading's on-screen heuristic
+            // isn't built around a nested horizontal scroll container. See
+            // the matching comment on the team grid in home/page.tsx.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logo.logo} alt={logo.name} loading="lazy" />
+            <img src={logo.logo} alt={logo.name} />
           ) : (
             logo.name
           );

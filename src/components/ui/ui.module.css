@@ -1837,30 +1837,26 @@
 
 /* --- Statement band ------------------------------------------------------- */
 
+/* Native scroller, not a transform-animated track behind overflow: hidden —
+   see the comment in StatementBand.tsx and .marquee above for why. */
 .stmtBand {
-  /* An animated transform track needs this element to be a stacking context,
-     not merely positioned, for WebKit to clip it — contain: paint is what
-     the client-logo marquee used to rely on too, before it moved to native
-     scrolling instead (see .marquee's comment above). */
-  position: relative;
-  overflow: hidden;
-  contain: paint;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
   background: var(--canvas);
   color: var(--ink);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 
+.stmtBand::-webkit-scrollbar {
+  display: none;
+}
+
 .stmtTrack {
   display: flex;
   width: max-content;
-  animation: bmMarquee 30s linear infinite;
-}
-
-/* Reading a line that is sliding past is hard; pausing on hover makes it
-   readable without stopping the motion for everyone. */
-.stmtBand:hover .stmtTrack {
-  animation-play-state: paused;
 }
 
 .stmtRun {
@@ -2257,55 +2253,12 @@
 /* --- Mobile: nothing wider than the screen ------------------------------- */
 
 /*
- * The statement band is the one element left here that's deliberately wider
- * than the viewport *and* moved by a transform — a 2599px track, translated
- * forever. On a phone it stays wrapped-and-still instead: a sliding phrase
- * you cannot finish reading before it's gone is decoration that costs
- * legibility, and a wide transform-animated track is the exact shape that
- * once let a compositor-promoted layer paint through overflow: hidden,
+ * Both the client-logo marquee and the statement band now move at every
+ * width via native scrolling (see StatementBand.tsx and .marquee above) — a
+ * transform-animated track behind overflow: hidden was the shape that once
+ * let a compositor-promoted layer paint through overflow: hidden,
  * position: relative and contain: paint alike and stretch the document on
- * iOS (see .marquee's comment above — the client-logo strip used to be the
- * other element in that sentence).
- *
- * The logo marquee isn't read word by word, it's recognition, and every
- * 3rd-party logo strip on the site (trusted-by, summit partners) is
- * specifically asked to keep moving at every width — so it moved off the
- * transform-animation approach entirely rather than earning a mobile
- * exception: Marquee.tsx now drives it over a real `overflow-x: auto`
- * scroller, a mechanism that was never part of this bug class to begin with.
+ * iOS. Neither element carries a transform animation any more, so neither
+ * needs a mobile exception that stops it: there's nothing left in that bug's
+ * shape to turn off.
  */
-@media (max-width: 640px) {
-  .stmtTrack {
-    animation: none;
-    transform: none;
-    width: auto;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  /* The duplicate run exists only to make the loop seamless. With no loop it
-     is the same words a second time. The logo marquee keeps looping at this
-     width, so it keeps its duplicate half. */
-  .stmtRun[aria-hidden="true"] {
-    display: none;
-  }
-
-  .stmtRun {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .stmtItem {
-    padding: 10px 14px;
-    gap: 22px;
-    /* nowrap is what keeps a phrase together while it slides past. With the
-       slide gone it only makes a long phrase wider than the phone. */
-    white-space: normal;
-    max-width: 100%;
-  }
-
-  /* A single phrase still must not out-run the screen. */
-  .stmtWord {
-    font-size: clamp(19px, 6.2vw, 26px);
-  }
-}

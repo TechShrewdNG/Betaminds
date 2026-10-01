@@ -308,23 +308,21 @@ export const defaults = {
         {
           name: "Ileriayo S. Okunrotifa",
           role: "MD / Founder",
-          // Real headshot, hotlinked from the publicly shared Drive folder
-          // (see summit gallery comment above for the caveat on this pattern).
-          image: "https://lh3.googleusercontent.com/d/1Li4ExiSHTC1DThPNz0yVMSKkAgdh-aa0=w700",
+          image: "/team/ileriayo-okunrotifa.jpg",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Ryzer Uffort",
           role: "Brand Identity Designer / Betaminds Academy Facilitator",
-          image: "https://lh3.googleusercontent.com/d/1IZpoGjy08CoFsQYbPiXQW1XKZDqhklrg=w700",
+          image: "/team/ryzer-uffort.jpg",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Adefolaju Michael",
           role: "DOP / Betaminds Academy Facilitator",
-          image: "https://lh3.googleusercontent.com/d/13OwpHudfMqmB8pzXQw7pnxQi9k6o3Rt0=w700",
+          image: "/team/adefolaju-michael.jpg",
           instagram: "",
           linkedin: "",
         },
@@ -350,33 +348,32 @@ export const defaults = {
           linkedin: "",
         },
         // Role left blank — to be filled in from /admin once titles are
-        // confirmed. Portrait is hotlinked from the shared Drive folder,
-        // same stopgap as above.
+        // confirmed.
         {
           name: "Adebola Titilola",
           role: "",
-          image: "https://lh3.googleusercontent.com/d/18cyrUZzvyCwwJFd_OU6NGBcLRZ3qsRUV=w700",
+          image: "/team/adebola-titilola.jpg",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Okeke Munachimso Favour",
           role: "",
-          image: "https://lh3.googleusercontent.com/d/1zhbNpJTtuBdbz45sYU-V_x9K1mWdOYD7=w700",
+          image: "/team/okeke-munachimso-favour.jpg",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Olamide Odutolu",
           role: "",
-          image: "https://lh3.googleusercontent.com/d/1b1gcczo6_oPfzfAoev8bIm_HVZyIlVIV=w700",
+          image: "/team/olamide-odutolu.jpg",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Oyewole Asifat",
           role: "",
-          image: "https://lh3.googleusercontent.com/d/1XaEobJ-ET5wqX_0kZxCEVClcZ8lJEu6_=w700",
+          image: "/team/oyewole-asifat.jpg",
           instagram: "",
           linkedin: "",
         },
@@ -1153,26 +1150,20 @@ export const defaults = {
           theme: "Choose a passion-driven career in the creative industry",
           date: "1 May 2025",
           venue: "Cafeone, Ikate, Lekki, Lagos",
-          /**
-           * The real event photos, not stock — pulled from the two Google
-           * Drive folders shared for the first edition. Hotlinked via
-           * `lh3.googleusercontent.com/d/<fileId>`, which Google serves for
-           * a publicly-shared Drive file without needing a service-account
-           * key; it is not an official, guaranteed-stable API, so this is a
-           * stopgap the same way the Pexels placeholders were — the
-           * durable fix is re-uploading these same six (or more) through
-           * /admin → Summit → Editions, which puts them on this site's own
-           * Blob storage instead of depending on Drive's sharing settings
-           * never changing.
-           */
+          // The real event photos, not stock — pulled from the two Google
+          // Drive folders shared for the first edition, and served as
+          // static assets from this project rather than hotlinked: the
+          // googleusercontent.com hotlink this replaced worked reliably
+          // from curl and from this project's own test tooling, but failed
+          // to load on a real phone in practice.
           gallery: [
-            "10-G7-Epvgn9bpJ8P9RfGSCuI-YsMUVHF", // IMG_0334.jpg
-            "11-Wf2UrPR1-m3wrSwU2vdLDfUSibpDrC", // IMG_0410.jpg
-            "1wuibiyaGe-AKs6AY3cyDp100b0b4SxKu", // IMG_0458.jpg
-            "18EM1s617XH164NeCfzcbXLRvggGQuFyG", // IMG_0582.jpg
-            "1pt9keFx6R6SzTVnEFmHTG_F52gHfA9ta", // MO_00661.jpg
-            "1-PoPcqWs7_ERFRjwflQ-vpTYtG7lCQns", // MO_00702.jpg
-          ].map((id) => `https://lh3.googleusercontent.com/d/${id}=w800`),
+            "/summit/first-edition/img-0334.jpg",
+            "/summit/first-edition/img-0410.jpg",
+            "/summit/first-edition/img-0458.jpg",
+            "/summit/first-edition/img-0582.jpg",
+            "/summit/first-edition/mo-00661.jpg",
+            "/summit/first-edition/mo-00702.jpg",
+          ],
         },
         {
           edition: "Second edition",
@@ -1220,10 +1211,9 @@ export const defaults = {
       ],
     },
     /**
-     * Real partner logos from the shared Drive folder. Hotlinked the same
-     * stopgap way as the First edition gallery — see that comment above for
-     * why — with the durable fix being a re-upload through /admin → Summit →
-     * Partners & participants.
+     * Real partner logos from the shared Drive folder, served as static
+     * assets from this project (see the First edition gallery comment above
+     * for why this moved off hotlinking).
      *
      * The folder held 16 files; this keeps 12. Dropped: two logos that were
      * byte-for-byte duplicates of another file in the set, one brand's two
@@ -1237,18 +1227,18 @@ export const defaults = {
     participants: {
       label: "Partners & participants",
       logos: [
-        { name: "Scream Media Africa", logo: "https://lh3.googleusercontent.com/d/1aUV6rDvzsKqNP2LXVqr0XUh7MigVt00Q=w400", href: "" },
-        { name: "Finex Branding Agency", logo: "https://lh3.googleusercontent.com/d/1W7G4Vk3vSoNqSQE9GyIIOgHELyHOivV7=w400", href: "" },
-        { name: "BAT Events and Chops", logo: "https://lh3.googleusercontent.com/d/1GXJwTBAcLzET_Fnn4fcRsbKXwrtU0e0p=w400", href: "" },
-        { name: "Café One", logo: "https://lh3.googleusercontent.com/d/1s72_1qK9jOyPYT6q4iOd7krIjpvejCwy=w400", href: "" },
-        { name: "Zorion Scent", logo: "https://lh3.googleusercontent.com/d/1CXMKoVSIYqnKy2kRPJGhGGPB_4SSyWm7=w400", href: "" },
-        { name: "Gracetone Digital Studio", logo: "https://lh3.googleusercontent.com/d/1MnYAGawE0Gmde6BbfvBy-cxcTk-dFiHv=w400", href: "" },
-        { name: "Zam Zar TV", logo: "https://lh3.googleusercontent.com/d/11zZqB9icqeQAkueA6EIK9vyjGvJ4MVFP=w400", href: "" },
-        { name: "Swift Sip", logo: "https://lh3.googleusercontent.com/d/1kuQRixJOFJCNI_9kneAdtMLWF7ielgg9=w400", href: "" },
-        { name: "Leadway Assurance", logo: "https://lh3.googleusercontent.com/d/13SbmaY2EZPvlDTG8bVNZV_TVmCEBfWQK=w400", href: "" },
-        { name: "MKR", logo: "https://lh3.googleusercontent.com/d/1C8SKArf1J91PxbuBiEvJaTRpj36yJ4uN=w400", href: "" },
-        { name: "Penmorph", logo: "https://lh3.googleusercontent.com/d/1umjC30Xf6INnL9adixj0G8imfG2ES3uD=w400", href: "" },
-        { name: "Right Events", logo: "https://lh3.googleusercontent.com/d/1zbVUkLjdt7CI_Lx_v-pAxqJku36A529O=w400", href: "" },
+        { name: "Scream Media Africa", logo: "/partners/scream-media-africa.png", href: "" },
+        { name: "Finex Branding Agency", logo: "/partners/finex-branding-agency.png", href: "" },
+        { name: "BAT Events and Chops", logo: "/partners/bat-events-and-chops.png", href: "" },
+        { name: "Café One", logo: "/partners/cafe-one.jpg", href: "" },
+        { name: "Zorion Scent", logo: "/partners/zorion-scent.png", href: "" },
+        { name: "Gracetone Digital Studio", logo: "/partners/gracetone-digital-studio.png", href: "" },
+        { name: "Zam Zar TV", logo: "/partners/zam-zar-tv.png", href: "" },
+        { name: "Swift Sip", logo: "/partners/swift-sip.jpg", href: "" },
+        { name: "Leadway Assurance", logo: "/partners/leadway-assurance.png", href: "" },
+        { name: "MKR", logo: "/partners/mkr.png", href: "" },
+        { name: "Penmorph", logo: "/partners/penmorph.png", href: "" },
+        { name: "Right Events", logo: "/partners/right-events.png", href: "" },
       ],
     },
     videos: {
