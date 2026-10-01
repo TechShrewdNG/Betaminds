@@ -23,10 +23,15 @@
   color: var(--ink);
 }
 
-/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph. */
+/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph.
+   A fixed pixel width instead of `aspect-ratio` — see the matching comment
+   in Header.module.css for why: this is the same `.mark` pattern, and a
+   WebKitGTK nested-flex intrinsic-sizing bug makes `aspect-ratio` here risky
+   even though `.brand` is `position: absolute` on this page, not currently
+   triggering it. */
 .mark {
   height: 30px;
-  aspect-ratio: 876 / 400;
+  width: 65.7px;
   overflow: hidden;
   flex: none;
   display: block;
@@ -34,6 +39,8 @@
 
 .mark img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 

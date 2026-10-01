@@ -437,39 +437,33 @@
 
 /* --- Client logo marquee ------------------------------------------------- */
 
-/* `position: relative` is load-bearing, not decoration.
-
-   WebKit does not clip a descendant the compositor has promoted — and an
-   infinite transform animation promotes one — unless the clipping ancestor
-   establishes a containing block. Without this the 2424px track escaped
-   `overflow: hidden` on iOS and stretched the document to 1053px on a 428px
-   phone, which let Safari zoom out to fit and drew the whole page at about
-   40% width with the sticky header spanning the screen. Chromium clips it
-   either way, so nothing here reproduced it. */
+/* A real horizontal scroller, not a `transform`-animated strip clipped by
+   `overflow: hidden`. That combination — a wide element carrying an infinite
+   transform animation — is exactly what let WebKit paint straight through
+   `overflow: hidden`, `position: relative` *and* `contain: paint` alike and
+   stretch the document to 1053px on a 428px phone, zoomed out to fit with the
+   sticky header spanning the screen. Chromium clipped it either way, so
+   nothing here ever reproduced the bug directly.
+   `overflow-x: auto` sidesteps that bug class by construction: there is no
+   transform animation to promote a compositor layer in the first place.
+   Marquee.tsx drives the motion itself, nudging `scrollLeft` every frame and
+   wrapping it back to 0 once the (duplicated) track has scrolled past its
+   own half-width — the same seamless-loop illusion, just native scrolling
+   instead of a transform. */
 .marquee {
-  position: relative;
-  overflow: hidden;
-  /* `contain: paint` is doing the real work, not `overflow: hidden`.
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
 
-     WebKit will not clip a descendant the compositor has promoted — and an
-     infinite transform animation promotes one — unless the clipping ancestor
-     is a stacking context as well as a containing block. `position: relative`
-     with `z-index: auto` is not a stacking context, which is why adding it
-     alone only reduced the escape instead of stopping it. `contain: paint`
-     establishes both and confines painting to this box, so the 2424px track
-     cannot extend the document however the layer is composited. */
-  contain: paint;
+.marquee::-webkit-scrollbar {
+  display: none;
 }
 
 .marqueeTrack {
   display: flex;
   width: max-content;
-  animation: bmMarquee 26s linear infinite;
-}
-
-/* Pause on hover so a visitor can actually read a client name they spotted. */
-.marquee:hover .marqueeTrack {
-  animation-play-state: paused;
 }
 
 .logoSlot {
@@ -523,6 +517,7 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -1825,8 +1820,10 @@
 /* --- Statement band ------------------------------------------------------- */
 
 .stmtBand {
-  /* Same as .marquee: an animated track needs this element to be a stacking
-     context, not merely positioned, for WebKit to clip it. */
+  /* An animated transform track needs this element to be a stacking context,
+     not merely positioned, for WebKit to clip it — contain: paint is what
+     the client-logo marquee used to rely on too, before it moved to native
+     scrolling instead (see .marquee's comment above). */
   position: relative;
   overflow: hidden;
   contain: paint;
@@ -2236,23 +2233,24 @@
 /* --- Mobile: nothing wider than the screen ------------------------------- */
 
 /*
- * The marquee and the statement band are the only two elements on the site
- * that are deliberately wider than the viewport *and* animated — a 2424px and
- * a 2599px track, each translated forever by a transform.
+ * The statement band is the one element left here that's deliberately wider
+ * than the viewport *and* moved by a transform — a 2599px track, translated
+ * forever. On a phone it stays wrapped-and-still instead: a sliding phrase
+ * you cannot finish reading before it's gone is decoration that costs
+ * legibility, and a wide transform-animated track is the exact shape that
+ * once let a compositor-promoted layer paint through overflow: hidden,
+ * position: relative and contain: paint alike and stretch the document on
+ * iOS (see .marquee's comment above — the client-logo strip used to be the
+ * other element in that sentence).
  *
- * On iOS that combination kept extending the document however it was clipped:
- * overflow: hidden, then position: relative, then contain: paint, each of
- * which holds in Chromium and none of which held there. Rather than keep
- * hunting for the property that makes a promoted layer behave, the tracks stop
- * being over-wide at all on a phone. They wrap into the space available and sit
- * still, which is also the more sensible reading of a strip of client names on
- * a 428px screen — a marquee you cannot read as it slides past is decoration
- * that costs legibility.
- *
- * Desktop keeps the motion exactly as it was.
+ * The logo marquee isn't read word by word, it's recognition, and every
+ * 3rd-party logo strip on the site (trusted-by, summit partners) is
+ * specifically asked to keep moving at every width — so it moved off the
+ * transform-animation approach entirely rather than earning a mobile
+ * exception: Marquee.tsx now drives it over a real `overflow-x: auto`
+ * scroller, a mechanism that was never part of this bug class to begin with.
  */
 @media (max-width: 640px) {
-  .marqueeTrack,
   .stmtTrack {
     animation: none;
     transform: none;
@@ -2261,10 +2259,10 @@
     justify-content: center;
   }
 
-  /* The duplicates exist only to make the loop seamless. With no loop they are
-     the same words, and the same clients, a second time. */
-  .stmtRun[aria-hidden="true"],
-  .logoSlot[aria-hidden="true"] {
+  /* The duplicate run exists only to make the loop seamless. With no loop it
+     is the same words a second time. The logo marquee keeps looping at this
+     width, so it keeps its duplicate half. */
+  .stmtRun[aria-hidden="true"] {
     display: none;
   }
 
@@ -2285,10 +2283,5 @@
   /* A single phrase still must not out-run the screen. */
   .stmtWord {
     font-size: clamp(19px, 6.2vw, 26px);
-  }
-
-  .marqueeTrack {
-    gap: 10px 0;
-    padding: 4px 0;
   }
 }

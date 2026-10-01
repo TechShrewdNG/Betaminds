@@ -32,6 +32,7 @@
   align-items: center;
   gap: 9px;
   flex: none;
+  min-width: 0;
   color: var(--ink);
 }
 
@@ -39,10 +40,21 @@
   color: var(--ink);
 }
 
-/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph. */
+/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph.
+   A fixed pixel width instead of `aspect-ratio` deliberately — on a flex
+   item that is itself a flex container (`.brand`), nested inside another
+   flex row (`.bar`), WebKitGTK's `flex-basis: auto` resolution massively
+   over-computes `.brand`'s intrinsic width when `.mark` carries an
+   `aspect-ratio` instead of an explicit width (967px measured for a ~157px
+   box), which pushed the burger/CTA off past the right edge of the screen
+   and inflated `document.scrollWidth` to 1053px on a 390px phone — the
+   zoom-out-to-fit bug this codebase has chased before, just from a
+   different element each time. The two numbers below are the same
+   height:30px / aspect-ratio:876/400 math, just pre-computed so no CSS
+   feature with this nested-flex bug is in the chain. */
 .mark {
   height: 30px;
-  aspect-ratio: 876 / 400;
+  width: 65.7px;
   overflow: hidden;
   flex: none;
   display: block;
@@ -50,6 +62,8 @@
 
 .mark img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -139,6 +153,7 @@
   align-items: center;
   gap: 10px;
   flex: none;
+  min-width: 0;
 }
 
 .cta {
