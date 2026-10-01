@@ -1186,11 +1186,37 @@ export const defaults = {
         { title: "Independent Newspaper", cover: "", href: "" },
       ],
     },
-    /** No names invented — an empty list hides the strip until real partners
-     *  are added, rather than claiming partnerships that don't exist yet. */
+    /**
+     * Real partner logos from the shared Drive folder. Hotlinked the same
+     * stopgap way as the First edition gallery — see that comment above for
+     * why — with the durable fix being a re-upload through /admin → Summit →
+     * Partners & participants.
+     *
+     * The folder held 16 files; this keeps 12. Dropped: two logos that were
+     * byte-for-byte duplicates of another file in the set, one brand's two
+     * colour variants (kept the one with dark marks, since the white-on-dark
+     * variant would be invisible on this strip's light background), and one
+     * logo that turned out to be a white/light-coloured mark on a
+     * transparent background for the same reason — not missing, just not
+     * usable here without a dark backing it doesn't have in this set.
+     * No link URLs were supplied, so none of these are clickable yet.
+     */
     participants: {
       label: "Partners & participants",
-      logos: [] as { name: string; logo: string; href: string }[],
+      logos: [
+        { name: "Scream Media Africa", logo: "https://lh3.googleusercontent.com/d/1aUV6rDvzsKqNP2LXVqr0XUh7MigVt00Q=w400", href: "" },
+        { name: "Finex Branding Agency", logo: "https://lh3.googleusercontent.com/d/1W7G4Vk3vSoNqSQE9GyIIOgHELyHOivV7=w400", href: "" },
+        { name: "BAT Events and Chops", logo: "https://lh3.googleusercontent.com/d/1GXJwTBAcLzET_Fnn4fcRsbKXwrtU0e0p=w400", href: "" },
+        { name: "Café One", logo: "https://lh3.googleusercontent.com/d/1s72_1qK9jOyPYT6q4iOd7krIjpvejCwy=w400", href: "" },
+        { name: "Zorion Scent", logo: "https://lh3.googleusercontent.com/d/1CXMKoVSIYqnKy2kRPJGhGGPB_4SSyWm7=w400", href: "" },
+        { name: "Gracetone Digital Studio", logo: "https://lh3.googleusercontent.com/d/1MnYAGawE0Gmde6BbfvBy-cxcTk-dFiHv=w400", href: "" },
+        { name: "Zam Zar TV", logo: "https://lh3.googleusercontent.com/d/11zZqB9icqeQAkueA6EIK9vyjGvJ4MVFP=w400", href: "" },
+        { name: "Swift Sip", logo: "https://lh3.googleusercontent.com/d/1kuQRixJOFJCNI_9kneAdtMLWF7ielgg9=w400", href: "" },
+        { name: "Leadway Assurance", logo: "https://lh3.googleusercontent.com/d/13SbmaY2EZPvlDTG8bVNZV_TVmCEBfWQK=w400", href: "" },
+        { name: "MKR", logo: "https://lh3.googleusercontent.com/d/1C8SKArf1J91PxbuBiEvJaTRpj36yJ4uN=w400", href: "" },
+        { name: "Penmorph", logo: "https://lh3.googleusercontent.com/d/1umjC30Xf6INnL9adixj0G8imfG2ES3uD=w400", href: "" },
+        { name: "Right Events", logo: "https://lh3.googleusercontent.com/d/1zbVUkLjdt7CI_Lx_v-pAxqJku36A529O=w400", href: "" },
+      ],
     },
     videos: {
       heading: "Watch highlights",
