@@ -139,6 +139,19 @@
 
 html {
   scroll-behavior: smooth;
+  /* iOS Safari's "font boosting" bumps up text in narrow columns to a size
+     it judges more legible, measured per text node against heuristics none
+     of this project's test tooling reproduces — not Chromium, not the
+     WebKitGTK build this codebase's own test suite uses for real-engine
+     overflow checks. It's layered on top of the CSS font-size, not a
+     replacement for it, which is why the hero heading and lead measured
+     correctly everywhere they were tested and still rendered oversized and
+     wrapped to extra lines on a real iPhone. Fixing every element it could
+     touch one at a time isn't tractable; turning the behavior off site-wide
+     is the standard approach; the design's own responsive type scale
+     already does the sizing-for-the-viewport job this is duplicating. */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   /* Nothing may widen the document sideways.
 
      The page has several tracks far wider than the screen — the client
