@@ -932,6 +932,24 @@
     bottom: 32px;
     gap: 14px;
   }
+
+  /* The global --h1 token already drops to 40px here, which is still the
+     site's main-heading size doing duty as a full-screen hero on a phone:
+     three short, heavy-looking lines with little breathing room. Scoped to
+     the slider rather than lowering --h1 itself, which every page's h1
+     shares — this is about the hero specifically reading as cramped, not
+     headings generally being too large. Doubled under .slideBody so it
+     doesn't depend on winning a specificity tie against the global .h1/.lead
+     rules by source order alone. */
+  .slideBody .heroHeading {
+    font-size: 32px;
+    line-height: 1.08;
+  }
+
+  .slideBody .heroLead {
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

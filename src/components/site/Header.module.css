@@ -40,18 +40,20 @@
   color: var(--ink);
 }
 
-/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph.
-   A fixed pixel width instead of `aspect-ratio` deliberately — on a flex
-   item that is itself a flex container (`.brand`), nested inside another
-   flex row (`.bar`), WebKitGTK's `flex-basis: auto` resolution massively
-   over-computes `.brand`'s intrinsic width when `.mark` carries an
-   `aspect-ratio` instead of an explicit width (967px measured for a ~157px
-   box), which pushed the burger/CTA off past the right edge of the screen
-   and inflated `document.scrollWidth` to 1053px on a 390px phone — the
-   zoom-out-to-fit bug this codebase has chased before, just from a
-   different element each time. The two numbers below are the same
-   height:30px / aspect-ratio:876/400 math, just pre-computed so no CSS
-   feature with this nested-flex bug is in the chain. */
+/* Cropped logo mark: the glyph sits in roughly the top 876×400 of the full
+   876×717 lockup file (icon above the "Betaminds Africa" wordmark below
+   it), clipped down to just the glyph. A fixed pixel width instead of
+   `aspect-ratio` deliberately — on a flex item that is itself a flex
+   container (`.brand`), nested inside another flex row (`.bar`),
+   WebKitGTK's `flex-basis: auto` resolution massively over-computes
+   `.brand`'s intrinsic width when `.mark` carries an `aspect-ratio` instead
+   of an explicit width (967px measured for a ~157px box), which pushed the
+   burger/CTA off past the right edge of the screen and inflated
+   `document.scrollWidth` to 1053px on a 390px phone — the zoom-out-to-fit
+   bug this codebase has chased before, just from a different element each
+   time. The two numbers below are the same height:30px / aspect-ratio
+   876:400 math, just pre-computed so no CSS feature with this nested-flex
+   bug is in the chain. */
 .mark {
   height: 30px;
   width: 65.7px;
@@ -60,10 +62,18 @@
   display: block;
 }
 
+/* `object-position: top` is load-bearing, not the default. The file is
+   876×717 (full lockup, wordmark included), taller than the 876×400 the
+   width/height above assume — object-fit: cover alone centers the crop
+   vertically, which lands on the bottom of the icon fused with the top of
+   "Betaminds" rather than the icon itself. Anchoring to the top crops
+   exactly the glyph, the same region the old aspect-ratio + overflow:hidden
+   version showed before this became an explicit box. */
 .mark img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top;
   display: block;
 }
 

@@ -182,17 +182,20 @@ export function HeroSlider({
                   active slide would rewrite the outline every time a timer
                   fires — worse for a screen reader than a fixed one. */}
               {ownsHeading && i === 0 ? (
-                <h1 className="h1" style={{ marginBottom: 20 }}>
+                <h1 className={`h1 ${styles.heroHeading}`} style={{ marginBottom: 20 }}>
                   {slide.heading}
                 </h1>
               ) : (
-                <p className="h1" style={{ marginBottom: 20 }}>
+                <p className={`h1 ${styles.heroHeading}`} style={{ marginBottom: 20 }}>
                   {slide.heading}
                 </p>
               )}
 
               {slide.body ? (
-                <p className="lead measure-640" style={{ margin: "0 auto 34px" }}>
+                <p
+                  className={`lead measure-640 ${styles.heroLead}`}
+                  style={{ margin: "0 auto 34px" }}
+                >
                   {slide.body}
                 </p>
               ) : null}

@@ -37,10 +37,14 @@
   display: block;
 }
 
+/* object-position: top crops the glyph itself, not a center-weighted slice
+   that fuses the bottom of the icon with the top of the wordmark below it —
+   see the matching comment in Header.module.css. */
 .mark img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top;
   display: block;
 }
 
