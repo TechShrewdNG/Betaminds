@@ -378,6 +378,7 @@ export default async function HomePage() {
                         style={{ letterSpacing: "0.14em" }}
                       >
                         {plan.tag}
+                        {plan.duration ? ` · ${plan.duration}` : ""}
                       </div>
                     </div>
                     <div
