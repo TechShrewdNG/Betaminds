@@ -349,6 +349,37 @@ export const defaults = {
           instagram: "",
           linkedin: "",
         },
+        // Role left blank — to be filled in from /admin once titles are
+        // confirmed. Portrait is hotlinked from the shared Drive folder,
+        // same stopgap as above.
+        {
+          name: "Adebola Titilola",
+          role: "",
+          image: "https://lh3.googleusercontent.com/d/18cyrUZzvyCwwJFd_OU6NGBcLRZ3qsRUV=w700",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Okeke Munachimso Favour",
+          role: "",
+          image: "https://lh3.googleusercontent.com/d/1zhbNpJTtuBdbz45sYU-V_x9K1mWdOYD7=w700",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Olamide Odutolu",
+          role: "",
+          image: "https://lh3.googleusercontent.com/d/1b1gcczo6_oPfzfAoev8bIm_HVZyIlVIV=w700",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Oyewole Asifat",
+          role: "",
+          image: "https://lh3.googleusercontent.com/d/1XaEobJ-ET5wqX_0kZxCEVClcZ8lJEu6_=w700",
+          instagram: "",
+          linkedin: "",
+        },
       ],
     },
     pr: {
