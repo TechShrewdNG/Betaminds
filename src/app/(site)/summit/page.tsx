@@ -273,6 +273,55 @@ export default async function SummitPage() {
             ))}
           </div>
 
+          {/* The next edition — announced, not yet happened, so it gets a
+              card of its own rather than an empty gallery grid that would
+              read as broken. */}
+          {summit.editions.upcoming.edition ? (
+            <div
+              className="panel panel--accent mt-14"
+              style={{
+                padding: "32px 34px",
+                borderColor: "rgba(var(--accent-rgb),.3)",
+                background:
+                  "linear-gradient(145deg, rgba(var(--accent-rgb),.08), transparent 70%)",
+              }}
+            >
+              <div className="row-wrap" style={{ gap: 24, alignItems: "center" }}>
+                <div style={{ flex: "1 1 320px" }}>
+                  <div className="eyebrow eyebrow--tight" style={{ marginBottom: 12 }}>
+                    {summit.editions.upcoming.edition}
+                    {summit.editions.upcoming.date
+                      ? ` · ${summit.editions.upcoming.date}`
+                      : ""}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 600,
+                      fontSize: 22,
+                      letterSpacing: "-0.02em",
+                      marginBottom: 8,
+                      textWrap: "balance",
+                    }}
+                  >
+                    {summit.editions.upcoming.theme}
+                  </div>
+                  {summit.editions.upcoming.venue ? (
+                    <div style={{ fontSize: 14.5, color: "var(--ink-74)" }}>
+                      {summit.editions.upcoming.venue}
+                    </div>
+                  ) : null}
+                </div>
+                <a
+                  href="#interest"
+                  className="pill pill--accent pill--sm"
+                  style={{ flex: "none" }}
+                >
+                  {summit.editions.upcoming.ctaLabel}
+                </a>
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 

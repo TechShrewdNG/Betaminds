@@ -1058,8 +1058,8 @@ export const defaults = {
       heading: "Turning creativity into careers",
       accentTail: ".",
       lead: "A premier platform empowering Africa's next generation of creatives, innovators, entrepreneurs and young professionals. More than an annual event. A movement.",
-      nextLabel: "Second edition",
-      nextDetail: "17 July 2026 · Gracetone Studio, Yaba, Lagos",
+      nextLabel: "Third edition",
+      nextDetail: "1 May 2027 · The Business of Creativity",
       ctaPrimary: "Register interest",
       ctaSecondary: "View sponsorship proposal",
       /** Point this at the real deck (upload it, or paste an external URL). */
@@ -1120,20 +1120,62 @@ export const defaults = {
           theme: "Choose a passion-driven career in the creative industry",
           date: "1 May 2025",
           venue: "Cafeone, Ikate, Lekki, Lagos",
-          gallery: [7793169, 3869639, 5060987, 8730849, 5058927, 12179670].map(
-            (id) => IMG(id, 600),
-          ),
+          /**
+           * The real event photos, not stock — pulled from the two Google
+           * Drive folders shared for the first edition. Hotlinked via
+           * `lh3.googleusercontent.com/d/<fileId>`, which Google serves for
+           * a publicly-shared Drive file without needing a service-account
+           * key; it is not an official, guaranteed-stable API, so this is a
+           * stopgap the same way the Pexels placeholders were — the
+           * durable fix is re-uploading these same six (or more) through
+           * /admin → Summit → Editions, which puts them on this site's own
+           * Blob storage instead of depending on Drive's sharing settings
+           * never changing.
+           */
+          gallery: [
+            "10-G7-Epvgn9bpJ8P9RfGSCuI-YsMUVHF", // IMG_0334.jpg
+            "11-Wf2UrPR1-m3wrSwU2vdLDfUSibpDrC", // IMG_0410.jpg
+            "1wuibiyaGe-AKs6AY3cyDp100b0b4SxKu", // IMG_0458.jpg
+            "18EM1s617XH164NeCfzcbXLRvggGQuFyG", // IMG_0582.jpg
+            "1pt9keFx6R6SzTVnEFmHTG_F52gHfA9ta", // MO_00661.jpg
+            "1-PoPcqWs7_ERFRjwflQ-vpTYtG7lCQns", // MO_00702.jpg
+          ].map((id) => `https://lh3.googleusercontent.com/d/${id}=w800`),
         },
         {
           edition: "Second edition",
           theme: "Turning creativity into careers",
           date: "17 July 2026",
           venue: "Gracetone Studio, Yaba, Lagos",
+          /**
+           * Still placeholder. The real photos are the two Pixieset
+           * galleries (creative2career.pixieset.com and
+           * betaminds.pixieset.com), which sit behind both a Cloudflare
+           * bot challenge and their own password gate — not something to
+           * script past, and proofing-gallery photography is typically
+           * still the photographer's copyright even once a client has the
+           * viewing password, so it needs a human decision either way.
+           * Download the selects from Pixieset (the codes already shared)
+           * and upload them in /admin → Summit → Editions.
+           */
           gallery: [5466279, 9490631, 8761715, 7792860, 9301528, 5060991].map(
             (id) => IMG(id, 600),
           ),
         },
       ],
+      /**
+       * The next edition — announced, not yet happened, so no gallery.
+       * Rendered as its own card beneath the two above rather than folded
+       * into that grid, since a photo-gallery card with no photos would
+       * read as broken rather than upcoming.
+       */
+      upcoming: {
+        edition: "Third edition",
+        theme:
+          "The Business of Creativity: Monetization, Innovation, and Lasting Impact",
+        date: "1 May 2027",
+        venue: "",
+        ctaLabel: "Register interest →",
+      },
     },
     press: {
       heading: "From the press",

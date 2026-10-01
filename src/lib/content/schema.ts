@@ -1147,11 +1147,11 @@ export const schemas: DocSchema[] = [
       {
         key: "editions",
         title: "Editions",
-        note: "Galleries are square crops, three per row.",
+        note: "Galleries are square crops, three per row. The upcoming edition below is a separate card with no gallery — add it to the list above only once it has happened and there are photos to show.",
         fields: {
           items: {
             kind: "repeater",
-            label: "Editions",
+            label: "Past editions",
             itemLabel: "Edition",
             titleKey: "edition",
             fields: {
@@ -1160,6 +1160,21 @@ export const schemas: DocSchema[] = [
               date: { kind: "text", label: "Date" },
               venue: { kind: "text", label: "Venue" },
               gallery: { kind: "images", label: "Picture gallery" },
+            },
+          },
+          upcoming: {
+            kind: "group",
+            label: "Next edition",
+            fields: {
+              edition: { kind: "text", label: "Edition" },
+              theme: { kind: "textarea", label: "Theme", rows: 2 },
+              date: { kind: "text", label: "Date" },
+              venue: {
+                kind: "text",
+                label: "Venue",
+                help: "Leave empty until a venue is confirmed.",
+              },
+              ctaLabel: { kind: "text", label: "Button label" },
             },
           },
         },
