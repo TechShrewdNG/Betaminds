@@ -308,21 +308,23 @@ export const defaults = {
         {
           name: "Ileriayo S. Okunrotifa",
           role: "MD / Founder",
-          image: IMG(29387557, 700),
+          // Real headshot, hotlinked from the publicly shared Drive folder
+          // (see summit gallery comment above for the caveat on this pattern).
+          image: "https://lh3.googleusercontent.com/d/1Li4ExiSHTC1DThPNz0yVMSKkAgdh-aa0=w700",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Ryzer Uffort",
           role: "Brand Identity Designer / Betaminds Academy Facilitator",
-          image: IMG(5466267, 700),
+          image: "https://lh3.googleusercontent.com/d/1IZpoGjy08CoFsQYbPiXQW1XKZDqhklrg=w700",
           instagram: "",
           linkedin: "",
         },
         {
           name: "Adefolaju Michael",
           role: "DOP / Betaminds Academy Facilitator",
-          image: IMG(7792860, 700),
+          image: "https://lh3.googleusercontent.com/d/13OwpHudfMqmB8pzXQw7pnxQi9k6o3Rt0=w700",
           instagram: "",
           linkedin: "",
         },
