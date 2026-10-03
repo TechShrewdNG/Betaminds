@@ -849,6 +849,9 @@ export const defaults = {
               icon: "camera",
               duration: "10 weeks",
               mode: "Hybrid",
+              // Reuses the same placeholder as the homepage's academy grid,
+              // for visual continuity between the two.
+              image: IMG(3184291, 900),
               description:
                 "Camera fundamentals, lighting and composition through to a portfolio-ready editorial shoot.",
             },
@@ -857,6 +860,7 @@ export const defaults = {
               icon: "video",
               duration: "12 weeks",
               mode: "Physical",
+              image: IMG(2529159, 900),
               description:
                 "Camera operation, shot-listing and on-set craft for narrative, commercial and event film.",
             },
@@ -865,6 +869,7 @@ export const defaults = {
               icon: "pen",
               duration: "8 weeks",
               mode: "Hybrid",
+              image: IMG(3869639, 900),
               description:
                 "Planning, filming and editing short-form content for brands and personal platforms.",
             },
@@ -873,6 +878,9 @@ export const defaults = {
               icon: "film",
               duration: "12 weeks",
               mode: "Virtual",
+              // No placeholder picked for this one — pending a real or
+              // stock photo added through /admin. Falls back to the icon.
+              image: "",
               description:
                 "2D animation principles, storyboarding and production workflow from concept to render.",
             },
@@ -881,6 +889,7 @@ export const defaults = {
               icon: "sparkle",
               duration: "10 weeks",
               mode: "Hybrid",
+              image: "",
               description:
                 "Typography, compositing and animation for title sequences, ads and social content.",
             },
@@ -896,6 +905,7 @@ export const defaults = {
               icon: "megaphone",
               duration: "12 weeks",
               mode: "Hybrid",
+              image: IMG(7793169, 900),
               description:
                 "Strategy, paid media, social and analytics for running campaigns that convert.",
             },
@@ -904,6 +914,7 @@ export const defaults = {
               icon: "layout",
               duration: "12 weeks",
               mode: "Hybrid",
+              image: IMG(8761715, 900),
               description:
                 "Research, wireframing and prototyping toward a shippable, user-tested product design.",
             },
@@ -912,6 +923,7 @@ export const defaults = {
               icon: "code",
               duration: "16 weeks",
               mode: "Hybrid",
+              image: "",
               description:
                 "Front-end and back-end fundamentals through to a deployed, full-stack project.",
             },
@@ -920,6 +932,7 @@ export const defaults = {
               icon: "cpu",
               duration: "6 weeks",
               mode: "Virtual",
+              image: "",
               description:
                 "Practical AI tooling for research, writing, design and workflow automation.",
             },
@@ -928,6 +941,7 @@ export const defaults = {
               icon: "search",
               duration: "6 weeks",
               mode: "Virtual",
+              image: "",
               description:
                 "Technical, on-page and content SEO to grow organic search visibility.",
             },
@@ -944,6 +958,7 @@ export const defaults = {
           icon: "video",
           duration: "2 days",
           mode: "Physical",
+          image: IMG(2529159, 400),
           description:
             "Hook, pace and edit short-form video that holds attention, using footage you bring on day one.",
         },
@@ -952,6 +967,7 @@ export const defaults = {
           icon: "cpu",
           duration: "2 days",
           mode: "Virtual",
+          image: "",
           description:
             "Practical prompting for research, writing and design work, with tools you'll use the same week.",
         },
@@ -960,6 +976,7 @@ export const defaults = {
           icon: "layout",
           duration: "3 days",
           mode: "Hybrid",
+          image: "",
           description:
             "Leave with a finished, presentable portfolio built and critiqued over three focused days.",
         },

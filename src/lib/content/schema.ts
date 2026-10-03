@@ -934,6 +934,12 @@ export const schemas: DocSchema[] = [
                 titleKey: "name",
                 fields: {
                   name: { kind: "text", label: "Course" },
+                  image: {
+                    kind: "image",
+                    label: "Course photo",
+                    ratio: "16 / 9",
+                    help: "Shown on the course card and in its pop-up. Leave empty to show the icon alone.",
+                  },
                   icon: {
                     kind: "select",
                     label: "Icon",
@@ -971,6 +977,12 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "Course" },
+              image: {
+                kind: "image",
+                label: "Course photo",
+                ratio: "1 / 1",
+                help: "Shown as a small thumbnail on the card, in place of the icon, and in the pop-up. Leave empty to show the icon alone.",
+              },
               icon: {
                 kind: "select",
                 label: "Icon",

@@ -14,6 +14,7 @@ export type Course = {
   mode: string;
   description?: string;
   icon?: string;
+  image?: string;
 };
 
 /** Courses are CMS content, so an unknown or empty icon falls back rather
@@ -160,16 +161,29 @@ export function SchoolTabs({
               setOpenCourse(course);
             }}
           >
-            <span className={styles.courseIcon}>
-              <Icon name={courseIcon(course)} size={22} />
+            {course.image ? (
+              <span className={styles.courseCardMedia}>
+                {/* Not lazy — this grid is a horizontal overflow-x: auto
+                    scroller below 640px (.carousel-mobile), where native
+                    lazy-loading's on-screen heuristic isn't built around a
+                    nested horizontal scroll container. See the matching
+                    comment on the team grid in home/page.tsx. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={course.image} alt="" className={styles.courseCardImg} />
+              </span>
+            ) : null}
+            <span className={styles.courseCardBody}>
+              <span className={styles.courseIcon}>
+                <Icon name={courseIcon(course)} size={22} />
+              </span>
+              <div className={styles.courseCardName}>{course.name}</div>
+              <div className="row-wrap" style={{ gap: 6 }}>
+                <Chip>{course.duration}</Chip>
+                <Chip>{course.mode}</Chip>
+                <Chip accent>{certificateLabel}</Chip>
+              </div>
+              <span className={styles.courseCardCta}>{enrolLabel} →</span>
             </span>
-            <div className={styles.courseCardName}>{course.name}</div>
-            <div className="row-wrap" style={{ gap: 6 }}>
-              <Chip>{course.duration}</Chip>
-              <Chip>{course.mode}</Chip>
-              <Chip accent>{certificateLabel}</Chip>
-            </div>
-            <span className={styles.courseCardCta}>{enrolLabel} →</span>
           </button>
         ))}
       </div>
@@ -190,7 +204,17 @@ export function SchoolTabs({
                 }}
               >
                 <span className={styles.crashIcon}>
-                  <Icon name={courseIcon(item)} size={19} />
+                  {item.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.image}
+                      alt=""
+                      className={styles.crashIconImg}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <Icon name={courseIcon(item)} size={19} />
+                  )}
                 </span>
                 <span className={styles.crashMain}>
                   <span className={styles.crashName}>{item.name}</span>
@@ -222,6 +246,12 @@ export function SchoolTabs({
           }}
         >
           <div className={styles.modal}>
+            {openCourse.image ? (
+              <div className={styles.modalMedia}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={openCourse.image} alt="" className={styles.modalMediaImg} />
+              </div>
+            ) : null}
             <div className={styles.modalHead}>
               <span className={styles.modalIcon}>
                 <Icon name={courseIcon(openCourse)} size={22} />

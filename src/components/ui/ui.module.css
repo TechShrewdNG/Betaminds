@@ -965,18 +965,21 @@
 
 /* --- Course cards + detail modal ------------------------------------------ */
 
+/* Unpadded now — the photo is full-bleed to the card's top corners, and
+   .courseCardBody carries the padding that used to live here directly. A
+   course with no photo just skips .courseCardMedia and the body renders
+   alone, identical to how the card looked before photos existed. */
 .courseCard {
   border: 1px solid var(--line-strong);
   border-radius: 16px;
   background: var(--surface);
-  padding: 26px 26px 24px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
   text-align: left;
   cursor: pointer;
   width: 100%;
+  overflow: hidden;
   transition:
     border-color 160ms ease,
     background 160ms ease;
@@ -985,6 +988,44 @@
 .courseCard:hover {
   border-color: var(--accent-line-strong);
   background: linear-gradient(150deg, var(--surface), var(--surface-alt));
+}
+
+.courseCardMedia {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  flex: none;
+}
+
+.courseCardImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.courseCard:hover .courseCardImg {
+  transform: scale(1.045);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .courseCardImg {
+    transition: none;
+  }
+  .courseCard:hover .courseCardImg {
+    transform: none;
+  }
+}
+
+.courseCardBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 26px 26px 24px;
+  width: 100%;
 }
 
 /* Accent, like the rest of the page. Five saturated blue tiles sat on the ink
@@ -1064,6 +1105,24 @@
   border-radius: var(--r-panel);
   overflow: hidden;
   animation: bmModalPanel 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Kept short on purpose — .modalBody is what's meant to scroll, and a tall
+   banner here would eat into that on a short phone screen before the
+   visitor has read a word of the description. */
+.modalMedia {
+  display: block;
+  width: 100%;
+  height: clamp(110px, 18vw, 170px);
+  flex: none;
+  overflow: hidden;
+}
+
+.modalMediaImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Title and close stay put while the form scrolls under them. */
@@ -1575,6 +1634,14 @@
   border-radius: 11px;
   background: var(--accent-tint);
   color: var(--accent);
+  overflow: hidden;
+}
+
+.crashIconImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .crashMain {
