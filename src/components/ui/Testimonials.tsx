@@ -30,8 +30,14 @@ export function Testimonials({
         {label}
       </div>
 
+      {/* Each piece is keyed on index so it remounts and crossfades in
+          separately, instead of the quote and byline just snapping to the
+          next testimonial. The prev/next buttons stay unkeyed so clicking
+          one repeatedly doesn't remount it out from under the visitor's
+          focus. */}
       <blockquote
-        className="quote"
+        key={index}
+        className={`quote ${styles.testiFade}`}
         style={{ margin: "0 0 30px" }}
         aria-live="polite"
       >
@@ -39,7 +45,7 @@ export function Testimonials({
       </blockquote>
 
       <div className={styles.testiFoot}>
-        <div className={styles.testiWho}>
+        <div key={index} className={`${styles.testiWho} ${styles.testiFade}`}>
           {current.image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img

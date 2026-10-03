@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { schemas } from "@/lib/content/schema";
 import { countsByStatus } from "@/lib/submissions";
 import { AdminNavLink } from "@/components/admin/AdminNavLink";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { LogoutButton } from "@/components/admin/LogoutButton";
 
 export const metadata: Metadata = {
@@ -32,68 +33,74 @@ export default async function AdminLayout({
     // A missing table shouldn't break navigation; the badge just stays at zero.
   }
 
+  const brand = (
+    <Link href="/admin" className="a-brand">
+      <span className="a-brand-mark">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/BETAMINDS-AFRICA.png" alt="" />
+      </span>
+      <span>
+        <span className="a-brand-name">BETAMINDS</span>
+        <span className="a-brand-sub">Admin</span>
+      </span>
+    </Link>
+  );
+
+  const sidebar = (
+    <>
+      {brand}
+
+      <nav aria-label="Admin">
+        <div className="a-navgroup">
+          <p className="a-navlabel">Overview</p>
+          <AdminNavLink href="/admin" exact>
+            Dashboard
+          </AdminNavLink>
+          <AdminNavLink href="/admin/submissions">
+            Submissions
+            {newCount > 0 ? (
+              <span className="a-navcount" data-hot="true">
+                {newCount}
+              </span>
+            ) : null}
+          </AdminNavLink>
+          <AdminNavLink href="/admin/media">Media library</AdminNavLink>
+        </div>
+
+        <div className="a-navgroup">
+          <p className="a-navlabel">Content</p>
+          {schemas.map((schema) => (
+            <AdminNavLink key={schema.id} href={`/admin/content/${schema.id}`}>
+              {schema.title}
+            </AdminNavLink>
+          ))}
+        </div>
+
+        <div className="a-navgroup">
+          <p className="a-navlabel">Account</p>
+          <AdminNavLink href="/admin/account">Password</AdminNavLink>
+          <AdminNavLink href="/">
+            View site ↗
+          </AdminNavLink>
+        </div>
+      </nav>
+
+      <div className="a-side-foot">
+        <div className="a-who">
+          Signed in as
+          <br />
+          <strong>{session.email}</strong>
+        </div>
+        <LogoutButton />
+      </div>
+    </>
+  );
+
   return (
     <div className="admin">
-      <div className="a-shell">
-        <aside className="a-side">
-          <Link href="/admin" className="a-brand">
-            <span className="a-brand-mark">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/BETAMINDS-AFRICA.png" alt="" />
-            </span>
-            <span>
-              <span className="a-brand-name">BETAMINDS</span>
-              <span className="a-brand-sub">Admin</span>
-            </span>
-          </Link>
-
-          <nav>
-            <div className="a-navgroup">
-              <p className="a-navlabel">Overview</p>
-              <AdminNavLink href="/admin" exact>
-                Dashboard
-              </AdminNavLink>
-              <AdminNavLink href="/admin/submissions">
-                Submissions
-                {newCount > 0 ? (
-                  <span className="a-navcount" data-hot="true">
-                    {newCount}
-                  </span>
-                ) : null}
-              </AdminNavLink>
-              <AdminNavLink href="/admin/media">Media library</AdminNavLink>
-            </div>
-
-            <div className="a-navgroup">
-              <p className="a-navlabel">Content</p>
-              {schemas.map((schema) => (
-                <AdminNavLink key={schema.id} href={`/admin/content/${schema.id}`}>
-                  {schema.title}
-                </AdminNavLink>
-              ))}
-            </div>
-
-            <div className="a-navgroup">
-              <p className="a-navlabel">Account</p>
-              <AdminNavLink href="/admin/account">Password</AdminNavLink>
-              <AdminNavLink href="/">
-                View site ↗
-              </AdminNavLink>
-            </div>
-          </nav>
-
-          <div className="a-side-foot">
-            <div className="a-who">
-              Signed in as
-              <br />
-              <strong>{session.email}</strong>
-            </div>
-            <LogoutButton />
-          </div>
-        </aside>
-
-        <main className="a-main">{children}</main>
-      </div>
+      <AdminShell brand={brand} sidebar={sidebar}>
+        {children}
+      </AdminShell>
     </div>
   );
 }

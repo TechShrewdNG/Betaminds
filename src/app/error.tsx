@@ -44,7 +44,7 @@ export default function Error({
             <button type="button" onClick={reset} className="pill pill--accent">
               Try again
             </button>
-            <Link href="/" className="pill pill--outline">
+            <Link href="/home" className="pill pill--outline">
               Back to the homepage
             </Link>
           </div>

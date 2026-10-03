@@ -197,6 +197,20 @@
   gap: 14px;
 }
 
+/* Grid items default to min-width:auto, which stops them shrinking below their
+   content — that's what makes an `overflow-x: auto` table inside one push the
+   whole page sideways instead of scrolling. */
+.a-grid > * {
+  min-width: 0;
+}
+
+/* Wide-then-narrow split, e.g. the dashboard's table beside its side panel.
+   A class rather than an inline style so the breakpoint below can override it;
+   an inline grid-template-columns can't be beaten by a media query. */
+.a-grid-split {
+  grid-template-columns: 1.6fr 1fr;
+}
+
 .a-grid-3 {
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
@@ -767,23 +781,124 @@
 
 /* --- Responsive --------------------------------------------------------- */
 
+/* --- Mobile top bar + drawer --------------------------------------------- */
+
+/* Both are desktop-hidden: above 900px the sidebar is simply always there. */
+.a-topbar,
+.a-scrim {
+  display: none;
+}
+
+.a-burger {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--a-line);
+  border-radius: 9px;
+  color: var(--a-ink);
+}
+
+.a-burger-box {
+  width: 17px;
+  display: grid;
+  gap: 4px;
+}
+
+.a-burger-box span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+/* The three bars fold into a cross while the drawer is open. */
+[data-nav-open="true"] .a-burger-box span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+[data-nav-open="true"] .a-burger-box span:nth-child(2) {
+  opacity: 0;
+}
+
+[data-nav-open="true"] .a-burger-box span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
 @media (max-width: 900px) {
   .a-shell {
     grid-template-columns: 1fr;
   }
 
-  .a-side {
-    position: static;
-    height: auto;
-    border-right: 0;
+  .a-topbar {
+    position: sticky;
+    top: 0;
+    /* Above the drawer and its scrim, so the toggle stays visible and
+       tappable while the menu is open — it doubles as the close button. */
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--a-surface);
     border-bottom: 1px solid var(--a-line);
+  }
+
+  /* The sidebar's own copy of the brand would be a second one under the bar. */
+  .a-side > .a-brand {
+    display: none;
+  }
+
+  /* Off-canvas until the hamburger asks for it. `visibility` keeps the links
+     out of the tab order while it's shut, which `transform` alone doesn't do. */
+  .a-side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    width: min(290px, 84vw);
+    height: 100dvh;
+    /* Clears the top bar, which sits above this. */
+    padding-top: 74px;
+    border-right: 1px solid var(--a-line);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 240ms ease, visibility 0s linear 240ms;
+  }
+
+  [data-nav-open="true"] .a-side {
+    transform: none;
+    visibility: visible;
+    transition: transform 240ms ease, visibility 0s;
+  }
+
+  [data-nav-open="true"] .a-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(23, 23, 27, 0.42);
   }
 
   .a-main {
     padding: 22px 18px 60px;
   }
 
-  .a-pair {
+  .a-pair,
+  .a-grid-split {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a-side,
+  [data-nav-open="true"] .a-side,
+  .a-burger-box span {
+    transition: none;
   }
 }

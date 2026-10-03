@@ -11,7 +11,8 @@ import {
   verifyCredentials,
 } from "@/lib/auth";
 import { saveDoc, revalidateContent, DOC_IDS, type DocId } from "@/lib/content";
-import { put, remove, UploadError } from "@/lib/storage";
+import { remove } from "@/lib/storage";
+import { ACCEPTED_TYPES, maxBytesFor } from "@/lib/media";
 import { STATUSES } from "@/lib/submissions";
 
 export type ActionState = { tone: "ok" | "error"; message: string } | null;
@@ -132,24 +133,58 @@ export type UploadResult =
     }
   | { ok: false; message: string };
 
-export async function uploadImage(formData: FormData): Promise<UploadResult> {
+/**
+ * Records an upload the browser has already sent straight to Vercel Blob.
+ *
+ * The bytes never reach us — see src/app/api/media/upload/route.ts for why —
+ * so this only writes the row. Everything it's told is re-checked: the token
+ * endpoint gates who may upload, but nothing stops a signed-in admin posting a
+ * different URL here afterwards.
+ */
+export async function registerUpload(input: {
+  url: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  width: number | null;
+  height: number | null;
+}): Promise<UploadResult> {
   await requireSession();
-  const file = formData.get("file");
 
-  if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, message: "Choose an image first." };
+  if (!ACCEPTED_TYPES.includes(input.mimeType)) {
+    return { ok: false, message: "That file type isn't supported." };
+  }
+  if (input.size > maxBytesFor(input.mimeType)) {
+    return { ok: false, message: "That file is too large." };
+  }
+  // Only ever Blob, so this can't be pointed at somewhere arbitrary. Matched
+  // on the host suffix rather than a full pattern: the subdomain differs
+  // between public and private stores, and hard-coding ".public." here
+  // rejected every upload from a private one.
+  let host: string;
+  try {
+    const parsed = new URL(input.url);
+    if (parsed.protocol !== "https:") throw new Error("not https");
+    host = parsed.hostname.toLowerCase();
+  } catch {
+    return { ok: false, message: "That upload URL isn't a valid https URL." };
+  }
+  if (!host.endsWith(".blob.vercel-storage.com")) {
+    return {
+      ok: false,
+      message: `That upload URL isn't recognised (host: ${host}).`,
+    };
   }
 
   try {
-    const stored = await put(file);
     const asset = await prisma.mediaAsset.create({
       data: {
-        url: stored.url,
-        filename: stored.filename,
-        mimeType: stored.mimeType,
-        size: stored.size,
-        width: stored.width,
-        height: stored.height,
+        url: input.url,
+        filename: input.filename,
+        mimeType: input.mimeType,
+        size: input.size,
+        width: input.width,
+        height: input.height,
       },
     });
     revalidatePath("/admin/media");
@@ -165,10 +200,7 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
       },
     };
   } catch (error) {
-    if (error instanceof UploadError) {
-      return { ok: false, message: error.message };
-    }
-    console.error("[media] upload failed", error);
+    console.error("[media] could not record upload", error);
     return { ok: false, message: "Upload failed. Please try again." };
   }
 }

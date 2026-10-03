@@ -93,7 +93,7 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <div className="a-grid" style={{ gridTemplateColumns: "1.6fr 1fr" }}>
+      <div className="a-grid a-grid-split">
         <div>
           <h2 className="a-title" style={{ fontSize: 17, marginBottom: 12 }}>
             Latest submissions

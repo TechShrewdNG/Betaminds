@@ -22,6 +22,9 @@ works for local development; point `DATABASE_URL` at it.
 Sign in to the CMS at `/admin/login` with the `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 from your `.env`, then change the password under **Password**.
 
+The CMS is usable on a phone: below 900px the sidebar becomes a drawer behind
+a hamburger in a top bar, and the editor's grids collapse to one column.
+
 ```bash
 npm run build && npm start   # production
 npm run typecheck            # tsc --noEmit
@@ -32,20 +35,22 @@ npm run icons                # regenerate the favicon + OG card from the logo
 
 | Route                | Page                                       |
 | -------------------- | ------------------------------------------ |
-| `/`                  | Homepage                                   |
+| `/`                  | Splash screen — logo + full-screen slider  |
+| `/home`              | Homepage                                   |
 | `/digital-ecosystem` | Digital Commerce & Marketplace Solutions   |
 | `/media-services`    | Media Services                             |
 | `/academy`           | Betaminds Academy                          |
 | `/summit`            | Creative Empowerment Summit                |
-| `/portfolio`         | Case-study index                           |
-| `/portfolio/[slug]`  | One case study, pre-rendered per project   |
+| `/projects`          | Case-study index                           |
+| `/projects/[slug]`   | One case study, pre-rendered per project   |
+| `/blog`              | Blog index                                 |
+| `/blog/[slug]`       | One post, pre-rendered per published post  |
 | `/lets-work`         | Contact                                    |
 | `/admin`             | CMS (gated by `src/middleware.ts`)         |
-| `/uploads/*`         | Serves CMS-uploaded images                 |
 
 The prototype faked its six pages with client-side page state. Here each one is a
 real route, and the prototype's preview toolbar and `device` switcher are
-deliberately not shipped — real CSS media queries do that job. `/portfolio` is an
+deliberately not shipped — real CSS media queries do that job. `/projects` is an
 addition: the brief asked for a "View project" CTA, which needs somewhere to go.
 
 ## How content works
@@ -71,8 +76,8 @@ src/lib/content/
   document id, same section key, same field key.
 
 Field kinds available to `schema.ts`: `text`, `textarea`, `number`, `boolean`,
-`select`, `image`, `images` (gallery), `list` (strings), `group`, and `repeater`
-(which nests, so a footer column can hold its own list of links).
+`select`, `image`, `video`, `images` (gallery), `list` (strings), `group`, and
+`repeater` (which nests, so a footer column can hold its own list of links).
 
 One gotcha: a section key must not match a field key inside it. The editor reads
 `doc[sectionKey][fieldKey]`, so a section called `items` holding a field called
@@ -138,18 +143,65 @@ lands in spam.
 Deep links prefill: `/lets-work?need=Brand%20identity` (the media cards and
 homepage tabs use this) and `/academy?course=UI%2FUX%20Design`.
 
-## Portfolio
+## Projects
 
-Projects live in the **Portfolio** document. Each entry has a slug, a thumbnail
+Projects live in the **Projects** document. Each entry has a slug, a thumbnail
 and hero, challenge/approach/outcome narrative, an optional results row, gallery
 and client quote, plus a **Published** tick so a case study can be written before
-it goes live. `/portfolio/[slug]` is pre-rendered per published project, and the
-homepage grid, the portfolio index and the sitemap all read the same list.
+it goes live. `/projects/[slug]` is pre-rendered per published project, and the
+homepage grid, the projects index and the sitemap all read the same list.
 
 The six seeded projects carry the prototype's names and placeholder photography
 with **structural** narrative copy. `results` is deliberately empty: inventing
 performance figures for a client's case study would put fabricated claims on a
 live marketing site. Fill those in with numbers the client will stand behind.
+
+## Blog
+
+Posts live in the **Blog** document, the same repeater-in-a-document pattern as
+Projects — add, edit, reorder or delete a row in `/admin/content/blog` and the
+site updates with no redeploy. Each entry has a title, slug, author, date,
+cover image, excerpt and body, plus a **Published** tick so a post can be
+drafted before it goes live. New rows start unpublished until ticked, same as
+a new Project row. `/blog/[slug]` is pre-rendered per published post, and the
+blog index and the sitemap read the same list.
+
+## Splash screen
+
+`/` is a splash screen: the logo top right, a full-screen slider, and nothing
+else — no header, nav or footer. It lives at `src/app/page.tsx`, deliberately
+outside the `(site)` route group so it inherits none of that chrome. The
+homepage proper is `/home`.
+
+It's edited under **Home → Splash screen**. Each slide carries its own
+background video, background picture, headline, body and up to two buttons; the
+section also holds the autoplay toggle and seconds-per-slide.
+
+Every way out of the splash is a link on it: the logo goes to `/home`, and each
+slide's buttons go wherever you point them. There's no separate "skip" control,
+because a slide with no buttons would otherwise be a dead end — the logo always
+is one.
+
+**Switching the splash off** (Home → Splash screen → Show the splash screen)
+makes `/` redirect to `/home`, so visitors go straight to the site.
+
+- **Video is optional per slide.** A slide with no video falls back to its
+  picture, so always set a picture — it's also the poster while the video
+  loads, and what visitors on data-saver or reduced-motion settings get.
+- Autoplay never runs for visitors who ask their device to reduce motion, and
+  the background video doesn't play for them either — a looping background is
+  exactly the movement that setting is asking us to stop.
+- **Background tint (0-100)** controls how far the picture or video is faded
+  behind the words. The tint is weighted to the bottom, where the copy sits, so
+  the top of the frame stays close to clear. Lower it to show more of the
+  footage; raise it if a headline gets hard to read against something busy.
+- Only the first slide's headline is the page's `<h1>`; the rest are styled
+  paragraphs, so the homepage keeps a single, stable main heading.
+
+On the splash the slider takes the whole viewport. The same component is
+sized to the viewport *minus* the sticky header when used inside the site, via
+the `--header-h` token in `globals.css` — if you change the header's height,
+change that token too or the controls drift off the bottom of the screen.
 
 ## Images
 
@@ -162,6 +214,28 @@ the app knows storage is Blob rather than anything else.
 Needs a Blob store connected to the project: dashboard → project → **Storage**
 → **Create Database** → **Blob** — it injects `BLOB_READ_WRITE_TOKEN` the same
 way the Postgres integration injects `DATABASE_URL`. Redeploy after adding it.
+
+The library takes video as well as stills (MP4, WebM, OGG, MOV, up to 64 MB),
+for the splash screen's backgrounds. Anything longer than a few seconds of
+compressed footage belongs on a CDN with its URL pasted in instead.
+
+**Uploads go browser → Blob directly**, not through a server action. A Vercel
+serverless function caps its request body at ~4.5 MB and `bodySizeLimit` can't
+raise it, so no background video could ever have fitted through one.
+`src/app/api/media/upload/route.ts` issues a short-lived, session-gated
+presigned URL scoped to the file's pathname, type and size; the browser uploads
+against it and then calls `registerUpload` to write the row. Video uses
+multipart so a dropped connection retries a part rather than the whole file.
+Image dimensions are measured in the browser, since the bytes no longer reach
+us.
+
+It uses the **presigned** flow rather than Blob's client-token one on purpose.
+Our store authenticates with OIDC — connecting it injects `BLOB_STORE_ID` and
+`BLOB_WEBHOOK_PUBLIC_KEY`, not a read-write token — and the SDK will only mint
+client tokens from a read-write token. `issueSignedToken` resolves credentials
+the general way, so it works with the deployment's OIDC identity and there's no
+long-lived secret to store. Uploads therefore only work where an OIDC identity
+exists: on Vercel, not against a local `next start`.
 
 Every photograph currently on the site is a Pexels placeholder from the handoff.
 Replace them by uploading the real assets and repointing each field, keeping the
@@ -250,17 +324,25 @@ Known gaps, in the order worth closing:
 3. **One admin account, no reset.** The account is seeded from `.env`; there is
    no UI to add a colleague and no password recovery.
 4. **No draft/preview for page content.** Saving is immediately live, with no
-   version history to roll back to. (Portfolio projects do have a Published
-   tick.)
-5. **Blog and Talent Hub.** `structure.txt` lists both in the Academy nav; the
-   prototype dropped them. Everything needed to add them exists.
+   version history to roll back to. (Projects do have a Published tick.)
+5. **Talent Hub.** `structure.txt` lists it in the Academy nav; the prototype
+   dropped it. Everything needed to add it exists.
 
-## A note on testing
+## Testing
 
-There is no test suite in the repo. Changes were verified by driving a real
-browser (Playwright) against a production build: the six pages and their
-interactions, all five forms including validation round trips, the CMS editing a
-page and a form definition and seeing it reach the live site, image upload,
-notification email against a local SMTP sink, the inbox and CSV export, the
-portfolio publish/unpublish flow, and mobile layout at 390px. Worth turning into
-committed tests before the next round of changes.
+Playwright, driving a real browser against a production build (`next build &&
+next start`) rather than `next dev` — see `tests/README.md` for what's covered
+and what isn't. Run it with:
+
+```bash
+npm run setup   # once: schema + seeded admin, against DATABASE_URL
+npm test
+```
+
+CI runs the same suite on every push and pull request
+(`.github/workflows/test.yml`), against a Postgres service container.
+
+The suite covers the public routes, the project brief form's validation round
+trip, and admin auth. Plenty is still verified only by hand — the CMS content
+editor, media uploads, the three CMS-defined forms, the inbox and CSV export,
+and notification email. Those are the obvious next additions.

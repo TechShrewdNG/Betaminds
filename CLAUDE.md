@@ -11,8 +11,9 @@ tokens, per-screen layout, interactions, state model, assets.
 - The `.dc.html` file is a **reference prototype on a proprietary runtime**.
   Do not try to run, port, or copy its template syntax. Read it for values.
 - Each of the six pages is a **separate route** in production:
-  `/`, `/digital-ecosystem`, `/media-services`, `/academy`, `/summit`,
-  `/lets-work`. The prototype fakes them with client-side page state.
+  `/home`, `/digital-ecosystem`, `/media-services`, `/academy`, `/summit`,
+  `/lets-work`. The prototype fakes them with client-side page state. `/` is a
+  splash screen added later — logo plus a full-screen slider, no site chrome.
 - The prototype's top toolbar and `device` state are preview controls.
   Do not ship them — use real CSS media queries.
 - **No shadows anywhere.** Depth comes from hairline borders and surface tints.
@@ -25,8 +26,8 @@ tokens, per-screen layout, interactions, state model, assets.
 - Honour `prefers-reduced-motion`: kill the marquee and rise animations.
 
 ## Content that likely wants a CMS
-Academy courses, Summit editions/galleries, portfolio entries. Everything else
-can stay static.
+Academy courses, Summit editions/galleries, project entries, blog posts.
+Everything else can stay static.
 
 ## Where the build is now
 The site is built: Next.js App Router + TypeScript, vanilla CSS driven by the

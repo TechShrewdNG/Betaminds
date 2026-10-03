@@ -9,9 +9,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.pexels.com" },
     ],
   },
-  experimental: {
-    // The media library posts files through a server action.
-    serverActions: { bodySizeLimit: "12mb" },
+  async redirects() {
+    return [
+      { source: "/portfolio", destination: "/projects", permanent: true },
+      {
+        source: "/portfolio/:slug*",
+        destination: "/projects/:slug*",
+        permanent: true,
+      },
+    ];
   },
 };
 

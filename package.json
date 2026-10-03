@@ -12,7 +12,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "setup": "prisma db push && tsx prisma/seed.ts",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "test": "playwright test"
   },
   "dependencies": {
     "@prisma/client": "6.3.1",
@@ -27,6 +28,7 @@
     "zod": "3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/bcryptjs": "2.4.6",
     "@types/node": "22.10.7",
     "@types/nodemailer": "^6.4.17",

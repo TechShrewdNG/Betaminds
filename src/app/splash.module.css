@@ -1,0 +1,77 @@
+/* The splash screen at `/`: logo, slider, nothing else. */
+
+.splash {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--surface-deep);
+}
+
+/* Top right, over the slider — the page's only chrome, and the way in. */
+.brand {
+  position: absolute;
+  top: 26px;
+  right: var(--pad-x);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+
+.brand:hover {
+  color: var(--ink);
+}
+
+/* Cropped logo mark: the source lockup is 876×400, clipped to the glyph.
+   A fixed pixel width instead of `aspect-ratio` — see the matching comment
+   in Header.module.css for why: this is the same `.mark` pattern, and a
+   WebKitGTK nested-flex intrinsic-sizing bug makes `aspect-ratio` here risky
+   even though `.brand` is `position: absolute` on this page, not currently
+   triggering it. */
+.mark {
+  height: 30px;
+  width: 65.7px;
+  overflow: hidden;
+  flex: none;
+  display: block;
+}
+
+/* object-position: top crops the glyph itself, not a center-weighted slice
+   that fuses the bottom of the icon with the top of the wordmark below it —
+   see the matching comment in Header.module.css. */
+.mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.lockup {
+  line-height: 1.05;
+  display: block;
+}
+
+.wordmark {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+}
+
+.wordmarkSub {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .brand {
+    top: 18px;
+  }
+}
