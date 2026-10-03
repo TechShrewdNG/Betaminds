@@ -123,8 +123,46 @@ const faqSection = (note: string): SectionSchema => ({
   },
 });
 
+/**
+ * A recommended-pixel-size note, appended after any field-specific help.
+ * Minimums, not exact targets — these are fluid layouts, and a bigger photo
+ * downscales fine while a smaller one gets soft or blurry once stretched.
+ */
+const px = (w: number, h: number, extra?: string) =>
+  [`At least ${w}×${h}px.`, extra].filter(Boolean).join(" ");
+
+/** Full-bleed background: hero banners and the splash/home slider. */
+const PX_HERO = px(1920, 1080);
+/** Half-width content column (the .col2 split, ~630px at desktop). */
+const PX_HALF_16_9 = px(1280, 720);
+/** Grid tile at .col3 width (~430px) in a 16:9 crop. */
+const PX_TILE_16_9 = px(1200, 675);
+/** Portrait tile at .col3-.col5 width in a 3:4 crop — team, press, covers. */
+const PX_PORTRAIT_3_4 = px(900, 1200);
+/** Small circular avatar. */
+const PX_AVATAR = px(400, 400);
+/** Tiny icon-replacement thumbnail (crash-course badge). */
+const PX_THUMB = px(300, 300);
+/** Half-width content column in a 16:10 crop (the homepage "about" photo). */
+const PX_CONTENT_16_10 = px(1280, 800);
+/** Half-width content column in a 4:5 crop (the Academy hero photo). */
+const PX_CONTENT_4_5 = px(1000, 1250);
+/** Grid tile at .col3 width in a 4:3 crop (project thumbnails). */
+const PX_TILE_4_3 = px(900, 675);
+/** Grid tile at .col3 width, square (a gallery of same-size photos). */
+const PX_TILE_SQUARE = px(900, 900);
+/** Wide landscape showcase photo, no fixed crop. */
+const PX_BILLBOARD = px(1600, 900);
+/** Logos: no fixed ratio — the mark is scaled to fit inside its box. */
+const PX_LOGO = "Transparent PNG or SVG, logo close-cropped with no padding.";
+
 const heroImage = (ratio: string, help?: string): Fields => ({
-  image: { kind: "image", label: "Background photograph", ratio, help },
+  image: {
+    kind: "image",
+    label: "Background photograph",
+    ratio,
+    help: [help, PX_HERO].filter(Boolean).join(" "),
+  },
   imageAlt: {
     kind: "text",
     label: "Image description",
@@ -149,7 +187,7 @@ export const schemas: DocSchema[] = [
           logo: {
             kind: "image",
             label: "Logo",
-            help: "876×400 source. The header crops it to a mark; the footer uses the full lockup. Supply an SVG when you have one.",
+            help: `876×717 source, full lockup (icon above wordmark). The header crops it to just the icon; the footer uses the full lockup. ${PX_LOGO}`,
           },
           wordmark: { kind: "text", label: "Wordmark" },
           wordmarkSub: { kind: "text", label: "Wordmark second line" },
@@ -307,13 +345,13 @@ export const schemas: DocSchema[] = [
               video: {
                 kind: "video",
                 label: "Background video",
-                help: "Plays muted and looping, cropped to cover. Leave empty to use the picture instead. Keep it short and compressed — visitors download it before they see anything.",
+                help: `Plays muted and looping, cropped to cover. Leave empty to use the picture instead. Keep it short and compressed — visitors download it before they see anything. ${PX_HERO} MP4, ideally under 8MB.`,
               },
               image: {
                 kind: "image",
                 label: "Background picture",
                 ratio: "16 / 9",
-                help: "Shown while the video loads, when there's no video, and on devices that won't autoplay it. Always set one.",
+                help: `Shown while the video loads, when there's no video, and on devices that won't autoplay it. Always set one. ${PX_HERO}`,
               },
               imageAlt: { kind: "text", label: "Picture alt text" },
               primaryLabel: { kind: "text", label: "Button label" },
@@ -349,7 +387,7 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "Client name" },
-              logo: { kind: "image", label: "Logo" },
+              logo: { kind: "image", label: "Logo", help: PX_LOGO },
             },
           },
         },
@@ -364,7 +402,12 @@ export const schemas: DocSchema[] = [
           body2: { kind: "textarea", label: "Second paragraph", rows: 2 },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
-          image: { kind: "image", label: "Photograph", ratio: "16 / 10" },
+          image: {
+            kind: "image",
+            label: "Photograph",
+            ratio: "16 / 10",
+            help: PX_CONTENT_16_10,
+          },
           imageAlt: { kind: "text", label: "Image description" },
           pillars: {
             kind: "repeater",
@@ -395,7 +438,12 @@ export const schemas: DocSchema[] = [
             fields: {
               name: { kind: "text", label: "Name" },
               role: { kind: "text", label: "Role" },
-              image: { kind: "image", label: "Portrait", ratio: "3 / 4" },
+              image: {
+                kind: "image",
+                label: "Portrait",
+                ratio: "3 / 4",
+                help: PX_PORTRAIT_3_4,
+              },
               instagram: { kind: "text", label: "Instagram URL" },
               linkedin: { kind: "text", label: "LinkedIn URL" },
             },
@@ -482,7 +530,12 @@ export const schemas: DocSchema[] = [
               quote: { kind: "textarea", label: "Quote", rows: 3 },
               name: { kind: "text", label: "Name" },
               company: { kind: "text", label: "Company" },
-              image: { kind: "image", label: "Avatar", ratio: "1 / 1" },
+              image: {
+                kind: "image",
+                label: "Avatar",
+                ratio: "1 / 1",
+                help: PX_AVATAR,
+              },
             },
           },
         },
@@ -507,7 +560,12 @@ export const schemas: DocSchema[] = [
                 label: "Course name",
                 help: "A real course from the Academy page, e.g. \"Photography\".",
               },
-              image: { kind: "image", label: "Photograph", ratio: "3 / 4" },
+              image: {
+                kind: "image",
+                label: "Photograph",
+                ratio: "3 / 4",
+                help: PX_PORTRAIT_3_4,
+              },
             },
           },
         },
@@ -524,8 +582,17 @@ export const schemas: DocSchema[] = [
             label: "Digital Marketplace commercial",
             fields: {
               label: { kind: "text", label: "Caption", mono: true },
-              video: { kind: "video", label: "Video" },
-              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              video: {
+                kind: "video",
+                label: "Video",
+                help: `${PX_HALF_16_9} MP4, ideally under 8MB.`,
+              },
+              poster: {
+                kind: "image",
+                label: "Poster frame",
+                ratio: "16 / 9",
+                help: PX_HALF_16_9,
+              },
               posterAlt: { kind: "text", label: "Poster description" },
             },
           },
@@ -534,8 +601,17 @@ export const schemas: DocSchema[] = [
             label: "Academy commercial",
             fields: {
               label: { kind: "text", label: "Caption", mono: true },
-              video: { kind: "video", label: "Video" },
-              poster: { kind: "image", label: "Poster frame", ratio: "16 / 9" },
+              video: {
+                kind: "video",
+                label: "Video",
+                help: `${PX_HALF_16_9} MP4, ideally under 8MB.`,
+              },
+              poster: {
+                kind: "image",
+                label: "Poster frame",
+                ratio: "16 / 9",
+                help: PX_HALF_16_9,
+              },
               posterAlt: { kind: "text", label: "Poster description" },
             },
           },
@@ -600,12 +676,17 @@ export const schemas: DocSchema[] = [
               service: { kind: "text", label: "Service" },
               year: { kind: "text", label: "Year" },
               client: { kind: "text", label: "Client (if different)" },
-              image: { kind: "image", label: "Grid thumbnail", ratio: "4 / 3" },
+              image: {
+                kind: "image",
+                label: "Grid thumbnail",
+                ratio: "4 / 3",
+                help: PX_TILE_4_3,
+              },
               heroImage: {
                 kind: "image",
                 label: "Featured hero",
                 ratio: "16 / 9",
-                help: "Falls back to the thumbnail if empty. Used when this is the newest project, as the /projects page's hero photograph.",
+                help: `Falls back to the thumbnail if empty. Used when this is the newest project, as the /projects page's hero photograph. ${PX_HERO}`,
               },
               pdf: {
                 kind: "doc",
@@ -680,7 +761,12 @@ export const schemas: DocSchema[] = [
                 label: "Date",
                 help: "Free text, e.g. \"January 2026\" — shown as written.",
               },
-              coverImage: { kind: "image", label: "Cover image", ratio: "16 / 9" },
+              coverImage: {
+                kind: "image",
+                label: "Cover image",
+                ratio: "16 / 9",
+                help: `Shown as a grid thumbnail on the blog index, and full-bleed as this post's own hero banner. ${PX_HERO}`,
+              },
               excerpt: { kind: "textarea", label: "Excerpt", rows: 3 },
               body: {
                 kind: "textarea",
@@ -728,12 +814,16 @@ export const schemas: DocSchema[] = [
           label: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
           body: { kind: "textarea", label: "Body", rows: 3 },
-          video: { kind: "video", label: "Video" },
+          video: {
+            kind: "video",
+            label: "Video",
+            help: `${PX_HERO} MP4, ideally under 8MB.`,
+          },
           poster: {
             kind: "image",
             label: "Poster frame",
             ratio: "16 / 9",
-            help: "Shown before the visitor presses play.",
+            help: `Shown before the visitor presses play. ${PX_HERO}`,
           },
           posterAlt: { kind: "text", label: "Poster description" },
         },
@@ -894,7 +984,12 @@ export const schemas: DocSchema[] = [
         key: "hero",
         title: "Hero",
         fields: {
-          image: { kind: "image", label: "Photograph", ratio: "4 / 5" },
+          image: {
+            kind: "image",
+            label: "Photograph",
+            ratio: "4 / 5",
+            help: PX_CONTENT_4_5,
+          },
           imageAlt: { kind: "text", label: "Image description" },
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Headline" },
@@ -925,6 +1020,7 @@ export const schemas: DocSchema[] = [
                 kind: "image",
                 label: "Classroom photo",
                 ratio: "16 / 9",
+                help: `Shown full-width above the course grid for this school. ${PX_HERO}`,
               },
               imageAlt: { kind: "text", label: "Photo description" },
               courses: {
@@ -938,7 +1034,7 @@ export const schemas: DocSchema[] = [
                     kind: "image",
                     label: "Course photo",
                     ratio: "16 / 9",
-                    help: "Shown on the course card and in its pop-up. Leave empty to show the icon alone.",
+                    help: `Shown on the course card and in its pop-up. Leave empty to show the icon alone. ${PX_TILE_16_9}`,
                   },
                   icon: {
                     kind: "select",
@@ -981,7 +1077,7 @@ export const schemas: DocSchema[] = [
                 kind: "image",
                 label: "Course photo",
                 ratio: "1 / 1",
-                help: "Shown as a small thumbnail on the card, in place of the icon, and in the pop-up. Leave empty to show the icon alone.",
+                help: `Shown as a small thumbnail on the card, in place of the icon, and in the pop-up. Leave empty to show the icon alone. ${PX_THUMB}`,
               },
               icon: {
                 kind: "select",
@@ -1049,7 +1145,12 @@ export const schemas: DocSchema[] = [
               quote: { kind: "textarea", label: "Quote", rows: 3 },
               name: { kind: "text", label: "Name" },
               course: { kind: "text", label: "Course · cohort" },
-              image: { kind: "image", label: "Avatar", ratio: "1 / 1" },
+              image: {
+                kind: "image",
+                label: "Avatar",
+                ratio: "1 / 1",
+                help: PX_AVATAR,
+              },
             },
           },
         },
@@ -1171,7 +1272,11 @@ export const schemas: DocSchema[] = [
               theme: { kind: "textarea", label: "Theme", rows: 2 },
               date: { kind: "text", label: "Date" },
               venue: { kind: "text", label: "Venue" },
-              gallery: { kind: "images", label: "Picture gallery" },
+              gallery: {
+                kind: "images",
+                label: "Picture gallery",
+                help: `Square crops, three per row. ${PX_TILE_SQUARE}`,
+              },
             },
           },
           upcoming: {
@@ -1206,7 +1311,12 @@ export const schemas: DocSchema[] = [
             titleKey: "title",
             fields: {
               title: { kind: "text", label: "Publication" },
-              cover: { kind: "image", label: "Cover image", ratio: "3 / 4" },
+              cover: {
+                kind: "image",
+                label: "Cover image",
+                ratio: "3 / 4",
+                help: PX_PORTRAIT_3_4,
+              },
               href: {
                 kind: "text",
                 label: "Link",
@@ -1229,7 +1339,7 @@ export const schemas: DocSchema[] = [
             titleKey: "name",
             fields: {
               name: { kind: "text", label: "Name" },
-              logo: { kind: "image", label: "Logo" },
+              logo: { kind: "image", label: "Logo", help: PX_LOGO },
               href: {
                 kind: "text",
                 label: "Link",
@@ -1283,7 +1393,12 @@ export const schemas: DocSchema[] = [
             fields: {
               quote: { kind: "textarea", label: "Quote", rows: 3 },
               name: { kind: "text", label: "Attribution" },
-              image: { kind: "image", label: "Avatar", ratio: "1 / 1" },
+              image: {
+                kind: "image",
+                label: "Avatar",
+                ratio: "1 / 1",
+                help: PX_AVATAR,
+              },
             },
           },
         },
@@ -1412,7 +1527,12 @@ export const schemas: DocSchema[] = [
         key: "hero",
         title: "Hero",
         fields: {
-          image: { kind: "image", label: "Hero image", ratio: "16 / 9" },
+          image: {
+            kind: "image",
+            label: "Hero image",
+            ratio: "16 / 9",
+            help: PX_HERO,
+          },
           imageAlt: { kind: "text", label: "Image alt text" },
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "textarea", label: "Headline", rows: 2 },
@@ -1499,7 +1619,12 @@ export const schemas: DocSchema[] = [
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
           body: { kind: "textarea", label: "Body", rows: 3 },
-          cover: { kind: "image", label: "Front cover", ratio: "3 / 4" },
+          cover: {
+            kind: "image",
+            label: "Front cover",
+            ratio: "3 / 4",
+            help: PX_PORTRAIT_3_4,
+          },
           coverAlt: { kind: "text", label: "Cover alt text" },
           pdf: { kind: "doc", label: "Issue PDF", help: "Opens in a new tab." },
           ctaLabel: { kind: "text", label: "Button label" },
@@ -1520,7 +1645,12 @@ export const schemas: DocSchema[] = [
             titleKey: "title",
             fields: {
               title: { kind: "text", label: "Publication" },
-              cover: { kind: "image", label: "Cover image", ratio: "3 / 4" },
+              cover: {
+                kind: "image",
+                label: "Cover image",
+                ratio: "3 / 4",
+                help: PX_PORTRAIT_3_4,
+              },
               href: {
                 kind: "text",
                 label: "Link",
@@ -1537,7 +1667,11 @@ export const schemas: DocSchema[] = [
         fields: {
           heading: { kind: "text", label: "Heading" },
           lead: { kind: "textarea", label: "Sub-line", rows: 2 },
-          images: { kind: "images", label: "Billboard photographs" },
+          images: {
+            kind: "images",
+            label: "Billboard photographs",
+            help: `Landscape. ${PX_BILLBOARD}`,
+          },
         },
       },
     ],
