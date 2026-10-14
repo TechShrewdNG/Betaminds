@@ -732,6 +732,9 @@ export const defaults = {
           label: "Brand identity",
           blurb:
             "An identity system your team can actually use, not a logo file and good luck.",
+          // Reuses the Brand identity project's own photo (Sunset Hospitality)
+          // for visual continuity between the two.
+          image: IMG(9490631, 900),
           items: [
             "Discovery & positioning workshop",
             "Logo suite and responsive marks",
@@ -743,6 +746,8 @@ export const defaults = {
         {
           label: "Company profile",
           blurb: "The document that opens doors before you walk in the room.",
+          // Pending a real photo via /admin — falls back to no banner.
+          image: "",
           items: [
             "Copywriting and narrative structure",
             "Editorial design and layout",
@@ -754,6 +759,8 @@ export const defaults = {
           label: "Content creation",
           blurb:
             "Commercial-grade content built around a calendar, not a whim.",
+          // Reuses the Academy's Content Creation course photo.
+          image: IMG(3869639, 900),
           items: [
             "Creative direction and shot list",
             "Photography, studio or on location",
@@ -766,6 +773,8 @@ export const defaults = {
           label: "Website design",
           blurb:
             "Fast, clear sites designed to convert and easy for you to update.",
+          // Reuses the Website design project's own photo (MKR Logistics).
+          image: IMG(5058927, 900),
           items: [
             "UX structure and wireframes",
             "Responsive UI design",
@@ -777,6 +786,8 @@ export const defaults = {
         {
           label: "Social media management",
           blurb: "Consistent presence, community and measurable growth.",
+          // Reuses the Social management project's own photo (Glams Beauty).
+          image: IMG(4183516, 900),
           items: [
             "Channel strategy and tone of voice",
             "Content scheduling and publishing",
@@ -788,6 +799,8 @@ export const defaults = {
         {
           label: "Property photography & videography",
           blurb: "Listings and developments that sell on sight.",
+          // Reuses the Property film project's own photo (Charoite Homes).
+          image: IMG(12179670, 900),
           items: [
             "Interior and exterior photography",
             "Walkthrough and drone video",
@@ -798,6 +811,8 @@ export const defaults = {
         {
           label: "Ads campaign placement",
           blurb: "Paid media planned against a target, not a hunch.",
+          // Reuses the Nourish Med project's photo (tagged "Content & ads").
+          image: IMG(8730849, 900),
           items: [
             "Campaign strategy and audience mapping",
             "Creative production for ad formats",

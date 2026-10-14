@@ -965,6 +965,12 @@ export const schemas: DocSchema[] = [
             fields: {
               label: { kind: "text", label: "Package name" },
               blurb: { kind: "textarea", label: "Blurb", rows: 2 },
+              image: {
+                kind: "image",
+                label: "Package photo",
+                ratio: "16 / 9",
+                help: `Shown as a banner when the package is open here, and above the selected package on the homepage's media tabs. Leave empty to show neither. ${PX_HERO}`,
+              },
               items: { kind: "list", label: "Deliverables" },
             },
           },

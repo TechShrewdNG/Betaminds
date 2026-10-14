@@ -88,6 +88,12 @@ export function PackageCards({
               className={styles.expandPanel}
               hidden={!isOpen}
             >
+              {pkg.image ? (
+                <div className={styles.pkgPanelImage}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={pkg.image} alt="" loading="lazy" />
+                </div>
+              ) : null}
               <div
                 className="eyebrow eyebrow--muted eyebrow--tight"
                 style={{ marginBottom: 14 }}
