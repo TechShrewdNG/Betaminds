@@ -467,9 +467,9 @@
 }
 
 .logoSlot {
-  width: 174px;
-  height: 56px;
-  margin: 0 14px;
+  width: 208px;
+  height: 76px;
+  margin: 0 16px;
   flex: none;
   border: 1px dashed rgba(var(--wash-rgb), 0.16);
   border-radius: 8px;
@@ -484,9 +484,17 @@
   text-transform: uppercase;
 }
 
+/* Sized by height, not by a bounding box. Real logos span a wide range of
+   aspect ratios — a square mark next to a long wordmark — and constraining
+   both width and height (the old max-width/max-height pair) let `contain`
+   scale each to whichever limit it hit first, so a wide logo rendered
+   visibly larger than a square one even inside the same box. Every logo
+   now shares the same rendered height; width is whatever its own ratio
+   needs, capped so an unusually wide lockup still clears the slot. */
 .logoSlot img {
-  max-width: 82%;
-  max-height: 70%;
+  height: 64%;
+  width: auto;
+  max-width: 86%;
   object-fit: contain;
 }
 
