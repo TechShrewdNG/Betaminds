@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
-import { getContent } from "@/lib/content";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { publishedProjects } from "@/lib/projects";
 import { PackageCards } from "@/components/ui/PackageCards";
@@ -14,14 +15,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function MediaServicesPage() {
-  const [media, projects] = await Promise.all([
+  const [media, projects, order] = await Promise.all([
     getContent("media"),
     publishedProjects(),
+    getSectionOrder("media"),
   ]);
   const proof = projects.slice(0, 3);
 
-  return (
-    <>
+  const sections: Record<string, ReactNode> = {
+    hero: (
       <IndexHero
         image={media.hero.image}
         imageAlt={media.hero.imageAlt}
@@ -40,7 +42,8 @@ export default async function MediaServicesPage() {
           />
         }
       />
-
+    ),
+    packages: (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <PackageCards
@@ -50,11 +53,12 @@ export default async function MediaServicesPage() {
           />
         </div>
       </section>
-
-      {/* Proof. The page was a hero and a price list and nothing else — seven
-          claims about the work with none of the work anywhere in sight. These
-          are the published case studies, newest first. */}
-      {proof.length > 0 ? (
+    ),
+    // Proof. The page was a hero and a price list and nothing else — seven
+    // claims about the work with none of the work anywhere in sight. These
+    // are the published case studies, newest first.
+    proof:
+      proof.length > 0 ? (
         <section data-reveal className="band band--ruled">
           <div className="shell section">
             <div className="split mb-34">
@@ -70,7 +74,14 @@ export default async function MediaServicesPage() {
             </div>
           </div>
         </section>
-      ) : null}
+      ) : null,
+  };
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

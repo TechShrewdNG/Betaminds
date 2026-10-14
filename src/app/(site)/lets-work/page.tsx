@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
-import { getContent, getGlobal } from "@/lib/content";
+import { Fragment, Suspense, type ReactNode } from "react";
+import { getContent, getGlobal, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { BriefForm } from "@/components/forms/BriefForm";
 import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
@@ -44,11 +44,16 @@ function ContactValue({ value }: { value: string }) {
 }
 
 export default async function LetsWorkPage() {
-  const [work, global] = await Promise.all([getContent("work"), getGlobal()]);
+  const [work, global, order] = await Promise.all([
+    getContent("work"),
+    getGlobal(),
+    getSectionOrder("work"),
+  ]);
   const socials = withDestination(global.contact.socials);
 
-  return (
-    <>
+  const sections: Record<string, ReactNode> = {};
+
+  sections.hero = (
       <IndexHero
         image={work.hero.image}
         imageAlt={work.hero.imageAlt}
@@ -69,7 +74,9 @@ export default async function LetsWorkPage() {
           ) : null
         }
       />
+  );
 
+  sections.form = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
@@ -145,6 +152,13 @@ export default async function LetsWorkPage() {
           </div>
         </div>
       </section>
+  );
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { getContent } from "@/lib/content";
+import { Fragment, Suspense, type ReactNode } from "react";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import styles from "@/components/ui/ui.module.css";
 import { SchoolTabs } from "@/components/ui/SchoolTabs";
@@ -15,14 +15,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AcademyPage() {
-  const academy = await getContent("academy");
+  const [academy, order] = await Promise.all([
+    getContent("academy"),
+    getSectionOrder("academy"),
+  ]);
   const { fields: applyFields } = await resolveForm("academy");
 
-  return (
-    // Every accent on this page is red rather than the site's gold. The marker
-    // is what globals.css matches on to re-point the accent tokens for the
-    // whole document, chrome included.
-    <div data-theme="red">
+  const sections: Record<string, ReactNode> = {};
+
+  sections.hero = (
       <section
         style={{
           background: "var(--surface-deep)",
@@ -101,8 +102,12 @@ export default async function AcademyPage() {
           />
         </div>
       </section>
+  );
 
-      {/* Courses, tabbed by school. */}
+  // Courses, tabbed by school. Crash courses render inside SchoolTabs itself
+  // (a row below the school grid), so they move with this band rather than
+  // having a position of their own.
+  sections.courses = (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <SchoolTabs
@@ -116,8 +121,11 @@ export default async function AcademyPage() {
           />
         </div>
       </section>
+  );
 
-      {/* Why the Academy, beside the choice-to-employment pathway. */}
+  // Why the Academy, beside the choice-to-employment pathway — one shared
+  // band, so "pathway" moves with "why" rather than on its own.
+  sections.why = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
@@ -184,8 +192,10 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Statistics. */}
+  // Statistics.
+  sections.stats = (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2 measure-520 mb-34">{academy.stats.heading}</h2>
@@ -207,8 +217,10 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Student quotes. */}
+  // Student quotes.
+  sections.quotes = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
@@ -270,8 +282,10 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* FAQ. */}
+  // FAQ.
+  sections.faq = (
       <section data-reveal className="band band--ruled">
         <div className="shell section col-900">
           <h2 className="h2" style={{ marginBottom: 30 }}>
@@ -280,10 +294,12 @@ export default async function AcademyPage() {
           <Accordion items={academy.faq.items} />
         </div>
       </section>
+  );
 
-      {/* Creative Foundations, on its own. The partner-logo panel that used to
-          sit beside it was six empty placeholder tiles, and it halved the width
-          of the one thing in the band with something to say. */}
+  // Creative Foundations, on its own. The partner-logo panel that used to
+  // sit beside it was six empty placeholder tiles, and it halved the width
+  // of the one thing in the band with something to say.
+  sections.foundation = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="panel panel--accent" style={{ padding: "56px 52px" }}>
@@ -326,11 +342,13 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Application form. No data-reveal: a form section's height depends
-          on CMS content, and the scroll-reveal threshold can lag well
-          behind it entering the viewport for a tall one — see the same
-          note on Digital Ecosystem's questionnaire section. */}
+  // Application form. No data-reveal: a form section's height depends on
+  // CMS content, and the scroll-reveal threshold can lag well behind it
+  // entering the viewport for a tall one — see the same note on Digital
+  // Ecosystem's questionnaire section.
+  sections.apply = (
       <section id="apply" className="band band--ruled">
         <div className="shell section col-760">
           <div className="panel">
@@ -346,6 +364,16 @@ export default async function AcademyPage() {
           </div>
         </div>
       </section>
+  );
+
+  return (
+    // Every accent on this page is red rather than the site's gold. The marker
+    // is what globals.css matches on to re-point the accent tokens for the
+    // whole document, chrome included.
+    <div data-theme="red">
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </div>
   );
 }

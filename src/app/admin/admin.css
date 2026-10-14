@@ -395,9 +395,22 @@
   width: 100%;
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 10px 14px 10px 10px;
+}
+
+.a-section-head:hover {
+  background: rgba(23, 23, 27, 0.02);
+}
+
+.a-section-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 15px 20px;
+  padding: 5px 6px;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -406,8 +419,12 @@
   color: var(--a-ink);
 }
 
-.a-section-head:hover {
-  background: rgba(23, 23, 27, 0.02);
+.a-section-fused {
+  margin: 12px 0 0;
+  padding: 0 6px;
+  font-size: 11px;
+  color: var(--a-soft);
+  font-style: italic;
 }
 
 .a-section-title {

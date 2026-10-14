@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
-import { getContent } from "@/lib/content";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
@@ -14,7 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PrPage() {
-  const pr = await getContent("pr");
+  const [pr, order] = await Promise.all([
+    getContent("pr"),
+    getSectionOrder("pr"),
+  ]);
 
   // Each of the showcase sections is only worth a band once there is something
   // in it. A magazine with no PDF is a button that goes nowhere, and an empty
@@ -23,8 +27,9 @@ export default async function PrPage() {
   const press = pr.press.items.filter((item) => item.cover !== "");
   const billboards = pr.billboards.images.filter((src) => src !== "");
 
-  return (
-    <>
+  const sections: Record<string, ReactNode> = {};
+
+  sections.hero = (
       <IndexHero
         image={pr.hero.image}
         imageAlt={pr.hero.imageAlt}
@@ -58,8 +63,10 @@ export default async function PrPage() {
           />
         }
       />
+  );
 
-      {/* Monthly retainers, set as the Digital Marketplace plans are. */}
+  // Monthly retainers, set as the Digital Marketplace plans are.
+  sections.packages = (
       <section id="packages" data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2 mb-18">
@@ -77,8 +84,10 @@ export default async function PrPage() {
           />
         </div>
       </section>
+  );
 
-      {/* The launch package and executive PR, which are not monthly. */}
+  // The launch package and executive PR, which are not monthly.
+  sections.special = (
       <section id="special" data-reveal className="band band--ruled">
         <div className="shell section">
           <h2 className="h2 mb-18">
@@ -97,8 +106,10 @@ export default async function PrPage() {
           />
         </div>
       </section>
+  );
 
-      {/* Event PR and coverage. */}
+  // Event PR and coverage.
+  sections.event = (
       <section id="events" data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight" style={{ alignItems: "start" }}>
@@ -125,9 +136,10 @@ export default async function PrPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* The Pinnacle Magazine. */}
-      {magazineReady ? (
+  // The Pinnacle Magazine.
+  sections.magazine = magazineReady ? (
         <section id="magazine" data-reveal className="band band--ink band--ruled">
           <div className="shell section">
             <div className={styles.magGrid}>
@@ -161,10 +173,11 @@ export default async function PrPage() {
             </div>
           </div>
         </section>
-      ) : null}
+  ) : null;
 
-      {/* Press features. */}
-      {press.length > 0 ? (
+  // Press features.
+  sections.press =
+    press.length > 0 ? (
         <section id="press" data-reveal className="band band--ruled">
           <div className="shell section">
             <h2 className="h2 mb-18">
@@ -204,10 +217,11 @@ export default async function PrPage() {
             </div>
           </div>
         </section>
-      ) : null}
+  ) : null;
 
-      {/* Billboards. Landscape, and deliberately without links. */}
-      {billboards.length > 0 ? (
+  // Billboards. Landscape, and deliberately without links.
+  sections.billboards =
+    billboards.length > 0 ? (
         <section
           id="billboards"
           data-reveal
@@ -234,7 +248,13 @@ export default async function PrPage() {
             </div>
           </div>
         </section>
-      ) : null}
+  ) : null;
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

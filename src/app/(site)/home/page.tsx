@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
-import { getContent } from "@/lib/content";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { publishedProjects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 import { HeroSlider } from "@/components/ui/HeroSlider";
@@ -29,13 +30,14 @@ export default async function HomePage() {
   // Plans, PR packages, media packages and summit stats are edited on their
   // own pages; the homepage renders them so there is only ever one place to
   // change them.
-  const [home, ecosystem, pr, media, summit, projects] = await Promise.all([
+  const [home, ecosystem, pr, media, summit, projects, order] = await Promise.all([
     getContent("home"),
     getContent("ecosystem"),
     getContent("pr"),
     getContent("media"),
     getContent("summit"),
     publishedProjects(),
+    getSectionOrder("home"),
   ]);
 
   const plans = ecosystem.plans.items;
@@ -43,44 +45,50 @@ export default async function HomePage() {
   const prPackages = pr.packages.items;
   const prFeatured = pr.packages.featuredIndex;
 
-  return (
-    <>
-      {/* 1 — Hero. The same slider visitors land on at `/`, so the opening
-          moment carries into the site rather than dropping to a still. Not
-          fullViewport here: the header sits in flow above it, and .slider
-          takes that height off the top so the arrows and counter stay clear
-          of the fold. */}
-      {home.heroSlider.slides.length > 0 ? (
-        <>
-          {/* The page's h1 lives here rather than on a slide. A slide heading
-              is only visible while its slide is showing, so an h1 inside the
-              rotation would go visibility:hidden seconds after load and stay
-              hidden for most of the cycle. This one is stable, and carries the
-              opening slide's wording so it matches what a visitor first
-              reads. */}
-          <h1 className="sr-only">{home.heroSlider.slides[0].heading}</h1>
-          <HeroSlider
-            slides={home.heroSlider.slides}
-            autoplay={home.heroSlider.autoplay}
-            interval={home.heroSlider.interval}
-            overlay={home.heroSlider.overlay}
-            ownsHeading={false}
-          />
-        </>
-      ) : null}
+  // Each band is built once, keyed by its content-schema section, and then
+  // laid out below in whatever order an editor has arranged them in —
+  // reordering the page is reordering this list, nothing more.
+  const sections: Record<string, ReactNode> = {};
 
-      {/* 2 — Trusted by. */}
-      <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
-        <div
-          className="eyebrow eyebrow--muted center"
-          style={{ marginBottom: 26 }}
-        >
-          {home.trusted.label}
-        </div>
-        <Marquee logos={home.trusted.logos} />
-      </section>
+  // Hero. The same slider visitors land on at `/`, so the opening moment
+  // carries into the site rather than dropping to a still. Not fullViewport
+  // here: the header sits in flow above it, and .slider takes that height
+  // off the top so the arrows and counter stay clear of the fold.
+  sections.heroSlider =
+    home.heroSlider.slides.length > 0 ? (
+      <>
+        {/* The page's h1 lives here rather than on a slide. A slide heading
+            is only visible while its slide is showing, so an h1 inside the
+            rotation would go visibility:hidden seconds after load and stay
+            hidden for most of the cycle. This one is stable, and carries the
+            opening slide's wording so it matches what a visitor first
+            reads. */}
+        <h1 className="sr-only">{home.heroSlider.slides[0].heading}</h1>
+        <HeroSlider
+          slides={home.heroSlider.slides}
+          autoplay={home.heroSlider.autoplay}
+          interval={home.heroSlider.interval}
+          overlay={home.heroSlider.overlay}
+          ownsHeading={false}
+        />
+      </>
+    ) : null;
 
-      {/* 3 — 01 / Who we are. */}
+  // Trusted by.
+  sections.trusted = (
+    <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
+      <div
+        className="eyebrow eyebrow--muted center"
+        style={{ marginBottom: 26 }}
+      >
+        {home.trusted.label}
+      </div>
+      <Marquee logos={home.trusted.logos} />
+    </section>
+  );
+
+  // 01 / Who we are.
+  sections.about = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="grid col2" style={{ alignItems: "start" }}>
@@ -192,8 +200,10 @@ export default async function HomePage() {
           </details>
         </div>
       </section>
+  );
 
-      {/* 4 — 02 / Meet the spark. */}
+  // 02 / Meet the spark.
+  sections.team = (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div className="mb-34">
@@ -259,12 +269,13 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* 5 — 03 / PR & events. Same panel--feature/compact-card layout as
-          Digital Marketplace below, pulling PR & Events → PR packages the
-          same way that section pulls Digital Marketplace → Engagement
-          plans — one card list, one place to edit it. Comes first: PR is the
-          business line visitors should meet before the commerce build. */}
+  // 03 / PR & events. Same panel--feature/compact-card layout as Digital
+  // Marketplace below, pulling PR & Events → PR packages the same way that
+  // section pulls Digital Marketplace → Engagement plans — one card list,
+  // one place to edit it.
+  sections.pr = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="panel--feature panel">
@@ -331,8 +342,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* 6 — 04 / Digital marketplace. */}
+  // 04 / Digital marketplace.
+  sections.marketplace = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="panel--feature panel">
@@ -403,12 +416,14 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* An ink strip of brand lines, breaking a long light stretch. Used once
-          on the page by design — a second would turn it into wallpaper. */}
-      <StatementBand lines={home.statement.lines} />
+  // An ink strip of brand lines, breaking a long light stretch. Used once on
+  // the page by design — a second would turn it into wallpaper.
+  sections.statement = <StatementBand lines={home.statement.lines} />;
 
-      {/* 7 — 05 / Media services. */}
+  // 05 / Media services.
+  sections.media = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.media.eyebrow}</div>
@@ -426,8 +441,10 @@ export default async function HomePage() {
           />
         </div>
       </section>
+  );
 
-      {/* 8 — 06 / The Summit. */}
+  // 06 / The Summit.
+  sections.summit = (
       <section data-reveal         className="hero"
         style={{ marginBottom: "var(--section-y)" }}
       >
@@ -483,8 +500,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* 9 — Projects. */}
+  // Projects.
+  sections.portfolio = (
       <section data-reveal id="projects" className="band band--ink band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
@@ -512,8 +531,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* 10 — Testimonials. */}
+  // Testimonials.
+  sections.testimonials = (
       <section data-reveal className="band band--alt">
         <div className="shell section">
           <Testimonials
@@ -522,8 +543,10 @@ export default async function HomePage() {
           />
         </div>
       </section>
+  );
 
-      {/* 11 — 07 / Betaminds Academy. */}
+  // 07 / Betaminds Academy.
+  sections.academy = (
       <section data-reveal className="band band--accent band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.academy.eyebrow}</div>
@@ -577,11 +600,13 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Commercials — Digital Marketplace and Academy, side by side. Each
-          quietly skips itself until a video is uploaded, so an empty pair
-          collapses the whole section rather than showing two empty frames. */}
-      {home.commercials.marketplace.video || home.commercials.academy.video ? (
+  // Commercials — Digital Marketplace and Academy, side by side. Each
+  // quietly skips itself until a video is uploaded, so an empty pair
+  // collapses the whole section rather than showing two empty frames.
+  sections.commercials =
+    home.commercials.marketplace.video || home.commercials.academy.video ? (
         <section data-reveal className="band band--alt band--ruled">
           <div className="shell section">
             <div className="mb-40">
@@ -610,9 +635,10 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-      ) : null}
+    ) : null;
 
-      {/* 12 — 08 / Final CTA. */}
+  // 08 / Final CTA.
+  sections.finalCta = (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <div
@@ -661,6 +687,13 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+  );
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

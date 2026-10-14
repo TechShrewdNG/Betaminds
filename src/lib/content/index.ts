@@ -1,6 +1,7 @@
 import { unstable_cache, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { defaults, type ContentDefaults, type DocId } from "./defaults";
+import { schemaById, orderableSectionKeys, SECTION_ORDER_KEY } from "./schema";
 
 export { defaults, DOC_IDS, type DocId } from "./defaults";
 export * from "./schema";
@@ -133,6 +134,46 @@ function withMissingRoutes(saved: unknown): unknown {
   return { ...saved, nav: { ...nav, items: merged } };
 }
 
+/**
+ * Reconciles a saved section order against the schema's current section
+ * keys: a key the schema no longer has (a section that was removed) is
+ * dropped, and a key the saved order doesn't have yet (a section added since
+ * the last save) is slotted in beside whichever neighbour the saved order
+ * still has — the same trade-off as `withMissingRoutes`, generalised to any
+ * ordered list of keys instead of just nav hrefs.
+ */
+function reconcileOrder(saved: unknown, fallback: string[]): string[] {
+  const known = new Set(fallback);
+  const kept = Array.isArray(saved)
+    ? saved.filter((key): key is string => typeof key === "string" && known.has(key))
+    : [];
+
+  const present = new Set(kept);
+  const merged = [...kept];
+  for (const [index, key] of fallback.entries()) {
+    if (present.has(key)) continue;
+    const before = fallback[index - 1];
+    const at = before ? merged.indexOf(before) : -1;
+    if (at === -1) merged.push(key);
+    else merged.splice(at + 1, 0, key);
+  }
+  return merged;
+}
+
+function resolveSectionOrder(id: DocId, saved: unknown): string[] {
+  const schema = schemaById.get(id);
+  if (!schema) return [];
+  const fallback = orderableSectionKeys(schema);
+  const rawOrder = isPlainObject(saved) ? saved[SECTION_ORDER_KEY] : undefined;
+  return reconcileOrder(rawOrder, fallback);
+}
+
+/** A document's sections, in the order an editor has arranged them. */
+export async function getSectionOrder(id: DocId): Promise<string[]> {
+  const saved = await readDocCached(id);
+  return resolveSectionOrder(id, saved);
+}
+
 /** Content for one document, defaults merged with whatever the admin saved. */
 export async function getContent<K extends DocId>(
   id: K,
@@ -158,7 +199,11 @@ export async function getMergedDoc(id: DocId): Promise<Plain> {
   const saved = await readDoc(id);
   // Normalised here too, so the admin form shows the same wording the site
   // serves rather than re-saving the stale numbering straight back in.
-  return stripSectionNumbering(merge(defaults[id], saved)) as Plain;
+  const merged = stripSectionNumbering(merge(defaults[id], saved)) as Plain;
+  // Resolved rather than copied raw, so the editor already shows any section
+  // added to the schema since this document was last saved.
+  merged[SECTION_ORDER_KEY] = resolveSectionOrder(id, saved);
+  return merged;
 }
 
 export async function saveDoc(id: DocId, data: Plain, updatedBy?: string) {

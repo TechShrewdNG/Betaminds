@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { getContent } from "@/lib/content";
+import { Fragment, Suspense, type ReactNode } from "react";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { FreeSlotCard } from "@/components/ui/FreeSlotCard";
@@ -14,13 +14,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function EcosystemPage() {
-  const eco = await getContent("ecosystem");
+  const [eco, order] = await Promise.all([
+    getContent("ecosystem"),
+    getSectionOrder("ecosystem"),
+  ]);
   // The form's fields come from the CMS. The outline beside it is generated from
   // the same definitions, so the two can't drift apart.
   const { groups } = await resolveForm("consultation");
 
-  return (
-    <>
+  const sections: Record<string, ReactNode> = {};
+
+  sections.hero = (
       <section className="hero">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -51,10 +55,11 @@ export default async function EcosystemPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Commercial — video only, so this quietly skips itself until one is
-          uploaded. */}
-      {eco.promo.video ? (
+  // Commercial — video only, so this quietly skips itself until one is
+  // uploaded.
+  sections.promo = eco.promo.video ? (
         <section data-reveal className="band band--ruled">
           <div className="shell section col-920">
             <PromoVideo
@@ -67,10 +72,11 @@ export default async function EcosystemPage() {
             />
           </div>
         </section>
-      ) : null}
+  ) : null;
 
-      {/* Engagement plans — bundled packages, not the standalone-capability
-          grid this page used to lead with. */}
+  // Engagement plans — bundled packages, not the standalone-capability grid
+  // this page used to lead with.
+  sections.plans = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <h2 className="h2 mb-18">{eco.plans.heading}</h2>
@@ -82,10 +88,12 @@ export default async function EcosystemPage() {
           />
         </div>
       </section>
+  );
 
-      {/* Booking notes. The free slot is the strongest hook on the page, so it
-          leads the section at full width with a live countdown; the booking-fee
-          note sits under it as the supporting detail it actually is. */}
+  // Booking notes. The free slot is the strongest hook on the page, so it
+  // leads the section at full width with a live countdown; the booking-fee
+  // note sits under it as the supporting detail it actually is.
+  sections.notes = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <FreeSlotCard
@@ -115,11 +123,13 @@ export default async function EcosystemPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Before you book — the questionnaire, live. No data-reveal here: this
-          section is several viewports tall, so the scroll-reveal threshold
-          wouldn't clear until well after it's on screen, making the form
-          look like it isn't there while the visitor scrolls through it. */}
+  // Before you book — the questionnaire, live. No data-reveal here: this
+  // section is several viewports tall, so the scroll-reveal threshold
+  // wouldn't clear until well after it's on screen, making the form look
+  // like it isn't there while the visitor scrolls through it.
+  sections.questionnaire = (
       <section id="book" className="band band--alt band--ruled">
         <div className="shell section">
           <div className="panel" style={{ borderRadius: 20, padding: "52px 44px" }}>
@@ -188,6 +198,13 @@ export default async function EcosystemPage() {
           </div>
         </div>
       </section>
+  );
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

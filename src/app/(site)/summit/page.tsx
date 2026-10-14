@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import styles from "@/components/ui/ui.module.css";
-import { getContent } from "@/lib/content";
+import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { Accordion } from "@/components/ui/Accordion";
 import { Marquee } from "@/components/ui/Marquee";
@@ -20,7 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SummitPage() {
-  const summit = await getContent("summit");
+  const [summit, order] = await Promise.all([
+    getContent("summit"),
+    getSectionOrder("summit"),
+  ]);
   const { fields: interestFields } = await resolveForm("summit");
 
   // Each showcase section quietly skips itself until there is something in
@@ -29,8 +33,9 @@ export default async function SummitPage() {
   const partners = summit.participants.logos;
   const hasProposal = summit.hero.deckUrl !== "";
 
-  return (
-    <>
+  const sections: Record<string, ReactNode> = {};
+
+  sections.hero = (
       <section className="hero">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -105,8 +110,10 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* A movement, not a conference. */}
+  // A movement, not a conference.
+  sections.movement = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--mid">
@@ -139,8 +146,10 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Event highlights. */}
+  // Event highlights.
+  sections.stats = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
           <div className={styles.statRow} data-stagger>
@@ -161,8 +170,10 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Why attend? */}
+  // Why attend?
+  sections.why = (
       <section data-reveal className="band band--ink band--ruled">
         <div className="shell section">
           <h2 className="h2" style={{ marginBottom: 32 }}>
@@ -213,8 +224,10 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Editions and galleries. */}
+  // Editions and galleries.
+  sections.editions = (
       <section data-reveal className="band band--ink band--alt band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
@@ -324,11 +337,13 @@ export default async function SummitPage() {
           ) : null}
         </div>
       </section>
+  );
 
-      {/* From the press. Newspaper and magazine covers — same pattern as
-          PR & Events → Press, so a visitor sees the same evidence either
-          place they land. Quietly hidden until a cover is uploaded. */}
-      {press.length > 0 ? (
+  // From the press. Newspaper and magazine covers — same pattern as PR &
+  // Events → Press, so a visitor sees the same evidence either place they
+  // land. Quietly hidden until a cover is uploaded.
+  sections.press =
+    press.length > 0 ? (
         <section data-reveal className="band band--ruled">
           <div className="shell section">
             <h2 className="h2 mb-18">
@@ -366,12 +381,13 @@ export default async function SummitPage() {
             </div>
           </div>
         </section>
-      ) : null}
+    ) : null;
 
-      {/* Partners & participants. Reuses the homepage's logo marquee, with
-          logos that link out — hidden entirely until real partners are
-          added, rather than a strip of invented names. */}
-      {partners.length > 0 ? (
+  // Partners & participants. Reuses the homepage's logo marquee, with logos
+  // that link out — hidden entirely until real partners are added, rather
+  // than a strip of invented names.
+  sections.participants =
+    partners.length > 0 ? (
         <section data-reveal className="tint-band" style={{ padding: "34px 0" }}>
           <div
             className="eyebrow eyebrow--muted center"
@@ -381,11 +397,12 @@ export default async function SummitPage() {
           </div>
           <Marquee logos={partners} />
         </section>
-      ) : null}
+    ) : null;
 
-      {/* Watch highlights. A slider once there's more than one video; hidden
-          entirely until a link is added. */}
-      {summit.videos.items.some((item) => item.youtubeUrl !== "") ? (
+  // Watch highlights. A slider once there's more than one video; hidden
+  // entirely until a link is added.
+  sections.videos =
+    summit.videos.items.some((item) => item.youtubeUrl !== "") ? (
         <section data-reveal className="band band--ink band--ruled">
           <div className="shell section col-920">
             <div className="mb-34">
@@ -397,9 +414,11 @@ export default async function SummitPage() {
             <VideoSlider items={summit.videos.items} />
           </div>
         </section>
-      ) : null}
+    ) : null;
 
-      {/* Agenda beside success stories. */}
+  // Agenda beside success stories — one shared band, so "stories" moves
+  // with "agenda" rather than on its own.
+  sections.agenda = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--mid">
@@ -493,8 +512,10 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* FAQ. */}
+  // FAQ.
+  sections.faq = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section col-900">
           <h2 className="h2" style={{ marginBottom: 30 }}>
@@ -503,8 +524,11 @@ export default async function SummitPage() {
           <Accordion items={summit.faq.items} />
         </div>
       </section>
+  );
 
-      {/* Sponsorship, registration note and newsletter. */}
+  // Sponsorship, registration note and newsletter — one shared band, so
+  // "register" and "newsletter" move with "sponsor" rather than on their own.
+  sections.sponsor = (
       <section data-reveal className="band band--ruled">
         <div className="shell section">
           <div className="grid col2 col2--tight">
@@ -619,10 +643,12 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
 
-      {/* Register interest. No data-reveal: same reasoning as the other two
-          form sections — a tall or growing form shouldn't be gated behind
-          a scroll threshold that can lag well behind it being on screen. */}
+  // Register interest. No data-reveal: same reasoning as the other two form
+  // sections — a tall or growing form shouldn't be gated behind a scroll
+  // threshold that can lag well behind it being on screen.
+  sections.interest = (
       <section id="interest" className="band band--alt band--ruled">
         <div className="shell section col-760">
           <div className="panel">
@@ -639,6 +665,13 @@ export default async function SummitPage() {
           </div>
         </div>
       </section>
+  );
+
+  return (
+    <>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key] ?? null}</Fragment>
+      ))}
     </>
   );
 }

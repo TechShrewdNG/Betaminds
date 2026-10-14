@@ -44,6 +44,15 @@ export type DocSchema = {
   route: string | null;
   blurb: string;
   sections: SectionSchema[];
+  /**
+   * A few sections render as one visual band with a sibling rather than a
+   * band of their own (Academy's crash courses sit inside the courses band;
+   * Summit's success stories sit beside its agenda). `fuse` maps such a
+   * dependent section's key to the key of the band it shares, so the admin
+   * can keep its panel anchored right after that band instead of offering a
+   * reorder control with nowhere independent to move it to.
+   */
+  fuse?: Record<string, string>;
 };
 
 /* -- shared field fragments ------------------------------------------------ */
@@ -367,14 +376,6 @@ export const schemas: DocSchema[] = [
         },
       },
       {
-        key: "statement",
-        title: "Statement band",
-        note: "A scrolling strip of short brand lines, set large on ink between two sections. Keep them short — they move while you read them. Empty the list to remove the band.",
-        fields: {
-          lines: { kind: "list", label: "Lines" },
-        },
-      },
-      {
         key: "trusted",
         title: "Trusted by",
         note: "Scrolling client-logo strip. Leave a logo empty to show the name in a dashed placeholder box.",
@@ -472,6 +473,14 @@ export const schemas: DocSchema[] = [
           body: { kind: "textarea", label: "Body", rows: 3 },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
+        },
+      },
+      {
+        key: "statement",
+        title: "Statement band",
+        note: "A scrolling strip of short brand lines, set large on ink between two sections. Keep them short — they move while you read them. Empty the list to remove the band.",
+        fields: {
+          lines: { kind: "list", label: "Lines" },
         },
       },
       {
@@ -928,15 +937,6 @@ export const schemas: DocSchema[] = [
         },
       },
       {
-        key: "proof",
-        title: "Work",
-        note: "Shows the three newest published projects.",
-        fields: {
-          heading: { kind: "text", label: "Heading" },
-          linkLabel: { kind: "text", label: "Link label" },
-        },
-      },
-      {
         key: "packages",
         title: "Packages",
         note: "Also drives the homepage media tabs.",
@@ -968,6 +968,15 @@ export const schemas: DocSchema[] = [
               items: { kind: "list", label: "Deliverables" },
             },
           },
+        },
+      },
+      {
+        key: "proof",
+        title: "Work",
+        note: "Shows the three newest published projects.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          linkLabel: { kind: "text", label: "Link label" },
         },
       },
     ],
@@ -1183,6 +1192,10 @@ export const schemas: DocSchema[] = [
         },
       },
     ],
+    // Crash courses sit inside the courses band itself (a row below the
+    // school grid), and the pathway sits beside "why" in a two-column panel
+    // — neither has a band of its own to move independently.
+    fuse: { crashCourses: "courses", pathway: "why" },
   },
 
   {
@@ -1451,6 +1464,10 @@ export const schemas: DocSchema[] = [
         },
       },
     ],
+    // Success stories sit beside the agenda in a two-column panel, and the
+    // registration note plus the newsletter form stack beside the
+    // sponsorship CTA — none of the three has a band of its own to move to.
+    fuse: { stories: "agenda", register: "sponsor", newsletter: "sponsor" },
   },
 
   {
@@ -1679,3 +1696,23 @@ export const schemas: DocSchema[] = [
 ];
 
 export const schemaById = new Map(schemas.map((s) => [s.id, s]));
+
+/** The saved patch key holding a document's custom section order. */
+export const SECTION_ORDER_KEY = "__order";
+
+/**
+ * Section keys a page editor can reorder.
+ *
+ * "seo" is metadata that populates the page's <head>, not a block with a
+ * position in the body, so it's left out of the reorderable pool and stays
+ * pinned first in the admin instead — moving it up or down would have
+ * nothing visible to move. A section listed as a `fuse` dependent (e.g.
+ * Academy's crash courses) is excluded the same way: it has no band of its
+ * own to reposition, so it rides along with the band it shares.
+ */
+export function orderableSectionKeys(schema: DocSchema): string[] {
+  const fused = new Set(Object.keys(schema.fuse ?? {}));
+  return schema.sections
+    .filter((section) => section.key !== "seo" && !fused.has(section.key))
+    .map((section) => section.key);
+}
