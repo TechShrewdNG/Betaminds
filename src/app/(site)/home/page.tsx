@@ -27,13 +27,13 @@ const PILLAR_ICONS: IconName[] = ["strategy", "spark", "users"];
 const PILLAR_TONES = ["blue", "orange", "green"] as const;
 
 export default async function HomePage() {
-  // Plans, PR packages, media packages and summit stats are edited on their
-  // own pages; the homepage renders them so there is only ever one place to
-  // change them.
-  const [home, ecosystem, pr, media, summit, projects, order] = await Promise.all([
+  // Plans, media packages and summit stats are edited on their own pages;
+  // the homepage renders them so there is only ever one place to change
+  // them. PR & events shows its own fixed list of categories instead (see
+  // sections.pr below).
+  const [home, ecosystem, media, summit, projects, order] = await Promise.all([
     getContent("home"),
     getContent("ecosystem"),
-    getContent("pr"),
     getContent("media"),
     getContent("summit"),
     publishedProjects(),
@@ -42,8 +42,6 @@ export default async function HomePage() {
 
   const plans = ecosystem.plans.items;
   const featured = ecosystem.plans.featuredIndex;
-  const prPackages = pr.packages.items;
-  const prFeatured = pr.packages.featuredIndex;
 
   // Each band is built once, keyed by its content-schema section, and then
   // laid out below in whatever order an editor has arranged them in —
@@ -271,10 +269,9 @@ export default async function HomePage() {
       </section>
   );
 
-  // 03 / PR & events. Same panel--feature/compact-card layout as Digital
-  // Marketplace below, pulling PR & Events → PR packages the same way that
-  // section pulls Digital Marketplace → Engagement plans — one card list,
-  // one place to edit it.
+  // 03 / PR & events. The right-hand panel names the five PR & Events
+  // categories — a fixed list edited here, not pulled from the PR & Events
+  // page (that page's own packages grid covers the pricing detail).
   sections.pr = (
       <section data-reveal className="band band--alt band--ruled">
         <div className="shell section">
@@ -293,50 +290,15 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid gap-12">
-                {prPackages.map((pkg, index) => (
-                  <div
-                    key={pkg.name}
-                    className="card"
-                    style={{
-                      borderColor:
-                        index === prFeatured
-                          ? "var(--accent-line-strong)"
-                          : "var(--line-strong)",
-                      background:
-                        index === prFeatured
-                          ? "rgba(var(--accent-rgb),.06)"
-                          : "var(--surface)",
-                    }}
-                  >
-                    <div
-                      className="row"
-                      style={{
-                        justifyContent: "space-between",
-                        gap: 12,
-                        marginBottom: 7,
-                      }}
-                    >
-                      <div className="card-title">{pkg.name}</div>
-                      <div
-                        className="eyebrow eyebrow--tight"
-                        style={{ letterSpacing: "0.14em" }}
-                      >
-                        {pkg.tag}
-                      </div>
+              <div className="panel" style={{ padding: "36px 34px" }}>
+                <div className="grid" style={{ gap: 2 }} data-stagger>
+                  {home.pr.items.map((item) => (
+                    <div key={item} className={styles.prDeliverable}>
+                      <Icon name="check" size={16} className={styles.tickMark} />
+                      {item}
                     </div>
-                    <div
-                      style={{
-                        fontSize: 14.5,
-                        lineHeight: 1.6,
-                        color: "var(--ink-78)",
-                        textWrap: "pretty",
-                      }}
-                    >
-                      {pkg.short}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

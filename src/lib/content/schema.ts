@@ -454,11 +454,12 @@ export const schemas: DocSchema[] = [
       {
         key: "pr",
         title: "03 / PR & events",
-        note: "The three package cards on the right are pulled from PR & Events → PR packages, so there is one place to edit them.",
+        note: "The list on the right names the five PR & Events categories — edit it here; it doesn't pull from the PR & Events page.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
           body: { kind: "textarea", label: "Body", rows: 3 },
+          items: { kind: "list", label: "PR categories" },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
         },

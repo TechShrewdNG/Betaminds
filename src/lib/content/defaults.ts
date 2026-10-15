@@ -253,10 +253,10 @@ export const defaults = {
      *  display scale and have to be readable while moving. */
     statement: {
       lines: [
-        "We add the spark",
-        "Strategy first",
-        "Craft always",
-        "Growth you can measure",
+        "One partner",
+        "One unified strategy",
+        "Multiple digital solutions",
+        "Better results",
       ],
     },
     trusted: {
@@ -381,8 +381,15 @@ export const defaults = {
     },
     pr: {
       eyebrow: "PR & events",
-      heading: "Coverage that puts you in the room.",
-      body: "Media placements, launches, executive profile and event coverage — planned against a target, not a hunch.",
+      heading: "Your brand has a story — let's make sure the right people hear it.",
+      body: "You and your brand deserve more than visibility—you deserve credibility and meaningful connection. We help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
+      items: [
+        "Public relations packages",
+        "Event PR and event coverage",
+        "The Pinnacle Magazine",
+        "Press (newspaper/magazine) publication",
+        "Billboard placement",
+      ],
       ctaLabel: "Learn more",
       ctaHref: "/pr",
     },
@@ -1434,9 +1441,9 @@ export const defaults = {
       image: IMG(3184291, 1800),
       imageAlt: "Press conference under lights",
       eyebrow: "Public relations",
-      heading: "Coverage that puts you in the room",
+      heading: "Your brand has a story — let's make sure the right people hear it",
       accentTail: ".",
-      lead: "Your brand deserves more than visibility — it deserves credibility. At Betaminds Africa, our Public Relations services help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
+      lead: "You and your brand deserve more than visibility—you deserve credibility and meaningful connection. We help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
       ctaLabel: "Talk to the PR team →",
       ctaHref: "/lets-work?need=Public%20relations",
     },
