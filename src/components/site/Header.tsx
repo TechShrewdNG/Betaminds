@@ -8,6 +8,23 @@ import type { ContentDefaults } from "@/lib/content/defaults";
 
 type Global = ContentDefaults["global"];
 
+/**
+ * Per-route wordmark override: the header reads as "Betaminds <Section>"
+ * instead of "Betaminds Africa" while on that section. Keyed by path prefix,
+ * checked longest-first isn't needed while there's only one entry, but the
+ * lookup is written to support more without restructuring it.
+ */
+const WORDMARK_OVERRIDES: Record<string, string> = {
+  "/academy": "Academy",
+};
+
+function wordmarkSubFor(pathname: string, fallback: string) {
+  const match = Object.keys(WORDMARK_OVERRIDES).find((prefix) =>
+    pathname.startsWith(prefix),
+  );
+  return match ? WORDMARK_OVERRIDES[match] : fallback;
+}
+
 export function Header({
   brand,
   nav,
@@ -41,14 +58,16 @@ export function Header({
       onMouseLeave={() => setSolid(false)}
     >
       <div className={styles.bar}>
-        <Link href="/" className={styles.brand} aria-label="Betaminds Africa, home">
+        <Link href="/home" className={styles.brand} aria-label="Betaminds Africa, home">
           <span className={styles.mark}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={brand.logo} alt="" />
           </span>
           <span className={styles.lockup}>
             <span className={styles.wordmark}>{brand.wordmark}</span>
-            <span className={styles.wordmarkSub}>{brand.wordmarkSub}</span>
+            <span className={styles.wordmarkSub}>
+              {wordmarkSubFor(pathname, brand.wordmarkSub)}
+            </span>
           </span>
         </Link>
 

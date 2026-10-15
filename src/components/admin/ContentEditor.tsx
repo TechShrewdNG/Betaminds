@@ -1,9 +1,16 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { Fragment, useActionState, useEffect, useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { saveContent, type ActionState } from "@/app/admin/actions";
-import type { DocSchema, Field, Fields } from "@/lib/content/schema";
+import {
+  orderableSectionKeys,
+  SECTION_ORDER_KEY,
+  type DocSchema,
+  type Field,
+  type Fields,
+  type SectionSchema,
+} from "@/lib/content/schema";
 import { ImageField, ImagesField } from "./ImagePicker";
 
 type Data = Record<string, unknown>;
@@ -83,10 +90,46 @@ export function ContentEditor({
     saveContent,
     null,
   );
-  const [open, setOpen] = useState<string[]>(
-    // Open the first section so the page isn't a wall of closed rows.
-    schema.sections[0] ? [schema.sections[0].key] : [],
+
+  const sectionByKey = useMemo(
+    () =>
+      new Map(schema.sections.map((section) => [section.key, section] as const)),
+    [schema],
   );
+  const seoSection = schema.sections.find((section) => section.key === "seo");
+  const fallbackOrder = useMemo(() => orderableSectionKeys(schema), [schema]);
+  // Sections that ride along with another band instead of moving on their
+  // own — see the `fuse` comment on DocSchema.
+  const dependentsOf = useMemo(() => {
+    const fuse = schema.fuse ?? {};
+    const map = new Map<string, SectionSchema[]>();
+    for (const section of schema.sections) {
+      const leader = fuse[section.key];
+      if (!leader) continue;
+      map.set(leader, [...(map.get(leader) ?? []), section]);
+    }
+    return map;
+  }, [schema]);
+
+  // The section order currently on screen: whatever's saved, with any
+  // section the schema doesn't recognise anymore dropped and any new one
+  // appended.
+  const order = useMemo(() => {
+    const raw = doc[SECTION_ORDER_KEY];
+    const filtered = Array.isArray(raw)
+      ? raw.filter(
+          (key): key is string => typeof key === "string" && sectionByKey.has(key),
+        )
+      : [];
+    const present = new Set(filtered);
+    return [...filtered, ...fallbackOrder.filter((key) => !present.has(key))];
+  }, [doc, sectionByKey, fallbackOrder]);
+
+  const [open, setOpen] = useState<string[]>(() => {
+    // Open the first section so the page isn't a wall of closed rows.
+    const first = seoSection?.key ?? order[0];
+    return first ? [first] : [];
+  });
 
   // A successful save means what's on screen is what's stored.
   useEffect(() => {
@@ -105,6 +148,75 @@ export function ContentEditor({
         : [...current, key],
     );
 
+  const moveSection = (from: number, to: number) => {
+    if (to < 0 || to >= order.length) return;
+    const next = [...order];
+    const [key] = next.splice(from, 1);
+    next.splice(to, 0, key);
+    update([SECTION_ORDER_KEY], next);
+  };
+
+  const renderSection = (section: SectionSchema, index?: number) => {
+    const isOpen = open.includes(section.key);
+    return (
+      <div className="a-section" key={section.key}>
+        <div className="a-section-head">
+          {index !== undefined ? (
+            <>
+              <button
+                type="button"
+                className="a-btn a-btn--ghost a-btn--sm"
+                onClick={() => moveSection(index, index - 1)}
+                disabled={index === 0}
+                aria-label={`Move ${section.title} up`}
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                className="a-btn a-btn--ghost a-btn--sm"
+                onClick={() => moveSection(index, index + 1)}
+                disabled={index === order.length - 1}
+                aria-label={`Move ${section.title} down`}
+              >
+                ↓
+              </button>
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="a-section-toggle"
+            aria-expanded={isOpen}
+            onClick={() => toggle(section.key)}
+          >
+            <span>
+              <span className="a-section-title">{section.title}</span>
+              {section.note ? (
+                <span className="a-section-note" style={{ display: "block" }}>
+                  {section.note}
+                </span>
+              ) : null}
+            </span>
+            <span className="a-sign" aria-hidden="true">
+              {isOpen ? "−" : "+"}
+            </span>
+          </button>
+        </div>
+
+        {isOpen ? (
+          <div className="a-section-body">
+            <FieldSet
+              fields={section.fields}
+              path={[section.key]}
+              doc={doc}
+              update={update}
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
   return (
     <form action={action}>
       <input type="hidden" name="id" value={schema.id} />
@@ -121,40 +233,25 @@ export function ContentEditor({
         </div>
       ) : null}
 
-      {schema.sections.map((section) => {
-        const isOpen = open.includes(section.key);
-        return (
-          <div className="a-section" key={section.key}>
-            <button
-              type="button"
-              className="a-section-head"
-              aria-expanded={isOpen}
-              onClick={() => toggle(section.key)}
-            >
-              <span>
-                <span className="a-section-title">{section.title}</span>
-                {section.note ? (
-                  <span className="a-section-note" style={{ display: "block" }}>
-                    {section.note}
-                  </span>
-                ) : null}
-              </span>
-              <span className="a-sign" aria-hidden="true">
-                {isOpen ? "−" : "+"}
-              </span>
-            </button>
+      {/* SEO is metadata, not a block on the page, so it stays pinned first
+          rather than offering a reorder control with nothing to move. */}
+      {seoSection ? renderSection(seoSection) : null}
 
-            {isOpen ? (
-              <div className="a-section-body">
-                <FieldSet
-                  fields={section.fields}
-                  path={[section.key]}
-                  doc={doc}
-                  update={update}
-                />
-              </div>
-            ) : null}
-          </div>
+      {order.map((key, index) => {
+        const section = sectionByKey.get(key);
+        if (!section) return null;
+        return (
+          <Fragment key={key}>
+            {renderSection(section, index)}
+            {(dependentsOf.get(key) ?? []).map((dependent) => (
+              <Fragment key={dependent.key}>
+                <p className="a-section-fused">
+                  ↳ Part of the “{section.title}” band above — moves with it.
+                </p>
+                {renderSection(dependent)}
+              </Fragment>
+            ))}
+          </Fragment>
         );
       })}
 
@@ -313,6 +410,28 @@ function FieldView({
           label={field.label}
           help={field.help}
           ratio={field.ratio}
+          value={typeof raw === "string" ? raw : ""}
+          onChange={(url) => update(path, url)}
+        />
+      );
+
+    case "video":
+      return (
+        <ImageField
+          label={field.label}
+          help={field.help}
+          media="video"
+          value={typeof raw === "string" ? raw : ""}
+          onChange={(url) => update(path, url)}
+        />
+      );
+
+    case "doc":
+      return (
+        <ImageField
+          label={field.label}
+          help={field.help}
+          media="doc"
           value={typeof raw === "string" ? raw : ""}
           onChange={(url) => update(path, url)}
         />

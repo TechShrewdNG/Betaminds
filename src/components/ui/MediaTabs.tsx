@@ -7,6 +7,7 @@ import styles from "./ui.module.css";
 export type MediaPackage = {
   label: string;
   blurb: string;
+  image?: string;
   items: string[];
 };
 
@@ -42,6 +43,20 @@ export function MediaTabs({
           </button>
         ))}
       </div>
+
+      {current.image ? (
+        <div key={current.label} className={styles.pkgBanner}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={current.image}
+            alt=""
+            className={styles.pkgBannerImg}
+            loading="lazy"
+          />
+          <span className={styles.pkgBannerWash} aria-hidden="true" />
+          <span className={styles.pkgBannerName}>{current.label}</span>
+        </div>
+      ) : null}
 
       <div
         id="media-panel"
