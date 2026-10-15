@@ -1579,7 +1579,7 @@ export const schemas: DocSchema[] = [
       {
         key: "packages",
         title: "PR packages",
-        note: "The monthly retainers, set as cards like the Digital Marketplace plans.",
+        note: "All five ways to work with us — three monthly tiers plus the two one-off/personal engagements — shown together as one group, same as the source document.",
         fields: {
           heading: { kind: "text", label: "Heading" },
           lead: { kind: "textarea", label: "Sub-line", rows: 2 },
@@ -1589,40 +1589,13 @@ export const schemas: DocSchema[] = [
             kind: "text",
             label: "Deliverables label",
             mono: true,
-            help: "Shown above a card's deliverables list once expanded. Reused by the one-off packages below, so there is one place to edit it.",
+            help: "Shown above a card's deliverables list once expanded.",
           },
           featuredIndex: {
             kind: "number",
             label: "Highlighted card",
             help: "Zero-based. 1 highlights the second card.",
           },
-          items: {
-            kind: "repeater",
-            label: "Packages",
-            itemLabel: "Package",
-            titleKey: "name",
-            fields: {
-          name: { kind: "text", label: "Package name" },
-          tag: { kind: "text", label: "Tag", mono: true },
-          short: { kind: "textarea", label: "Who it's for", rows: 2 },
-          items: { kind: "list", label: "Monthly deliverables" },
-          bestFor: {
-            kind: "textarea",
-            label: "Best for",
-            rows: 2,
-            help: "Optional. Shown at the foot of the card.",
-          },
-            },
-          },
-        },
-      },
-      {
-        key: "special",
-        title: "One-off and personal",
-        note: "The launch package and executive PR.",
-        fields: {
-          heading: { kind: "text", label: "Heading" },
-          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
           items: {
             kind: "repeater",
             label: "Packages",
@@ -1651,12 +1624,14 @@ export const schemas: DocSchema[] = [
           heading: { kind: "text", label: "Heading" },
           body: { kind: "textarea", label: "Body", rows: 3 },
           items: { kind: "list", label: "Deliverables" },
+          ctaLabel: { kind: "text", label: "Button label" },
+          ctaHref: { kind: "text", label: "Button link" },
         },
       },
       {
         key: "magazine",
         title: "The Pinnacle Magazine",
-        note: "Upload the cover and the issue PDF. The section stays hidden until both a cover and a PDF are set.",
+        note: "The cover and the download button only appear once you've uploaded them — the rest of the section (heading, body, gallery) shows regardless.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
@@ -1684,7 +1659,7 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "Press",
-        note: "Newspaper and magazine covers. A row without a cover image is skipped.",
+        note: "Newspaper and magazine features. A row needs a title or a link to show — add a cover image too when you have one, for the fuller card treatment.",
         fields: {
           heading: { kind: "text", label: "Heading" },
           lead: { kind: "textarea", label: "Sub-line", rows: 2 },
@@ -1714,7 +1689,7 @@ export const schemas: DocSchema[] = [
       {
         key: "billboards",
         title: "Billboard placements",
-        note: "Landscape photographs. No links — this section is a showcase.",
+        note: "Landscape photographs. No links — this section is a showcase. The heading and sub-line show on the page even with no photographs yet; add some here to replace the placeholder.",
         fields: {
           heading: { kind: "text", label: "Heading" },
           lead: { kind: "textarea", label: "Sub-line", rows: 2 },

@@ -2436,6 +2436,33 @@
   object-fit: cover;
 }
 
+/* A cover or gallery tile that has no image yet — shown instead of a broken
+   <img>, so an incomplete upload still reads as "pending", not "broken". */
+.emptyTile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: var(--surface-alt, rgba(255, 255, 255, 0.03));
+  border: 1px dashed var(--line);
+  border-radius: var(--r-card);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--ink-soft, currentColor);
+  opacity: 0.6;
+}
+
+.pressRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
 /* --- Mobile: nothing wider than the screen ------------------------------- */
 
 /*

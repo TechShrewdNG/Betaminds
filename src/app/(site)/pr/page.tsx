@@ -20,11 +20,12 @@ export default async function PrPage() {
     getSectionOrder("pr"),
   ]);
 
-  // Each of the showcase sections is only worth a band once there is something
-  // in it. A magazine with no PDF is a button that goes nowhere, and an empty
-  // billboard grid is a heading over a gap.
-  const magazineReady = pr.magazine.cover !== "" && pr.magazine.pdf !== "";
-  const press = pr.press.items.filter((item) => item.cover !== "");
+  // Magazine, press and billboards all show as soon as there's a heading and
+  // lead worth reading — the cover, PDF link, and photographs each appear
+  // independently once uploaded, instead of gating the whole section.
+  const press = pr.press.items.filter(
+    (item) => item.title !== "" || item.href !== "",
+  );
   const billboards = pr.billboards.images.filter((src) => src !== "");
 
   const sections: Record<string, ReactNode> = {};
@@ -48,17 +49,12 @@ export default async function PrPage() {
             label="In this page"
             items={[
               { href: "#packages", text: pr.packages.heading },
-              { href: "#special", text: pr.special.heading },
               { href: "#events", text: pr.event.heading },
-              ...(magazineReady
-                ? [{ href: "#magazine", text: pr.magazine.eyebrow }]
-                : []),
+              { href: "#magazine", text: pr.magazine.eyebrow },
               ...(press.length > 0
                 ? [{ href: "#press", text: pr.press.heading }]
                 : []),
-              ...(billboards.length > 0
-                ? [{ href: "#billboards", text: pr.billboards.heading }]
-                : []),
+              { href: "#billboards", text: pr.billboards.heading },
             ]}
           />
         }
@@ -110,29 +106,6 @@ export default async function PrPage() {
       </section>
   );
 
-  // The launch package and executive PR, which are not monthly.
-  sections.special = (
-      <section id="special" data-reveal className="band band--ruled">
-        <div className="shell section">
-          <h2 className="h2 mb-18">
-            <SplitText text={pr.special.heading} />
-          </h2>
-          <p className="body measure-620 mb-34">{pr.special.lead}</p>
-          <PlanCards
-            plans={pr.special.items}
-            featuredIndex={-1}
-            columns={2}
-            selectLabel={pr.packages.selectLabel}
-            bestForLabel={pr.packages.bestForLabel}
-            deliverablesLabel={pr.packages.deliverablesLabel}
-            ctaHref={(plan) =>
-              `/lets-work?need=${encodeURIComponent(`PR — ${plan.name}`)}`
-            }
-          />
-        </div>
-      </section>
-  );
-
   // Event PR and coverage.
   sections.event = (
       <section id="events" data-reveal className="band band--alt band--ruled">
@@ -143,9 +116,15 @@ export default async function PrPage() {
               <h2 className="h2" style={{ marginBottom: 16 }}>
                 <SplitText text={pr.event.heading} />
               </h2>
-              <p className="body measure-520" style={{ margin: 0 }}>
+              <p className="body measure-520" style={{ marginBottom: 28 }}>
                 {pr.event.body}
               </p>
+              <Link
+                href={pr.event.ctaHref}
+                className="pill pill--accent pill--lg"
+              >
+                {pr.event.ctaLabel}
+              </Link>
             </div>
 
             <div className="panel" style={{ padding: "36px 34px" }}>
@@ -163,29 +142,37 @@ export default async function PrPage() {
       </section>
   );
 
-  // The Pinnacle Magazine.
-  sections.magazine = magazineReady ? (
-        <section id="magazine" data-reveal className="band band--ink band--ruled">
-          <div className="shell section">
-            <div className={styles.magGrid}>
-              <div className={styles.magCover}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+  // The Pinnacle Magazine. The cover and the download button only appear
+  // once they've been uploaded — the heading, body and gallery show either way.
+  sections.magazine = (
+      <section id="magazine" data-reveal className="band band--ink band--ruled">
+        <div className="shell section">
+          <div className={styles.magGrid}>
+            <div className={styles.magCover}>
+              {pr.magazine.cover ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={pr.magazine.cover}
                   alt={pr.magazine.coverAlt}
                   className="bm-settle"
                   loading="lazy"
                 />
-              </div>
+              ) : (
+                <div className={styles.emptyTile} style={{ position: "absolute", inset: 0 }}>
+                  Cover coming soon
+                </div>
+              )}
+            </div>
 
-              <div>
-                <div className="eyebrow mb-22">{pr.magazine.eyebrow}</div>
-                <h2 className="h2" style={{ marginBottom: 16 }}>
-                  <SplitText text={pr.magazine.heading} />
-                </h2>
-                <p className="body measure-520" style={{ marginBottom: 30 }}>
-                  {pr.magazine.body}
-                </p>
+            <div>
+              <div className="eyebrow mb-22">{pr.magazine.eyebrow}</div>
+              <h2 className="h2" style={{ marginBottom: 16 }}>
+                <SplitText text={pr.magazine.heading} />
+              </h2>
+              <p className="body measure-520" style={{ marginBottom: 30 }}>
+                {pr.magazine.body}
+              </p>
+              {pr.magazine.pdf ? (
                 <a
                   href={pr.magazine.pdf}
                   target="_blank"
@@ -194,37 +181,42 @@ export default async function PrPage() {
                 >
                   {pr.magazine.ctaLabel}
                 </a>
-              </div>
+              ) : null}
             </div>
-
-            {pr.magazine.gallery.length > 0 ? (
-              <div
-                className="mt-40"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 1,
-                  background: "var(--line)",
-                }}
-              >
-                {pr.magazine.gallery.map((src, index) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={`${src}-${index}`}
-                    src={src}
-                    alt={`${pr.magazine.heading} gallery image ${index + 1}`}
-                    className="ratio-1-1"
-                    style={{ display: "block", width: "100%", objectFit: "cover" }}
-                    loading="lazy"
-                  />
-                ))}
-              </div>
-            ) : null}
           </div>
-        </section>
-  ) : null;
 
-  // Press features.
+          {pr.magazine.gallery.length > 0 ? (
+            <div
+              className="mt-40"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 1,
+                background: "var(--line)",
+              }}
+            >
+              {pr.magazine.gallery.map((src, index) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={`${src}-${index}`}
+                  src={src}
+                  alt={`${pr.magazine.heading} gallery image ${index + 1}`}
+                  className="ratio-1-1"
+                  style={{ display: "block", width: "100%", objectFit: "cover" }}
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </section>
+  );
+
+  // Press features. Covered items get the full card; items without a cover
+  // on file yet get a plain link row instead, so they still show.
+  const pressWithCover = press.filter((item) => item.cover !== "");
+  const pressWithoutCover = press.filter((item) => item.cover === "");
+
   sections.press =
     press.length > 0 ? (
         <section id="press" data-reveal className="band band--ruled">
@@ -234,54 +226,81 @@ export default async function PrPage() {
             </h2>
             <p className="body measure-620 mb-34">{pr.press.lead}</p>
 
-            <div className="grid col4 carousel-mobile" data-stagger>
-              {press.map((item, index) => (
-                <div key={`${item.title}-${index}`} className={styles.pressCard}>
-                  <div className={styles.pressCover}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.cover}
-                      alt={item.title}
-                      className="bm-settle"
-                      loading="lazy"
-                    />
+            {pressWithCover.length > 0 ? (
+              <div
+                className={`grid col4 carousel-mobile${pressWithoutCover.length > 0 ? " mb-34" : ""}`}
+                data-stagger
+              >
+                {pressWithCover.map((item, index) => (
+                  <div key={`${item.title}-${index}`} className={styles.pressCard}>
+                    <div className={styles.pressCover}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.cover}
+                        alt={item.title}
+                        className="bm-settle"
+                        loading="lazy"
+                      />
+                    </div>
+                    {item.title ? (
+                      <div className={styles.pressTitle}>{item.title}</div>
+                    ) : null}
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className={styles.pkgLink}
+                      >
+                        {pr.press.readLabel} <span aria-hidden="true">→</span>
+                      </a>
+                    ) : null}
                   </div>
-                  {item.title ? (
-                    <div className={styles.pressTitle}>{item.title}</div>
-                  ) : null}
-                  {/* No link, no button — the cover still earns its place as
-                      evidence, but a dead CTA would not. */}
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className={styles.pkgLink}
-                    >
-                      {pr.press.readLabel} <span aria-hidden="true">→</span>
-                    </a>
-                  ) : null}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : null}
+
+            {pressWithoutCover.length > 0 ? (
+              <div className="grid col2 col2--tight" data-stagger>
+                {pressWithoutCover.map((item, index) => (
+                  <div key={`${item.title}-${index}`} className={styles.pressRow}>
+                    {item.title ? (
+                      <div className={styles.pressTitle}>{item.title}</div>
+                    ) : null}
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className={styles.pkgLink}
+                      >
+                        {pr.press.readLabel} <span aria-hidden="true">→</span>
+                      </a>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
   ) : null;
 
-  // Billboards. Landscape, and deliberately without links.
-  sections.billboards =
-    billboards.length > 0 ? (
-        <section
-          id="billboards"
-          data-reveal
-          className="band band--alt band--ruled"
-        >
-          <div className="shell section">
-            <h2 className="h2 mb-18">
-              <SplitText text={pr.billboards.heading} />
-            </h2>
-            <p className="body measure-620 mb-34">{pr.billboards.lead}</p>
+  // Billboards. Landscape, and deliberately without links. The section
+  // itself always shows — the grid becomes a placeholder until real
+  // photographs are uploaded, instead of the heading vanishing with it.
+  sections.billboards = (
+      <section
+        id="billboards"
+        data-reveal
+        className="band band--alt band--ruled"
+      >
+        <div className="shell section">
+          <h2 className="h2 mb-18">
+            <SplitText text={pr.billboards.heading} />
+          </h2>
+          <p className="body measure-620 mb-34">{pr.billboards.lead}</p>
 
+          {billboards.length > 0 ? (
             <div className={styles.boardGrid} data-stagger>
               {billboards.map((src, index) => (
                 <div key={`${src}-${index}`} className={styles.board}>
@@ -295,9 +314,20 @@ export default async function PrPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-  ) : null;
+          ) : (
+            <div className={styles.boardGrid}>
+              {[0, 1].map((index) => (
+                <div key={index} className={styles.board}>
+                  <div className={styles.emptyTile} style={{ position: "absolute", inset: 0 }}>
+                    Photographs coming soon
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+  );
 
   return (
     <>

@@ -1459,10 +1459,10 @@ export const defaults = {
     },
     packages: {
       heading: "PR packages",
-      lead: "Monthly retainers. Each tier carries everything in the one before it.",
+      lead: "Five ways to work with us — three monthly retainers, plus a one-off launch package and a personal engagement for the person in front of the brand.",
       selectLabel: "Enquire →",
       bestForLabel: "Best for",
-      deliverablesLabel: "Monthly deliverables",
+      deliverablesLabel: "Deliverables",
       featuredIndex: 1,
       items: [
         {
@@ -1519,12 +1519,6 @@ export const defaults = {
           bestFor:
             "CEOs, corporate brands, institutions and organisations seeking industry authority.",
         },
-      ],
-    },
-    special: {
-      heading: "One-off and personal",
-      lead: "Two engagements that sit outside the monthly retainer.",
-      items: [
         {
           name: "Launch PR Package",
           tag: "One-off",
@@ -1573,6 +1567,8 @@ export const defaults = {
         "Event coverage — 6 posts of the event, published within 12 hours",
         "Red carpet hosting",
       ],
+      ctaLabel: "Enquire about event PR",
+      ctaHref: "/lets-work?need=PR%20%E2%80%94%20Event%20PR%20and%20coverage",
     },
     magazine: {
       eyebrow: "The Pinnacle Magazine",
