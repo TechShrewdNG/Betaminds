@@ -1566,6 +1566,17 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "services",
+        title: "PR services overview",
+        note: "The intro band between the hero and the packages.",
+        fields: {
+          heading: { kind: "text", label: "Heading" },
+          items: { kind: "list", label: "Services" },
+          body1: { kind: "textarea", label: "First paragraph", rows: 3 },
+          body2: { kind: "textarea", label: "Second paragraph", rows: 3 },
+        },
+      },
+      {
         key: "packages",
         title: "PR packages",
         note: "The monthly retainers, set as cards like the Digital Marketplace plans.",
@@ -1574,6 +1585,12 @@ export const schemas: DocSchema[] = [
           lead: { kind: "textarea", label: "Sub-line", rows: 2 },
           selectLabel: { kind: "text", label: "Card button label" },
           bestForLabel: { kind: "text", label: "\"Best for\" label", mono: true },
+          deliverablesLabel: {
+            kind: "text",
+            label: "Deliverables label",
+            mono: true,
+            help: "Shown above a card's deliverables list once expanded. Reused by the one-off packages below, so there is one place to edit it.",
+          },
           featuredIndex: {
             kind: "number",
             label: "Highlighted card",
@@ -1588,6 +1605,7 @@ export const schemas: DocSchema[] = [
           name: { kind: "text", label: "Package name" },
           tag: { kind: "text", label: "Tag", mono: true },
           short: { kind: "textarea", label: "Who it's for", rows: 2 },
+          items: { kind: "list", label: "Monthly deliverables" },
           bestFor: {
             kind: "textarea",
             label: "Best for",
@@ -1614,6 +1632,7 @@ export const schemas: DocSchema[] = [
           name: { kind: "text", label: "Package name" },
           tag: { kind: "text", label: "Tag", mono: true },
           short: { kind: "textarea", label: "Who it's for", rows: 2 },
+          items: { kind: "list", label: "Deliverables" },
           bestFor: {
             kind: "textarea",
             label: "Best for",
@@ -1641,7 +1660,7 @@ export const schemas: DocSchema[] = [
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
-          body: { kind: "textarea", label: "Body", rows: 3 },
+          body: { kind: "textarea", label: "Body", rows: 4 },
           cover: {
             kind: "image",
             label: "Front cover",
@@ -1649,8 +1668,17 @@ export const schemas: DocSchema[] = [
             help: PX_PORTRAIT_3_4,
           },
           coverAlt: { kind: "text", label: "Cover alt text" },
-          pdf: { kind: "doc", label: "Issue PDF", help: "Opens in a new tab." },
+          pdf: {
+            kind: "doc",
+            label: "Issue PDF",
+            help: "Opens in a new tab. Vercel Blob (what this uploads to) caps a single file at 500MB, but a magazine-sized PDF is still a heavy download for a visitor on mobile data — compress it first if you can.",
+          },
           ctaLabel: { kind: "text", label: "Button label" },
+          gallery: {
+            kind: "images",
+            label: "Picture gallery",
+            help: `Square crops, three per row. Leave empty to hide. ${PX_TILE_SQUARE}`,
+          },
         },
       },
       {

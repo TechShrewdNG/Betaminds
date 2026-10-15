@@ -65,6 +65,29 @@ export default async function PrPage() {
       />
   );
 
+  // Overview — what PR covers, in brief, before the packages that price it.
+  sections.services = (
+      <section data-reveal className="band band--alt band--ruled">
+        <div className="shell section">
+          <h2 className="h2 mb-28">{pr.services.heading}</h2>
+          <div className="grid col2 col2--tight mb-34">
+            {pr.services.items.map((item) => (
+              <div key={item} className={styles.prDeliverable}>
+                <Icon name="check" size={16} className={styles.tickMark} />
+                {item}
+              </div>
+            ))}
+          </div>
+          <p className="body measure-620" style={{ marginBottom: 16 }}>
+            {pr.services.body1}
+          </p>
+          <p className="body measure-620" style={{ margin: 0 }}>
+            {pr.services.body2}
+          </p>
+        </div>
+      </section>
+  );
+
   // Monthly retainers, set as the Digital Marketplace plans are.
   sections.packages = (
       <section id="packages" data-reveal className="band band--ink band--ruled">
@@ -78,6 +101,7 @@ export default async function PrPage() {
             featuredIndex={pr.packages.featuredIndex}
             selectLabel={pr.packages.selectLabel}
             bestForLabel={pr.packages.bestForLabel}
+            deliverablesLabel={pr.packages.deliverablesLabel}
             ctaHref={(plan) =>
               `/lets-work?need=${encodeURIComponent(`PR — ${plan.name}`)}`
             }
@@ -100,6 +124,7 @@ export default async function PrPage() {
             columns={2}
             selectLabel={pr.packages.selectLabel}
             bestForLabel={pr.packages.bestForLabel}
+            deliverablesLabel={pr.packages.deliverablesLabel}
             ctaHref={(plan) =>
               `/lets-work?need=${encodeURIComponent(`PR — ${plan.name}`)}`
             }
@@ -171,6 +196,30 @@ export default async function PrPage() {
                 </a>
               </div>
             </div>
+
+            {pr.magazine.gallery.length > 0 ? (
+              <div
+                className="mt-40"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 1,
+                  background: "var(--line)",
+                }}
+              >
+                {pr.magazine.gallery.map((src, index) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`${src}-${index}`}
+                    src={src}
+                    alt={`${pr.magazine.heading} gallery image ${index + 1}`}
+                    className="ratio-1-1"
+                    style={{ display: "block", width: "100%", objectFit: "cover" }}
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
   ) : null;

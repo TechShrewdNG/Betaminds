@@ -381,6 +381,53 @@
   margin-bottom: 6px;
 }
 
+/* The deliverables list — collapsed by default so a five-tier page doesn't
+   open as a wall of bullets; same chevron-rotate pattern as the "brands we
+   don't work with" disclosure on the homepage. */
+.planDetails {
+  border-top: 1px solid var(--line);
+}
+
+.planDetailsSummary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 28px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.planDetailsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.planDetailsChevron {
+  flex: none;
+  transform: rotate(90deg);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.planDetails[open] .planDetailsChevron {
+  transform: rotate(-90deg);
+}
+
+.planDetailsBody {
+  padding: 0 28px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planDetailsChevron {
+    transition: none;
+  }
+}
+
 .planCta {
   padding: 20px 28px 26px;
   border-top: 1px solid var(--line);

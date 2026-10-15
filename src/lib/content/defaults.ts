@@ -1436,21 +1436,47 @@ export const defaults = {
       eyebrow: "Public relations",
       heading: "Coverage that puts you in the room",
       accentTail: ".",
-      lead: "Media placements, launches, executive profile and event coverage — planned against a target, not a hunch.",
+      lead: "Your brand deserves more than visibility — it deserves credibility. At Betaminds Africa, our Public Relations services help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
       ctaLabel: "Talk to the PR team →",
       ctaHref: "/lets-work?need=Public%20relations",
+    },
+    services: {
+      heading: "Our PR Services Include:",
+      items: [
+        "Media Relations & Press Coverage",
+        "Press Release Writing & Distribution",
+        "Brand Storytelling",
+        "Corporate Communications",
+        "Event PR & Media Coverage",
+        "Crisis Communication Support",
+        "Influencer & Stakeholder Engagement",
+        "Reputation Management",
+      ],
+      body1:
+        "We help brands tell stories that matter. Through strategic public relations, we position your brand before the right audience, enhance its reputation, and build meaningful relationships with customers, stakeholders, and the media.",
+      body2:
+        "From product launches and corporate announcements to event publicity and brand reputation management, Betaminds Africa develops tailored PR strategies that increase visibility, strengthen credibility, and create lasting impact.",
     },
     packages: {
       heading: "PR packages",
       lead: "Monthly retainers. Each tier carries everything in the one before it.",
       selectLabel: "Enquire →",
       bestForLabel: "Best for",
+      deliverablesLabel: "Monthly deliverables",
       featuredIndex: 1,
       items: [
         {
           name: "Starter",
           tag: "Establish",
           short: "For startups, SMEs and emerging brands.",
+          items: [
+            "PR strategy and monthly media plan",
+            "1 professionally written press release",
+            "3–5 online media placements",
+            "Brand/company profile feature",
+            "Social media PR amplification",
+            "PR performance report",
+          ],
           bestFor:
             "Brands looking to establish credibility and begin building media presence.",
         },
@@ -1458,6 +1484,19 @@ export const defaults = {
           name: "Growth",
           tag: "Build",
           short: "For growing businesses ready for stronger visibility.",
+          items: [
+            "Everything in Starter",
+            "2 press releases",
+            "6–10 media placements",
+            "1 executive interview opportunity",
+            "Digital PR campaign",
+            "Influencer/creator outreach",
+            "Social media amplification",
+            "Media opportunity sourcing",
+            "Brand reputation monitoring",
+            "Monthly PR strategy meeting",
+            "Detailed monthly performance report",
+          ],
           bestFor:
             "SMEs, founders, startups, real estate, hospitality, technology, creative and lifestyle brands.",
         },
@@ -1465,6 +1504,18 @@ export const defaults = {
           name: "Authority",
           tag: "Lead",
           short: "For established brands, executives and organisations.",
+          items: [
+            "Everything in Growth",
+            "3–4 strategic press releases",
+            "10–15+ targeted media placements",
+            "TV/Radio interview pitching",
+            "Opinion/editorial placements",
+            "Podcast and digital interview opportunities",
+            "Awards & recognition strategy",
+            "Speaking opportunity sourcing",
+            "Influencer/KOL partnerships",
+            "Detailed monthly performance report",
+          ],
           bestFor:
             "CEOs, corporate brands, institutions and organisations seeking industry authority.",
         },
@@ -1479,6 +1530,18 @@ export const defaults = {
           tag: "One-off",
           short:
             "For product, company, service, event or brand launches.",
+          items: [
+            "Launch PR strategy",
+            "Press release development",
+            "5–9 media placements",
+            "Founder/CEO interview positioning",
+            "Online publication features",
+            "Influencer/creator amplification",
+            "Event videography",
+            "Photography",
+            "Red carpet hosting",
+            "Post-launch media report",
+          ],
           bestFor:
             "New business launches, product launches, events and campaigns.",
         },
@@ -1486,6 +1549,15 @@ export const defaults = {
           name: "Founder & Executive PR",
           tag: "Personal",
           short: "For the person in front of the brand.",
+          items: [
+            "Media profile",
+            "Monthly opinion article",
+            "Media interview pitching",
+            "Podcast opportunities",
+            "Speaking opportunity sourcing",
+            "Personal reputation monitoring",
+            "Executive media coaching",
+          ],
           bestFor: "",
         },
       ],
@@ -1505,18 +1577,79 @@ export const defaults = {
     magazine: {
       eyebrow: "The Pinnacle Magazine",
       heading: "Read the latest issue",
-      body: "Our own title, covering the founders, brands and ideas moving African business.",
+      body: "The Pinnacle Magazine is Africa's premier publication dedicated to spotlighting visionary leaders, innovative brands, entrepreneurs, creatives, and impactful stories shaping Africa's future. Through compelling features, interviews, and industry insights, we provide a credible platform for individuals and businesses to share their journey, amplify their influence, and connect with a wider audience. We are dedicated to quality storytelling around African culture, fashion, music, governance, women of impact, innovation in tech and business, youth empowerment and Next-Gen sustainability.",
+      // Pending upload via /admin — the first-edition PDF is a 400MB file,
+      // too large to host as a static asset in this repo. The cover and a
+      // gallery (also pending) follow once that's in place.
       cover: "",
       coverAlt: "The Pinnacle Magazine, latest issue cover",
       pdf: "",
       ctaLabel: "Read the magazine →",
+      gallery: [] as string[],
     },
     press: {
       heading: "Press",
       lead: "Newspaper and magazine features we have placed and appeared in.",
       readLabel: "Read publication",
       items: [
-        { title: "", cover: "", href: "" },
+        {
+          title:
+            "Funke Ajayi: Reimagining African Fashion Through Clothings by FMK's Heritage-Inspired Designs",
+          cover: "",
+          href: "https://www.thisdaylive.com/2026/09/19/funke-ajayi-reimagining-african-fashion-through-clothings-by-fmks-heritage-inspired-designs/",
+        },
+        {
+          title:
+            "Made King Realties Redefines Short-Let Hospitality With All-in-One Guest Experience",
+          cover: "",
+          href: "https://www.thisdaylive.com/2026/02/07/made-king-realties-redefines-short-let-hospitality-with-all-in-one-guest-experience/",
+        },
+        {
+          title:
+            "Benson Awoyinka, Funke Akindele, Stephen Akintayo & Others Honoured as Person of the Year",
+          cover: "",
+          href: "https://www.vanguardngr.com/2025/01/benson-awoyinka-funke-akindele-stephen-akintayo-others-honoured-as-person-of-the-year/",
+        },
+        {
+          title:
+            "Turning Creativity Into Careers: Betaminds Africa Champions Youth Empowerment",
+          cover: "",
+          href: "https://independent.ng/turning-creativity-into-careers-betaminds-africa-champions-youth-empowerment/",
+        },
+        {
+          title: "Olubukola Adenugba Wins Fashion Award",
+          cover: "",
+          href: "https://punchng.com/olubukola-adenugba-wins-fashion-award/",
+        },
+        {
+          title:
+            "NCC Chairman Idris Olorunnimbe Honoured at the West Africa On Point's Person of the Year Awards 2025",
+          cover: "",
+          href: "https://guardian.ng/news/ncc-chairman-idris-olorunnimbe-honoured-at-the-west-africa-on-points-person-of-the-year-awards-2025/",
+        },
+        {
+          title: "Firm Unveils Initiative to Empower Young Nigerian Creatives",
+          cover: "",
+          href: "https://punchng.com/firm-unveils-initiative-to-empower-young-nigerian-creatives/",
+        },
+        {
+          title:
+            "Umunubo, Arogundade, Sir Uyi, Don Jazzy & Others Receive West Africa On Point Person of the Year Honours",
+          cover: "",
+          href: "https://guardian.ng/saturday-magazine/youth-magazine/umunubo-arogundade-sir-uyi-don-jazzy-others-receive-west-africa-on-point-person-of-the-year-honours/",
+        },
+        {
+          title:
+            "Making It Stand Worthwhile Is Biggest Challenge for Start-ups — Okunrotifa Ileriayo",
+          cover: "",
+          href: "https://www.vanguardngr.com/2023/01/making-it-stand-worthwhile-is-biggest-challenge-for-start-ups-okunrotifa-ileriayo/",
+        },
+        {
+          title:
+            "Creativity as a Tool for Business Socio-Economic Growth — Okunrotifa Ileriayo",
+          cover: "",
+          href: "https://independent.ng/creativity-as-a-tool-for-business-socio-economic-growth-okunrotifa-ileriayo/",
+        },
       ],
     },
     billboards: {
