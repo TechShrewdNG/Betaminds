@@ -383,20 +383,20 @@ export const defaults = {
       eyebrow: "PR & events",
       heading: "Coverage that puts you in the room.",
       body: "Media placements, launches, executive profile and event coverage — planned against a target, not a hunch.",
-      ctaLabel: "Talk to the PR team",
+      ctaLabel: "Learn more",
       ctaHref: "/pr",
     },
     marketplace: {
       eyebrow: "Digital marketplace",
       heading: "Build. Scale. Sell. Grow.",
       body: "Not a pile of standalone services. One commerce ecosystem: branding, content, website, ads, customer experience and analytics, planned and run together.",
-      ctaLabel: "Book a discovery call",
+      ctaLabel: "Learn more",
       ctaHref: "/digital-ecosystem",
     },
     media: {
       eyebrow: "Media services",
       heading: "Seven packages. Click one to see the deliverables.",
-      linkLabel: "All media services →",
+      linkLabel: "Learn more →",
       enquireLabel: "Enquire",
     },
     summit: {
@@ -405,7 +405,7 @@ export const defaults = {
       body: "More than an annual event. It's a movement turning creative talent into careers and businesses that last.",
       image: IMG(8761808, 1800),
       imageAlt: "Summit attendee",
-      ctaLabel: "Explore the summit →",
+      ctaLabel: "Learn more →",
       ctaHref: "/summit",
     },
     portfolio: {
@@ -415,7 +415,7 @@ export const defaults = {
       viewLabel: "View project",
       /** How many of the projects to show on the homepage grid. */
       limit: 6,
-      allLinkLabel: "All work →",
+      allLinkLabel: "Learn more →",
     },
     testimonials: {
       label: "What clients say",
@@ -446,7 +446,7 @@ export const defaults = {
     academy: {
       eyebrow: "Betaminds Academy",
       heading: "Learn. Build. Earn.",
-      ctaLabel: "Visit academy →",
+      ctaLabel: "Learn more →",
       ctaHref: "/academy",
       /**
        * Real courses from the schools below, not generic training formats —
