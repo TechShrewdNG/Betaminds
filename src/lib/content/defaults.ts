@@ -49,22 +49,20 @@ const f = (
 });
 
 /**
- * Shorthand for a portfolio project.
+ * Shorthand for a case-study project.
  *
- * The structure is real; the narrative copy is placeholder, and `results` is left
- * empty on purpose. Inventing performance figures for a client's case study would
- * put fabricated claims on a live marketing site — the editor fills those in with
- * numbers they can stand behind.
+ * The structure is real; the PDF is not — there's no case-study document to
+ * link to until one is uploaded in /admin, so this leaves `pdf` empty. A
+ * project with no PDF yet still gets its tile on the site; the tile just
+ * isn't a link until then.
  */
 const proj = (
-  slug: string,
   name: string,
   industry: string,
   service: string,
   thumb: string,
   hero: string,
 ) => ({
-  slug,
   name,
   industry,
   service,
@@ -72,14 +70,30 @@ const proj = (
   client: name,
   image: thumb,
   heroImage: hero,
-  summary: `A ${service.toLowerCase()} engagement for ${name}. Replace this with the real project summary.`,
-  challenge: "What the brand was up against when they came to us.",
-  approach: "What we did, in the order we did it, and why.",
-  outcome: "What changed for the business afterwards.",
-  results: [] as { n: string; label: string }[],
-  gallery: [] as string[],
-  quote: "",
-  quoteAuthor: "",
+  pdf: "",
+  published: true,
+});
+
+/**
+ * Shorthand for a blog post.
+ *
+ * The structure is real; the body copy is placeholder. The editor replaces it
+ * with the actual post before publishing.
+ */
+const post = (
+  slug: string,
+  title: string,
+  author: string,
+  date: string,
+  cover: string,
+) => ({
+  slug,
+  title,
+  excerpt: `Replace this with a one- or two-line summary of "${title}".`,
+  coverImage: cover,
+  body: `<p>Replace this with the full post.</p>`,
+  author,
+  date,
   published: true,
 });
 
@@ -87,18 +101,20 @@ export const defaults = {
   global: {
     brand: {
       logo: "/BETAMINDS-AFRICA.png",
-      wordmark: "BETAMINDS",
-      wordmarkSub: "AFRICA",
+      wordmark: "Betaminds",
+      wordmarkSub: "Africa",
       tagline: "We add the spark that makes brands move.",
     },
     nav: {
       items: [
-        { label: "Home", href: "/" },
-        { label: "Portfolio", href: "/portfolio" },
-        { label: "Digital Ecosystem", href: "/digital-ecosystem" },
+        { label: "Home", href: "/home" },
+        { label: "Projects", href: "/projects" },
+        { label: "Digital Marketplace", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
+        { label: "PR & Events", href: "/pr" },
         { label: "Academy", href: "/academy" },
         { label: "Summit", href: "/summit" },
+        { label: "Blog", href: "/blog" },
         { label: "Let's Work", href: "/lets-work" },
       ],
       ctaLabel: "Let's Work",
@@ -120,12 +136,19 @@ export const defaults = {
         { label: "YT", href: "#" },
       ],
     },
+    // No number seeded on purpose — the button stays off the live site until
+    // a real one is entered in Site-wide → Floating WhatsApp button.
+    whatsapp: {
+      enabled: true,
+      number: "",
+      message: "Hi Betaminds Africa, I'd like to talk about a project.",
+    },
     footer: {
       columns: [
         {
           title: "Explore",
           links: [
-            { label: "Home", href: "/" },
+            { label: "Home", href: "/home" },
             { label: "Digital marketplace", href: "/digital-ecosystem" },
             { label: "Media services", href: "/media-services" },
           ],
@@ -142,7 +165,8 @@ export const defaults = {
           title: "Connect",
           links: [
             { label: "Let's work", href: "/lets-work" },
-            { label: "Portfolio", href: "/portfolio" },
+            { label: "Projects", href: "/projects" },
+            { label: "Blog", href: "/blog" },
             { label: "Book a discovery call", href: "/digital-ecosystem#book" },
           ],
         },
@@ -168,26 +192,71 @@ export const defaults = {
       description:
         "A Lagos creative and digital commerce agency. We build brands, the digital commerce systems behind them, and the people who run both.",
     },
-    hero: {
-      image: IMG(5466279, 1800),
-      imageAlt: "Betaminds creative team in session",
-      eyebrow: "Creative × Digital × Commerce",
-      heading: "We add the spark that makes brands move",
-      accentTail: ".",
-      lead: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
-      promise: "Strategy first. Craft always. Growth you can measure.",
-      ctas: [
+    /**
+     * The opening slider, used in two places: full-screen at `/` as the splash
+     * a visitor lands on, and again as the homepage's own hero once they are
+     * inside the site. One set of slides drives both, so the opening moment
+     * carries through instead of dropping to an unrelated still.
+     *
+     * `enabled` only controls the splash. Switching it off sends `/` straight
+     * to the homepage, where these slides still open the page.
+     *
+     * `video` is empty on every seeded slide on purpose: there is no stock
+     * footage to ship, and an empty value falls back to the slide's still. Upload
+     * real footage in the CMS (Home → Opening slider) to switch each one over.
+     */
+    heroSlider: {
+      enabled: true,
+      autoplay: true,
+      interval: 7,
+      overlay: 45,
+      slides: [
         {
-          label: "Explore digital ecosystem",
-          href: "/digital-ecosystem",
-          style: "accent",
+          eyebrow: "Creative × Digital × Commerce",
+          heading: "We add the spark that makes brands move",
+          body: "We build brands, the digital commerce systems behind them, and the people who run both. Based in Lagos, working across the continent.",
+          video: "",
+          image: IMG(5466279, 1800),
+          imageAlt: "Betaminds creative team in session",
+          primaryLabel: "Explore digital ecosystem",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "Explore media services",
+          secondaryHref: "/media-services",
         },
         {
-          label: "Explore media services",
-          href: "/media-services",
-          style: "outline",
+          eyebrow: "Digital marketplace",
+          heading: "Commerce systems that actually convert",
+          body: "Storefronts, payments and the operations behind them — built to be measured, and rebuilt when the numbers say so.",
+          video: "",
+          image: IMG(3184292, 1800),
+          imageAlt: "Team reviewing analytics on a screen",
+          primaryLabel: "See how we build",
+          primaryHref: "/digital-ecosystem",
+          secondaryLabel: "View our work",
+          secondaryHref: "/projects",
         },
-        { label: "Betaminds Academy", href: "/academy", style: "outline" },
+        {
+          eyebrow: "Betaminds Academy",
+          heading: "And the people who run both",
+          body: "We train the creatives and operators African brands are short of — practical, cohort-based, taught by people still doing the work.",
+          video: "",
+          image: IMG(7683740, 1800),
+          imageAlt: "Academy cohort in a workshop",
+          primaryLabel: "Explore the Academy",
+          primaryHref: "/academy",
+          secondaryLabel: "Talk to us",
+          secondaryHref: "/lets-work",
+        },
+      ],
+    },
+    /** Lines for the scrolling statement band. Kept short — they run at
+     *  display scale and have to be readable while moving. */
+    statement: {
+      lines: [
+        "One partner",
+        "One unified strategy",
+        "Multiple digital solutions",
+        "Better results",
       ],
     },
     trusted: {
@@ -202,8 +271,8 @@ export const defaults = {
       ],
     },
     about: {
-      eyebrow: "01 / Who we are",
-      heading: "We take the idea all the way, not just the pretty part.",
+      eyebrow: "Who we are",
+      heading: "We take the idea *all the way*, not just the _pretty part_.",
       body1:
         "Creativity meets strategy. We help brands establish a distinct identity and connect with their audience in ways that actually convert. Identity, content, commerce, and the systems that keep all of it running.",
       body2: "One team, from the first workshop to the campaign report.",
@@ -233,70 +302,127 @@ export const defaults = {
       ],
     },
     team: {
-      eyebrow: "02 / Meet the spark",
+      eyebrow: "Meet the spark",
       heading: "The people behind the work.",
-      note: "Hover a portrait for socials.",
       members: [
         {
-          name: "Founder & CD",
-          role: "Creative Direction",
-          image: IMG(29387557, 700),
-          instagram: "#",
-          linkedin: "#",
+          name: "Ileriayo S. Okunrotifa",
+          role: "MD / Founder",
+          image: "/team/ileriayo-okunrotifa.jpg",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Brand Lead",
-          role: "Identity & Systems",
-          image: IMG(5466267, 700),
-          instagram: "#",
-          linkedin: "#",
+          name: "Ryzer Uffort",
+          role: "Brand Identity Designer / Betaminds Academy Facilitator",
+          image: "/team/ryzer-uffort.jpg",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Media Lead",
-          role: "Film & Photography",
-          image: IMG(7792860, 700),
-          instagram: "#",
-          linkedin: "#",
+          name: "Adefolaju Michael",
+          role: "DOP / Betaminds Academy Facilitator",
+          image: "/team/adefolaju-michael.jpg",
+          instagram: "",
+          linkedin: "",
         },
         {
-          name: "Growth Lead",
-          role: "Performance & Social",
+          name: "Uchegbu Stanley Chibuzo",
+          role: "Virtual Designer",
           image: IMG(5439174, 700),
-          instagram: "#",
-          linkedin: "#",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Benita Oseremi Obajuobalo",
+          role: "Copywriter",
+          image: IMG(3869639, 700),
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Ayanleye Ayodeji",
+          role: "Visual Artist / Betaminds Academy Facilitator",
+          image: IMG(5934188, 700),
+          instagram: "",
+          linkedin: "",
+        },
+        // Role left blank — to be filled in from /admin once titles are
+        // confirmed.
+        {
+          name: "Adebola Titilola",
+          role: "",
+          image: "/team/adebola-titilola.jpg",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Okeke Munachimso Favour",
+          role: "",
+          image: "/team/okeke-munachimso-favour.jpg",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Olamide Odutolu",
+          role: "",
+          image: "/team/olamide-odutolu.jpg",
+          instagram: "",
+          linkedin: "",
+        },
+        {
+          name: "Oyewole Asifat",
+          role: "",
+          image: "/team/oyewole-asifat.jpg",
+          instagram: "",
+          linkedin: "",
         },
       ],
     },
+    pr: {
+      eyebrow: "PR & events",
+      heading: "Your brand has a story — let's make sure the right people hear it.",
+      body: "You and your brand deserve more than visibility—you deserve credibility and meaningful connection. We help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
+      items: [
+        "Public relations packages",
+        "Event PR and event coverage",
+        "The Pinnacle Magazine",
+        "Press (newspaper/magazine) publication",
+        "Billboard placement",
+      ],
+      ctaLabel: "Learn more",
+      ctaHref: "/pr",
+    },
     marketplace: {
-      eyebrow: "03 / Digital marketplace",
+      eyebrow: "Digital marketplace",
       heading: "Build. Scale. Sell. Grow.",
       body: "Not a pile of standalone services. One commerce ecosystem: branding, content, website, ads, customer experience and analytics, planned and run together.",
-      ctaLabel: "Book a discovery call",
+      ctaLabel: "Learn more",
       ctaHref: "/digital-ecosystem",
     },
     media: {
-      eyebrow: "04 / Media services",
+      eyebrow: "Media services",
       heading: "Seven packages. Click one to see the deliverables.",
-      linkLabel: "All media services →",
+      linkLabel: "Learn more →",
       enquireLabel: "Enquire",
     },
     summit: {
-      eyebrow: "05 / The Summit",
+      eyebrow: "The Summit",
       heading: "Betaminds Africa Creative Empowerment Summit",
       body: "More than an annual event. It's a movement turning creative talent into careers and businesses that last.",
       image: IMG(8761808, 1800),
       imageAlt: "Summit attendee",
-      ctaLabel: "Explore the summit →",
+      ctaLabel: "Learn more →",
       ctaHref: "/summit",
     },
     portfolio: {
-      eyebrow: "06 / Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work.",
       note: "Hover for industry & service.",
       viewLabel: "View project",
       /** How many of the projects to show on the homepage grid. */
       limit: 6,
-      allLinkLabel: "All work →",
+      allLinkLabel: "Learn more →",
     },
     testimonials: {
       label: "What clients say",
@@ -325,20 +451,41 @@ export const defaults = {
       ],
     },
     academy: {
-      eyebrow: "07 / Betaminds Academy",
+      eyebrow: "Betaminds Academy",
       heading: "Learn. Build. Earn.",
-      ctaLabel: "Visit academy →",
+      ctaLabel: "Learn more →",
       ctaHref: "/academy",
+      /**
+       * Real courses from the schools below, not generic training formats —
+       * a visitor should see what they'd actually be learning, not a label
+       * like "Masterclass" that could describe any of them.
+       */
       grid: [
-        { label: "Masterclass", image: IMG(9363120, 600) },
-        { label: "Training", image: IMG(8761715, 600) },
-        { label: "Workshop", image: IMG(7793169, 600) },
-        { label: "Community", image: IMG(3869639, 600) },
-        { label: "Bootcamp", image: IMG(5060991, 600) },
+        { label: "Photography", image: IMG(3184291, 600) },
+        { label: "Videography", image: IMG(2529159, 600) },
+        { label: "Content Creation", image: IMG(3869639, 600) },
+        { label: "Digital Marketing", image: IMG(7793169, 600) },
+        { label: "UI/UX Design", image: IMG(8761715, 600) },
       ],
     },
+    commercials: {
+      eyebrow: "See it in motion",
+      heading: "Two sides of the studio, on camera.",
+      marketplace: {
+        label: "Digital Marketplace",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+      academy: {
+        label: "Betaminds Academy",
+        video: "",
+        poster: "",
+        posterAlt: "",
+      },
+    },
     finalCta: {
-      eyebrow: "08 / Let's work",
+      eyebrow: "Let's work",
       heading: "Let's add the spark to your vision.",
       ctaLabel: "Let's work →",
       ctaHref: "/lets-work",
@@ -354,149 +501,132 @@ export const defaults = {
         "Brand identity, commerce ecosystems, content and property film for brands across Africa.",
     },
     index: {
-      eyebrow: "Portfolio",
+      eyebrow: "Projects",
       heading: "Selected work",
       accentTail: ".",
       lead: "Identity, commerce, content and film. A few of the engagements we can talk about.",
       emptyMessage: "Case studies are on their way. In the meantime, tell us what you're building.",
       readLabel: "Read the case study →",
     },
+    list: {
+      items: [
+        proj("Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
+        proj("Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
+        proj("Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
+        proj("Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
+        proj("MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
+        proj("Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
+      ],
+    },
+  },
+
+  blog: {
+    seo: {
+      title: "Blog — Betaminds Africa",
+      description:
+        "Notes on brand, content, commerce and craft from the Betaminds Africa studio.",
+    },
+    index: {
+      eyebrow: "Blog",
+      heading: "From the studio",
+      accentTail: ".",
+      lead: "Field notes on brand, content, commerce and craft — from the team building it.",
+      emptyMessage: "Nothing published yet. Check back soon.",
+      readLabel: "Read the post →",
+    },
     detail: {
-      briefLabel: "The brief",
-      challengeLabel: "The challenge",
-      approachLabel: "What we did",
-      outcomeLabel: "The outcome",
-      resultsLabel: "Results",
-      galleryLabel: "From the work",
-      nextLabel: "Next project",
-      ctaHeading: "Something like this in mind?",
+      backLabel: "All posts",
+      nextLabel: "Next post",
+      ctaHeading: "Got a project in mind?",
       ctaLabel: "Let's work →",
       ctaHref: "/lets-work",
     },
     list: {
       items: [
-        proj("sunset-hospitality", "Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
-        proj("nourish-med", "Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
-        proj("charoite-homes", "Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
-        proj("mama-africa-foods", "Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
-        proj("mkr-logistics", "MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
-        proj("glams-beauty", "Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
+        post(
+          "building-brands-that-travel",
+          "Building brands that travel across African markets",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(3869639, 1200),
+        ),
+        post(
+          "content-that-converts",
+          "Content that converts: what we learned from a year of campaigns",
+          "Betaminds Studio",
+          "January 2026",
+          IMG(8761735, 1200),
+        ),
+        post(
+          "why-commerce-ecosystems-beat-standalone-sites",
+          "Why commerce ecosystems beat standalone websites",
+          "Betaminds Studio",
+          "December 2025",
+          IMG(8761808, 1200),
+        ),
       ],
     },
   },
 
   ecosystem: {
     seo: {
-      title: "Digital Commerce & Marketplace Solutions — Betaminds Africa",
+      title: "Digital Marketplace — Betaminds Africa",
       description:
         "Build. Scale. Sell. Grow. One integrated digital commerce solution: branding, content, website, ads, customer experience and analytics.",
     },
     hero: {
       image: IMG(5060980, 1800),
-      imageAlt: "Building a digital commerce ecosystem",
-      eyebrow: "Digital ecosystem",
-      heading: "Digital Commerce & Marketplace Solutions",
+      imageAlt: "Building a digital marketplace",
+      eyebrow: "Digital marketplace",
+      heading: "Digital Marketplace",
       accentLine: "Build. Scale. Sell. Grow.",
       lead: "Growth is driven by visibility, strategy, technology and customer experience. We help businesses build, launch, market and grow their online presence through one integrated solution instead of a pile of standalone services.",
       ctaLabel: "Book a discovery call →",
       ctaHref: "#book",
     },
-    solution: {
-      heading: "Our Digital Commerce Solution",
-      body: "The essential components required to build and grow a successful online business over time.",
-      items: [
-        {
-          name: "Brand identity development & refresh",
-          body: "Positioning, naming, identity systems and the guidelines that keep them consistent.",
-        },
-        {
-          name: "Brand strategy & planning",
-          body: "Where you play, how you win, and the quarterly plan that makes it happen.",
-        },
-        {
-          name: "Content creation & commercial production",
-          body: "Photography, film and copy produced at commercial standard, on a calendar.",
-        },
-        {
-          name: "Website design & management",
-          body: "Designed, built, maintained. Fast, clear and easy for your team to update.",
-        },
-        {
-          name: "Search engine optimization",
-          body: "Technical foundations and content that make you findable where buyers look.",
-        },
-        {
-          name: "Payment integration",
-          body: "Checkout that works for local and cross-border customers alike.",
-        },
-        {
-          name: "Social media management",
-          body: "Channel strategy, publishing, community and influencer coordination.",
-        },
-        {
-          name: "Sponsored ad placement",
-          body: "Meta, Google and TikTok campaigns planned against a target and optimized weekly.",
-        },
-        {
-          name: "Customer experience management",
-          body: "Enquiry handling, response systems and retention that protect the revenue you win.",
-        },
-        {
-          name: "Performance analytics",
-          body: "One dashboard, plain-language reporting, decisions you can defend.",
-        },
+    statement: {
+      lines: [
+        "One partner",
+        "One unified strategy",
+        "Multiple digital solutions",
+        "Better results",
       ],
+    },
+    promo: {
+      label: "See it in motion",
+      heading: "What a Digital Marketplace build looks like",
+      body: "A walkthrough of a recent build: the strategy, the storefront, the launch.",
+      video: "",
+      poster: "",
+      posterAlt: "",
     },
     plans: {
       heading: "Engagement plans",
+      lead: "Bundled packages, not a pile of standalone services — every tier below carries everything in the one before it.",
       /** The Growth plan is highlighted — index 1, matching the prototype's `plan: 1`. */
       featuredIndex: 1,
+      selectLabel: "Select Plan",
       items: [
         {
           name: "Starter Partnership",
           tag: "Establish",
+          duration: "3 months",
           short:
             "For businesses establishing, repositioning, or accelerating their digital presence with a focused commerce strategy and execution plan.",
-          includes: [
-            "Brand identity development or refresh",
-            "Digital commerce strategy document",
-            "Website design (up to 5 pages)",
-            "Content shoot (one production day)",
-            "Social media setup & 30-day calendar",
-            "Payment integration",
-            "Monthly performance report",
-          ],
         },
         {
           name: "Growth Partnership",
           tag: "Most chosen",
+          duration: "6 months",
           short:
             "For businesses seeking sustained digital growth, stronger market positioning, and continuous optimization across the ecosystem.",
-          includes: [
-            "Everything in Starter",
-            "Brand strategy & quarterly planning",
-            "Ongoing content production (monthly)",
-            "Website management & SEO",
-            "Full social media management",
-            "Sponsored ad placement & management",
-            "Customer experience management",
-            "Bi-weekly performance analytics",
-          ],
         },
         {
           name: "Strategic Partnership",
           tag: "Scale",
+          duration: "1 year",
           short:
             "A long-term engagement for businesses scaling digital operations, deepening customer relationships, and driving consistent growth.",
-          includes: [
-            "Everything in Growth",
-            "Dedicated account & strategy lead",
-            "Commercial production at scale",
-            "Marketplace expansion (Jumia, IG Shop, WhatsApp)",
-            "Conversion rate optimization programme",
-            "Customer retention & loyalty systems",
-            "Quarterly business review with leadership",
-          ],
         },
       ],
     },
@@ -512,11 +642,10 @@ export const defaults = {
     questionnaire: {
       eyebrow: "Before you book",
       heading: "Tell us about your brand",
-      body: "A few quick questions help us prepare a Digital Commerce Strategy that's actually relevant to your business before we sit down on the call.",
+      body: "A few direct questions — about a minute — so we can prepare for the call.",
       steps: [
-        "Fill in the questionnaire. It takes about three minutes.",
+        "Answer a few quick questions.",
         "You get a link to pick a time on our calendar.",
-        "We review your answers before your session.",
         "We meet, discuss, and recommend a plan.",
       ],
       ctaLabel: "Start the questionnaire →",
@@ -527,22 +656,26 @@ export const defaults = {
        * success screen.
        */
       schedulingUrl: "",
-      submitLabel: "Submit and get my scheduling link",
+      submitLabel: "Get My Schedule Link",
       successHeading: "Thank you. We have your answers.",
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
       /**
-       * The eight parts from structure.txt, as editable field definitions.
-       * Starred fields in the brief are the `required: true` ones here. The
-       * outline shown beside the form is derived from these labels, so there is
-       * one source of truth.
+       * Cut down from the original eight-part, 25-field version: brand basics
+       * and what's needed, nothing a call itself can't cover. The outline
+       * shown beside the form is derived from these labels, so there is one
+       * source of truth.
        */
       groups: [
         {
-          title: "Contact & brand",
+          title: "Your brand",
           fields: [
-            f("email", "Email", "email", { required: true, half: true, placeholder: "you@brand.com" }),
             f("brandName", "Brand name", "text", { required: true, half: true }),
+            f("email", "Email", "email", {
+              required: true,
+              half: true,
+              placeholder: "you@brand.com",
+            }),
             f("phone", "Phone", "tel", { required: true, half: true }),
             f("website", "Website / social media", "text", {
               required: true,
@@ -552,92 +685,7 @@ export const defaults = {
           ],
         },
         {
-          title: "Where is your brand based?",
-          fields: [
-            f("address1", "Address line 1", "text", { half: true }),
-            f("city", "City", "text", { half: true }),
-            f("region", "State / province / region", "text", { half: true }),
-            f("country", "Country", "text", { required: true, half: true }),
-          ],
-        },
-        {
-          title: "About your business",
-          fields: [
-            f("sells", "What does your brand sell?", "select", {
-              half: true,
-              options: ["Products", "Services", "Both"],
-            }),
-            f("industry", "Industry / category", "text", { half: true }),
-            f("yearsTrading", "How long have you been in business?", "text", {
-              required: true,
-              half: true,
-              placeholder: "e.g. 3 years",
-            }),
-            f("channel", "Do you sell online, offline, or both?", "select", {
-              half: true,
-              options: ["Online", "Offline", "Both"],
-            }),
-            f(
-              "reach",
-              "Do you sell locally, nationally, or across borders?",
-              "select",
-              { half: true, options: ["Locally", "Nationally", "Across borders"] },
-            ),
-          ],
-        },
-        {
-          title: "Current digital presence",
-          fields: [
-            f("marketplaces", "Marketplaces you currently sell through", "textarea", {
-              placeholder: "Jumia, Instagram Shop, WhatsApp Business…",
-            }),
-            f("paidAds", "Do you currently run paid ads anywhere?", "textarea"),
-            f("brandAssets", "Existing brand assets", "textarea", {
-              placeholder: "Logo, guidelines, product photos…",
-            }),
-          ],
-        },
-        {
-          title: "Team & decision-making",
-          fields: [
-            f("teamStructure", "What is your team's structure?", "textarea", {
-              required: true,
-            }),
-            f(
-              "internalOrOutsource",
-              "Internal team we'd work alongside, or fully outsourcing?",
-              "select",
-              {
-                options: [
-                  "We have an internal team",
-                  "Fully outsourcing to you",
-                  "A mix of both",
-                ],
-              },
-            ),
-            f("whoElseDecides", "Who else is involved in this decision?", "text", {
-              half: true,
-              placeholder: "Just me / a co-founder / a team",
-            }),
-            f(
-              "budgetAuthority",
-              "Are you the sole decision-maker for budget approval?",
-              "select",
-              { half: true, options: ["Yes", "No", "Shared"] },
-            ),
-          ],
-        },
-        {
-          title: "Why now?",
-          fields: [
-            f("whyNow", "What's prompting you to reach out now?", "textarea", {
-              required: true,
-              placeholder: "A launch, a rebrand, stalled sales…",
-            }),
-          ],
-        },
-        {
-          title: "Engagement details",
+          title: "What you need",
           fields: [
             f(
               "plan",
@@ -653,20 +701,20 @@ export const defaults = {
                 ],
               },
             ),
-            f("startDate", "Ideal services start date", "date", {
-              required: true,
-              half: true,
-            }),
             f("budget", "What is your budget?", "text", {
               required: true,
               half: true,
               placeholder: "Range is fine",
             }),
+            f("startDate", "Ideal start date", "date", {
+              required: true,
+              half: true,
+            }),
+            f("whyNow", "What's prompting you to reach out now?", "textarea", {
+              required: true,
+              placeholder: "A launch, a rebrand, stalled sales…",
+            }),
           ],
-        },
-        {
-          title: "Just one more",
-          fields: [f("howHeard", "How did you hear about us?", "text")],
         },
       ],
     },
@@ -686,14 +734,23 @@ export const defaults = {
       accentTail: ".",
       lead: "Seven packages, each with a defined scope and defined deliverables. Pick one, or let us shape a combination around the brief.",
     },
+    proof: {
+      heading: "The work behind the packages",
+      linkLabel: "All projects",
+    },
     packages: {
+      contentsLabel: "In this page",
       deliverablesLabel: "Deliverables",
       enquirePrefix: "Enquire about",
+      rateCardLabel: "View rate card",
       items: [
         {
           label: "Brand identity",
           blurb:
             "An identity system your team can actually use, not a logo file and good luck.",
+          // Reuses the Brand identity project's own photo (Sunset Hospitality)
+          // for visual continuity between the two.
+          image: IMG(9490631, 900),
           items: [
             "Discovery & positioning workshop",
             "Logo suite and responsive marks",
@@ -701,21 +758,28 @@ export const defaults = {
             "Brand guidelines document",
             "Stationery and social templates",
           ],
+          // Pending upload via /admin.
+          rateCard: "",
         },
         {
           label: "Company profile",
           blurb: "The document that opens doors before you walk in the room.",
+          // Pending a real photo via /admin — falls back to no banner.
+          image: "",
           items: [
             "Copywriting and narrative structure",
             "Editorial design and layout",
             "Infographics and data visuals",
             "Print-ready and digital versions",
           ],
+          rateCard: "",
         },
         {
           label: "Content creation",
           blurb:
             "Commercial-grade content built around a calendar, not a whim.",
+          // Reuses the Academy's Content Creation course photo.
+          image: IMG(3869639, 900),
           items: [
             "Creative direction and shot list",
             "Photography, studio or on location",
@@ -723,11 +787,14 @@ export const defaults = {
             "Copy and caption bank",
             "Monthly content calendar",
           ],
+          rateCard: "",
         },
         {
           label: "Website design",
           blurb:
             "Fast, clear sites designed to convert and easy for you to update.",
+          // Reuses the Website design project's own photo (MKR Logistics).
+          image: IMG(5058927, 900),
           items: [
             "UX structure and wireframes",
             "Responsive UI design",
@@ -735,10 +802,13 @@ export const defaults = {
             "SEO foundations",
             "Payment and analytics integration",
           ],
+          rateCard: "",
         },
         {
           label: "Social media management",
           blurb: "Consistent presence, community and measurable growth.",
+          // Reuses the Social management project's own photo (Glams Beauty).
+          image: IMG(4183516, 900),
           items: [
             "Channel strategy and tone of voice",
             "Content scheduling and publishing",
@@ -746,20 +816,26 @@ export const defaults = {
             "Influencer coordination",
             "Monthly analytics report",
           ],
+          rateCard: "",
         },
         {
           label: "Property photography & videography",
           blurb: "Listings and developments that sell on sight.",
+          // Reuses the Property film project's own photo (Charoite Homes).
+          image: IMG(12179670, 900),
           items: [
             "Interior and exterior photography",
             "Walkthrough and drone video",
             "Twilight and lifestyle sets",
             "Retouching and delivery in listing formats",
           ],
+          rateCard: "",
         },
         {
           label: "Ads campaign placement",
           blurb: "Paid media planned against a target, not a hunch.",
+          // Reuses the Nourish Med project's photo (tagged "Content & ads").
+          image: IMG(8730849, 900),
           items: [
             "Campaign strategy and audience mapping",
             "Creative production for ad formats",
@@ -767,6 +843,7 @@ export const defaults = {
             "Budget management and pacing",
             "Weekly optimization and reporting",
           ],
+          rateCard: "",
         },
       ],
     },
@@ -803,23 +880,144 @@ export const defaults = {
       schools: [
         {
           name: "School of Creative Media",
+          image: IMG(3184291, 1400),
+          imageAlt: "Students in a Betaminds Academy creative media class",
           courses: [
-            { name: "Photography", weeks: "10 weeks", mode: "Hybrid" },
-            { name: "Videography", weeks: "12 weeks", mode: "Physical" },
-            { name: "Content Creation", weeks: "8 weeks", mode: "Hybrid" },
-            { name: "Animation", weeks: "12 weeks", mode: "Virtual" },
-            { name: "Motion Graphics", weeks: "10 weeks", mode: "Hybrid" },
+            {
+              name: "Photography",
+              icon: "camera",
+              duration: "10 weeks",
+              mode: "Hybrid",
+              // Reuses the same placeholder as the homepage's academy grid,
+              // for visual continuity between the two.
+              image: IMG(3184291, 900),
+              description:
+                "Camera fundamentals, lighting and composition through to a portfolio-ready editorial shoot.",
+            },
+            {
+              name: "Videography",
+              icon: "video",
+              duration: "12 weeks",
+              mode: "Physical",
+              image: IMG(2529159, 900),
+              description:
+                "Camera operation, shot-listing and on-set craft for narrative, commercial and event film.",
+            },
+            {
+              name: "Content Creation",
+              icon: "pen",
+              duration: "8 weeks",
+              mode: "Hybrid",
+              image: IMG(3869639, 900),
+              description:
+                "Planning, filming and editing short-form content for brands and personal platforms.",
+            },
+            {
+              name: "Animation",
+              icon: "film",
+              duration: "12 weeks",
+              mode: "Virtual",
+              // No placeholder picked for this one — pending a real or
+              // stock photo added through /admin. Falls back to the icon.
+              image: "",
+              description:
+                "2D animation principles, storyboarding and production workflow from concept to render.",
+            },
+            {
+              name: "Motion Graphics",
+              icon: "sparkle",
+              duration: "10 weeks",
+              mode: "Hybrid",
+              image: "",
+              description:
+                "Typography, compositing and animation for title sequences, ads and social content.",
+            },
           ],
         },
         {
           name: "School of Digital Technology",
+          image: IMG(4144923, 1400),
+          imageAlt: "Students in a Betaminds Academy digital technology class",
           courses: [
-            { name: "Digital Marketing", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "UI/UX Design", weeks: "12 weeks", mode: "Hybrid" },
-            { name: "Website Development", weeks: "16 weeks", mode: "Hybrid" },
-            { name: "AI Productivity", weeks: "6 weeks", mode: "Virtual" },
-            { name: "SEO", weeks: "6 weeks", mode: "Virtual" },
+            {
+              name: "Digital Marketing",
+              icon: "megaphone",
+              duration: "12 weeks",
+              mode: "Hybrid",
+              image: IMG(7793169, 900),
+              description:
+                "Strategy, paid media, social and analytics for running campaigns that convert.",
+            },
+            {
+              name: "UI/UX Design",
+              icon: "layout",
+              duration: "12 weeks",
+              mode: "Hybrid",
+              image: IMG(8761715, 900),
+              description:
+                "Research, wireframing and prototyping toward a shippable, user-tested product design.",
+            },
+            {
+              name: "Website Development",
+              icon: "code",
+              duration: "16 weeks",
+              mode: "Hybrid",
+              image: "",
+              description:
+                "Front-end and back-end fundamentals through to a deployed, full-stack project.",
+            },
+            {
+              name: "AI Productivity",
+              icon: "cpu",
+              duration: "6 weeks",
+              mode: "Virtual",
+              image: "",
+              description:
+                "Practical AI tooling for research, writing, design and workflow automation.",
+            },
+            {
+              name: "SEO",
+              icon: "search",
+              duration: "6 weeks",
+              mode: "Virtual",
+              image: "",
+              description:
+                "Technical, on-page and content SEO to grow organic search visibility.",
+            },
           ],
+        },
+      ],
+    },
+    crashCourses: {
+      heading: "Crash courses",
+      body: "Short, intensive sessions for one specific skill — two to three days, hands-on, no long commitment.",
+      items: [
+        {
+          name: "Reels Editing Intensive",
+          icon: "video",
+          duration: "2 days",
+          mode: "Physical",
+          image: IMG(2529159, 400),
+          description:
+            "Hook, pace and edit short-form video that holds attention, using footage you bring on day one.",
+        },
+        {
+          name: "AI Prompt Workshop",
+          icon: "cpu",
+          duration: "2 days",
+          mode: "Virtual",
+          image: "",
+          description:
+            "Practical prompting for research, writing and design work, with tools you'll use the same week.",
+        },
+        {
+          name: "Portfolio Sprint",
+          icon: "layout",
+          duration: "3 days",
+          mode: "Hybrid",
+          image: "",
+          description:
+            "Leave with a finished, presentable portfolio built and critiqued over three focused days.",
         },
       ],
     },
@@ -899,18 +1097,6 @@ export const defaults = {
         },
       ],
     },
-    partners: {
-      eyebrow: "Partners",
-      heading: "Trusted by the institutions that hire our graduates",
-      logos: [
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-        { name: "Logo", logo: "" },
-      ],
-    },
     foundation: {
       eyebrow: "Coming soon · Betaminds Creative Foundations",
       heading: "Unlocking rural and less-privileged potential",
@@ -958,10 +1144,10 @@ export const defaults = {
       heading: "Turning creativity into careers",
       accentTail: ".",
       lead: "A premier platform empowering Africa's next generation of creatives, innovators, entrepreneurs and young professionals. More than an annual event. A movement.",
-      nextLabel: "Second edition",
-      nextDetail: "17 July 2026 · Gracetone Studio, Yaba, Lagos",
+      nextLabel: "Third edition",
+      nextDetail: "1 May 2027 · The Business of Creativity",
       ctaPrimary: "Register interest",
-      ctaSecondary: "Download sponsorship deck",
+      ctaSecondary: "View sponsorship proposal",
       /** Point this at the real deck (upload it, or paste an external URL). */
       deckUrl: "",
     },
@@ -1020,27 +1206,109 @@ export const defaults = {
           theme: "Choose a passion-driven career in the creative industry",
           date: "1 May 2025",
           venue: "Cafeone, Ikate, Lekki, Lagos",
-          gallery: [7793169, 3869639, 5060987, 8730849, 5058927, 12179670].map(
-            (id) => IMG(id, 600),
-          ),
+          // The real event photos, not stock — pulled from the two Google
+          // Drive folders shared for the first edition, and served as
+          // static assets from this project rather than hotlinked: the
+          // googleusercontent.com hotlink this replaced worked reliably
+          // from curl and from this project's own test tooling, but failed
+          // to load on a real phone in practice.
+          gallery: [
+            "/summit/first-edition/img-0334.jpg",
+            "/summit/first-edition/img-0410.jpg",
+            "/summit/first-edition/img-0458.jpg",
+            "/summit/first-edition/img-0582.jpg",
+            "/summit/first-edition/mo-00661.jpg",
+            "/summit/first-edition/mo-00702.jpg",
+          ],
+          // "#" until a real gallery/album link is set — same placeholder
+          // convention as the footer socials below.
+          viewMoreLabel: "View more media",
+          viewMoreHref: "#",
         },
         {
           edition: "Second edition",
           theme: "Turning creativity into careers",
           date: "17 July 2026",
           venue: "Gracetone Studio, Yaba, Lagos",
+          /**
+           * Still placeholder. The real photos are the two Pixieset
+           * galleries (creative2career.pixieset.com and
+           * betaminds.pixieset.com), which sit behind both a Cloudflare
+           * bot challenge and their own password gate — not something to
+           * script past, and proofing-gallery photography is typically
+           * still the photographer's copyright even once a client has the
+           * viewing password, so it needs a human decision either way.
+           * Download the selects from Pixieset (the codes already shared)
+           * and upload them in /admin → Summit → Editions.
+           */
           gallery: [5466279, 9490631, 8761715, 7792860, 9301528, 5060991].map(
             (id) => IMG(id, 600),
           ),
+          viewMoreLabel: "View more media",
+          // The fuller Pixieset gallery this edition's uploaded selects come
+          // from — gated, but a real destination rather than a placeholder.
+          viewMoreHref: "https://creative2career.pixieset.com",
         },
       ],
+      /**
+       * The next edition — announced, not yet happened, so no gallery.
+       * Rendered as its own card beneath the two above rather than folded
+       * into that grid, since a photo-gallery card with no photos would
+       * read as broken rather than upcoming.
+       */
+      upcoming: {
+        edition: "Third edition",
+        theme:
+          "The Business of Creativity: Monetization, Innovation, and Lasting Impact",
+        date: "1 May 2027",
+        venue: "",
+        ctaLabel: "Register interest →",
+      },
     },
     press: {
-      label: "From the press",
+      heading: "From the press",
+      lead: "Coverage from past editions.",
+      readLabel: "Read publication",
       items: [
-        { name: "Punch Newspaper", href: "" },
-        { name: "Independent Newspaper", href: "" },
+        { title: "Punch Newspaper", cover: "", href: "" },
+        { title: "Independent Newspaper", cover: "", href: "" },
       ],
+    },
+    /**
+     * Real partner logos from the shared Drive folder, served as static
+     * assets from this project (see the First edition gallery comment above
+     * for why this moved off hotlinking).
+     *
+     * The folder held 16 files; this keeps 12. Dropped: two logos that were
+     * byte-for-byte duplicates of another file in the set, one brand's two
+     * colour variants (kept the one with dark marks, since the white-on-dark
+     * variant would be invisible on this strip's light background), and one
+     * logo that turned out to be a white/light-coloured mark on a
+     * transparent background for the same reason — not missing, just not
+     * usable here without a dark backing it doesn't have in this set.
+     * No link URLs were supplied, so none of these are clickable yet.
+     */
+    participants: {
+      label: "Partners & participants",
+      logos: [
+        { name: "Scream Media Africa", logo: "/partners/scream-media-africa.png", href: "" },
+        { name: "Finex Branding Agency", logo: "/partners/finex-branding-agency.png", href: "" },
+        { name: "BAT Events and Chops", logo: "/partners/bat-events-and-chops.png", href: "" },
+        { name: "Café One", logo: "/partners/cafe-one.jpg", href: "" },
+        { name: "Zorion Scent", logo: "/partners/zorion-scent.png", href: "" },
+        { name: "Gracetone Digital Studio", logo: "/partners/gracetone-digital-studio.png", href: "" },
+        { name: "Zam Zar TV", logo: "/partners/zam-zar-tv.png", href: "" },
+        { name: "Swift Sip", logo: "/partners/swift-sip.jpg", href: "" },
+        { name: "Leadway Assurance", logo: "/partners/leadway-assurance.png", href: "" },
+        { name: "MKR", logo: "/partners/mkr.png", href: "" },
+        { name: "Penmorph", logo: "/partners/penmorph.png", href: "" },
+        { name: "Right Events", logo: "/partners/right-events.png", href: "" },
+      ],
+    },
+    videos: {
+      heading: "Watch highlights",
+      lead: "Moments from past editions.",
+      items: [{ title: "", youtubeUrl: "" }],
     },
     agenda: {
       heading: "Summit agenda",
@@ -1099,7 +1367,8 @@ export const defaults = {
     sponsor: {
       heading: "Partner with Africa's leading creative movement",
       body: "Position your brand before thousands of students, professionals and entrepreneurs.",
-      ctaPrimary: "Download sponsorship deck",
+      ctaPrimary: "View proposal",
+      ctaDownload: "Download proposal",
       ctaSecondary: "Speak to our team",
       ctaSecondaryHref: "/lets-work",
     },
@@ -1155,6 +1424,12 @@ export const defaults = {
       lead: "Tell us what you're building. We'll tell you honestly whether we're the right team for it, and what we'd do first.",
       ctaLabel: "Book a discovery call →",
       ctaHref: "/digital-ecosystem#book",
+      stepsLabel: "What happens next",
+      steps: [
+        "You send the brief, or book a call.",
+        "We reply within one working day.",
+        "We tell you what we'd do first, and what it costs.",
+      ],
     },
     form: {
       heading: "Send us a brief",
@@ -1178,6 +1453,241 @@ export const defaults = {
         project:
           "Where you are now, where you want to be, and by when.",
       },
+    },
+  },
+
+  pr: {
+    seo: {
+      title: "PR & Event Coverage — Betaminds Africa",
+      description:
+        "Public relations packages, event PR and coverage, The Pinnacle Magazine, press features and billboard placements.",
+    },
+    hero: {
+      image: IMG(3184291, 1800),
+      imageAlt: "Press conference under lights",
+      eyebrow: "Public relations",
+      heading: "Your brand has a story — let's make sure the right people hear it",
+      accentTail: ".",
+      lead: "You and your brand deserve more than visibility—you deserve credibility and meaningful connection. We help businesses, founders, organizations, and events build a trusted reputation through strategic storytelling, media engagement, and effective communication.",
+      ctaLabel: "Talk to the PR team →",
+      ctaHref: "/lets-work?need=Public%20relations",
+    },
+    services: {
+      heading: "Our PR Services Include:",
+      items: [
+        "Media Relations & Press Coverage",
+        "Press Release Writing & Distribution",
+        "Brand Storytelling",
+        "Corporate Communications",
+        "Event PR & Media Coverage",
+        "Crisis Communication Support",
+        "Influencer & Stakeholder Engagement",
+        "Reputation Management",
+      ],
+      body1:
+        "We help brands tell stories that matter. Through strategic public relations, we position your brand before the right audience, enhance its reputation, and build meaningful relationships with customers, stakeholders, and the media.",
+      body2:
+        "From product launches and corporate announcements to event publicity and brand reputation management, Betaminds Africa develops tailored PR strategies that increase visibility, strengthen credibility, and create lasting impact.",
+    },
+    packages: {
+      heading: "PR packages",
+      lead: "Five ways to work with us — three monthly retainers, plus a one-off launch package and a personal engagement for the person in front of the brand.",
+      selectLabel: "Enquire →",
+      bestForLabel: "Best for",
+      deliverablesLabel: "Deliverables",
+      featuredIndex: 1,
+      items: [
+        {
+          name: "Starter",
+          tag: "Establish",
+          short: "For startups, SMEs and emerging brands.",
+          items: [
+            "PR strategy and monthly media plan",
+            "1 professionally written press release",
+            "3–5 online media placements",
+            "Brand/company profile feature",
+            "Social media PR amplification",
+            "PR performance report",
+          ],
+          bestFor:
+            "Brands looking to establish credibility and begin building media presence.",
+        },
+        {
+          name: "Growth",
+          tag: "Build",
+          short: "For growing businesses ready for stronger visibility.",
+          items: [
+            "Everything in Starter",
+            "2 press releases",
+            "6–10 media placements",
+            "1 executive interview opportunity",
+            "Digital PR campaign",
+            "Influencer/creator outreach",
+            "Social media amplification",
+            "Media opportunity sourcing",
+            "Brand reputation monitoring",
+            "Monthly PR strategy meeting",
+            "Detailed monthly performance report",
+          ],
+          bestFor:
+            "SMEs, founders, startups, real estate, hospitality, technology, creative and lifestyle brands.",
+        },
+        {
+          name: "Authority",
+          tag: "Lead",
+          short: "For established brands, executives and organisations.",
+          items: [
+            "Everything in Growth",
+            "3–4 strategic press releases",
+            "10–15+ targeted media placements",
+            "TV/Radio interview pitching",
+            "Opinion/editorial placements",
+            "Podcast and digital interview opportunities",
+            "Awards & recognition strategy",
+            "Speaking opportunity sourcing",
+            "Influencer/KOL partnerships",
+            "Detailed monthly performance report",
+          ],
+          bestFor:
+            "CEOs, corporate brands, institutions and organisations seeking industry authority.",
+        },
+        {
+          name: "Launch PR Package",
+          tag: "One-off",
+          short:
+            "For product, company, service, event or brand launches.",
+          items: [
+            "Launch PR strategy",
+            "Press release development",
+            "5–9 media placements",
+            "Founder/CEO interview positioning",
+            "Online publication features",
+            "Influencer/creator amplification",
+            "Event videography",
+            "Photography",
+            "Red carpet hosting",
+            "Post-launch media report",
+          ],
+          bestFor:
+            "New business launches, product launches, events and campaigns.",
+        },
+        {
+          name: "Founder & Executive PR",
+          tag: "Personal",
+          short: "For the person in front of the brand.",
+          items: [
+            "Media profile",
+            "Monthly opinion article",
+            "Media interview pitching",
+            "Podcast opportunities",
+            "Speaking opportunity sourcing",
+            "Personal reputation monitoring",
+            "Executive media coaching",
+          ],
+          bestFor: "",
+        },
+      ],
+    },
+    event: {
+      eyebrow: "Event PR",
+      heading: "Event PR and event coverage",
+      body: "One package covering the run-up, the day itself and everything published straight after.",
+      items: [
+        "Story post of the event poster before the day",
+        "2 feed posts of the event before the day (graphics & reel)",
+        "Story post of the event activities during the day",
+        "Event coverage — 6 posts of the event, published within 12 hours",
+        "Red carpet hosting",
+      ],
+      ctaLabel: "Enquire about event PR",
+      ctaHref: "/lets-work?need=PR%20%E2%80%94%20Event%20PR%20and%20coverage",
+    },
+    magazine: {
+      eyebrow: "The Pinnacle Magazine",
+      heading: "Read the latest issue",
+      body: "The Pinnacle Magazine is Africa's premier publication dedicated to spotlighting visionary leaders, innovative brands, entrepreneurs, creatives, and impactful stories shaping Africa's future. Through compelling features, interviews, and industry insights, we provide a credible platform for individuals and businesses to share their journey, amplify their influence, and connect with a wider audience. We are dedicated to quality storytelling around African culture, fashion, music, governance, women of impact, innovation in tech and business, youth empowerment and Next-Gen sustainability.",
+      // Pending upload via /admin — the first-edition PDF is a 400MB file,
+      // too large to host as a static asset in this repo. The cover and a
+      // gallery (also pending) follow once that's in place.
+      cover: "",
+      coverAlt: "The Pinnacle Magazine, latest issue cover",
+      pdf: "",
+      ctaLabel: "Read the magazine →",
+      gallery: [] as string[],
+    },
+    press: {
+      eyebrow: "In the press",
+      heading: "Press",
+      lead: "Newspaper and magazine features we have placed and appeared in.",
+      // Pending upload via /admin.
+      featuredImage: "",
+      featuredImageAlt: "",
+      readLabel: "Read more",
+      items: [
+        {
+          title:
+            "Funke Ajayi: Reimagining African Fashion Through Clothings by FMK's Heritage-Inspired Designs",
+          cover: "",
+          href: "https://www.thisdaylive.com/2026/09/19/funke-ajayi-reimagining-african-fashion-through-clothings-by-fmks-heritage-inspired-designs/",
+        },
+        {
+          title:
+            "Made King Realties Redefines Short-Let Hospitality With All-in-One Guest Experience",
+          cover: "",
+          href: "https://www.thisdaylive.com/2026/02/07/made-king-realties-redefines-short-let-hospitality-with-all-in-one-guest-experience/",
+        },
+        {
+          title:
+            "Benson Awoyinka, Funke Akindele, Stephen Akintayo & Others Honoured as Person of the Year",
+          cover: "",
+          href: "https://www.vanguardngr.com/2025/01/benson-awoyinka-funke-akindele-stephen-akintayo-others-honoured-as-person-of-the-year/",
+        },
+        {
+          title:
+            "Turning Creativity Into Careers: Betaminds Africa Champions Youth Empowerment",
+          cover: "",
+          href: "https://independent.ng/turning-creativity-into-careers-betaminds-africa-champions-youth-empowerment/",
+        },
+        {
+          title: "Olubukola Adenugba Wins Fashion Award",
+          cover: "",
+          href: "https://punchng.com/olubukola-adenugba-wins-fashion-award/",
+        },
+        {
+          title:
+            "NCC Chairman Idris Olorunnimbe Honoured at the West Africa On Point's Person of the Year Awards 2025",
+          cover: "",
+          href: "https://guardian.ng/news/ncc-chairman-idris-olorunnimbe-honoured-at-the-west-africa-on-points-person-of-the-year-awards-2025/",
+        },
+        {
+          title: "Firm Unveils Initiative to Empower Young Nigerian Creatives",
+          cover: "",
+          href: "https://punchng.com/firm-unveils-initiative-to-empower-young-nigerian-creatives/",
+        },
+        {
+          title:
+            "Umunubo, Arogundade, Sir Uyi, Don Jazzy & Others Receive West Africa On Point Person of the Year Honours",
+          cover: "",
+          href: "https://guardian.ng/saturday-magazine/youth-magazine/umunubo-arogundade-sir-uyi-don-jazzy-others-receive-west-africa-on-point-person-of-the-year-honours/",
+        },
+        {
+          title:
+            "Making It Stand Worthwhile Is Biggest Challenge for Start-ups — Okunrotifa Ileriayo",
+          cover: "",
+          href: "https://www.vanguardngr.com/2023/01/making-it-stand-worthwhile-is-biggest-challenge-for-start-ups-okunrotifa-ileriayo/",
+        },
+        {
+          title:
+            "Creativity as a Tool for Business Socio-Economic Growth — Okunrotifa Ileriayo",
+          cover: "",
+          href: "https://independent.ng/creativity-as-a-tool-for-business-socio-economic-growth-okunrotifa-ileriayo/",
+        },
+      ],
+    },
+    billboards: {
+      heading: "Billboard placements",
+      lead: "Out-of-home work, in market.",
+      images: [] as string[],
     },
   },
 };
