@@ -644,6 +644,70 @@ main {
   text-wrap: pretty;
 }
 
+/* Rendered rich text — a blog post body, typed in the admin's WYSIWYG
+   editor. Base rhythm matches .body; the element rules below are the only
+   tags that editor's toolbar can produce. */
+.prose {
+  font-size: 16.5px;
+  line-height: 1.68;
+  color: var(--ink-82);
+}
+
+.prose > * {
+  text-wrap: pretty;
+}
+
+.prose > * + * {
+  margin-top: 18px;
+}
+
+.prose h2,
+.prose h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.prose h2 {
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+
+.prose li + li {
+  margin-top: 8px;
+}
+
+.prose blockquote {
+  padding-left: 20px;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-70);
+  font-style: italic;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .accent-word {
   color: var(--accent);
 }

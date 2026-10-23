@@ -91,7 +91,7 @@ const post = (
   title,
   excerpt: `Replace this with a one- or two-line summary of "${title}".`,
   coverImage: cover,
-  body: "Replace this with the full post. A blank line starts a new paragraph.",
+  body: `<p>Replace this with the full post.</p>`,
   author,
   date,
   published: true,
@@ -583,6 +583,14 @@ export const defaults = {
       lead: "Growth is driven by visibility, strategy, technology and customer experience. We help businesses build, launch, market and grow their online presence through one integrated solution instead of a pile of standalone services.",
       ctaLabel: "Book a discovery call →",
       ctaHref: "#book",
+    },
+    statement: {
+      lines: [
+        "One partner",
+        "One unified strategy",
+        "Multiple digital solutions",
+        "Better results",
+      ],
     },
     promo: {
       label: "See it in motion",
@@ -1239,6 +1247,10 @@ export const defaults = {
         venue: "",
         ctaLabel: "Register interest →",
       },
+      // "#" until a real gallery/album link is set in /admin → Summit →
+      // Editions — same placeholder convention as the footer socials below.
+      viewMoreLabel: "View more media",
+      viewMoreHref: "#",
     },
     press: {
       heading: "From the press",

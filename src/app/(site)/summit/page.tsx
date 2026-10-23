@@ -335,6 +335,17 @@ export default async function SummitPage() {
               </div>
             </div>
           ) : null}
+
+          {summit.editions.viewMoreLabel ? (
+            <div className="center mt-40">
+              <a
+                href={summit.editions.viewMoreHref}
+                className="pill pill--accent pill--lg"
+              >
+                {summit.editions.viewMoreLabel}
+              </a>
+            </div>
+          ) : null}
         </div>
       </section>
   );

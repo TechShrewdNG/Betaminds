@@ -372,6 +372,113 @@
   margin-top: 14px;
 }
 
+/* --- Rich text editor ----------------------------------------------------- */
+
+.a-rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border: 1px solid var(--a-line);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: var(--a-surface);
+}
+
+.a-rte-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--a-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.a-rte-btn:hover {
+  background: rgba(23, 23, 27, 0.06);
+  border-color: var(--a-line);
+}
+
+.a-rte-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--a-line);
+}
+
+.a-rte-editable {
+  width: 100%;
+  min-height: 220px;
+  padding: 12px 14px;
+  border: 1px solid var(--a-line);
+  border-radius: 0 0 8px 8px;
+  background: var(--a-surface);
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--a-ink);
+}
+
+.a-rte-editable:focus {
+  outline: none;
+  border-color: var(--a-accent-fill);
+}
+
+.a-rte-editable p {
+  margin: 0 0 12px;
+}
+
+.a-rte-editable p:last-child {
+  margin-bottom: 0;
+}
+
+.a-rte-editable h2,
+.a-rte-editable h3 {
+  margin: 18px 0 10px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.a-rte-editable h2:first-child,
+.a-rte-editable h3:first-child {
+  margin-top: 0;
+}
+
+.a-rte-editable h2 {
+  font-size: 19px;
+}
+
+.a-rte-editable h3 {
+  font-size: 16px;
+}
+
+.a-rte-editable ul,
+.a-rte-editable ol {
+  margin: 0 0 12px;
+  padding-left: 22px;
+}
+
+.a-rte-editable blockquote {
+  margin: 0 0 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--a-accent-fill);
+  color: var(--a-muted);
+}
+
+.a-rte-editable a {
+  color: var(--a-accent-fill);
+  text-decoration: underline;
+}
+
 .a-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;

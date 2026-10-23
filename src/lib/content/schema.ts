@@ -10,6 +10,7 @@
 export type Field =
   | { kind: "text"; label: string; help?: string; mono?: boolean }
   | { kind: "textarea"; label: string; rows?: number; help?: string }
+  | { kind: "richtext"; label: string; help?: string }
   | { kind: "number"; label: string; help?: string }
   | { kind: "boolean"; label: string; help?: string }
   | { kind: "image"; label: string; ratio?: string; help?: string }
@@ -779,10 +780,9 @@ export const schemas: DocSchema[] = [
               },
               excerpt: { kind: "textarea", label: "Excerpt", rows: 3 },
               body: {
-                kind: "textarea",
+                kind: "richtext",
                 label: "Post body",
-                rows: 12,
-                help: "A blank line starts a new paragraph.",
+                help: "Formatting (bold, headings, lists, links) carries straight onto the live post.",
               },
             },
           },
@@ -814,6 +814,14 @@ export const schemas: DocSchema[] = [
           lead: { kind: "textarea", label: "Lead paragraph", rows: 4 },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
+        },
+      },
+      {
+        key: "statement",
+        title: "Statement band",
+        note: "A scrolling strip of short brand lines, set large on ink just below the hero. Keep them short — they move while you read them. Empty the list to remove the band.",
+        fields: {
+          lines: { kind: "list", label: "Lines" },
         },
       },
       {
@@ -1313,6 +1321,16 @@ export const schemas: DocSchema[] = [
               },
               ctaLabel: { kind: "text", label: "Button label" },
             },
+          },
+          viewMoreLabel: {
+            kind: "text",
+            label: "\"View more media\" button label",
+            help: "Shown below the past editions. Leave empty to hide the button.",
+          },
+          viewMoreHref: {
+            kind: "text",
+            label: "\"View more media\" button link",
+            help: "A URL, or paste the address of a folder/album from the media library.",
           },
         },
       },

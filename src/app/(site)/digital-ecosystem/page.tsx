@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { PlanCards } from "@/components/ui/PlanCards";
 import { FreeSlotCard } from "@/components/ui/FreeSlotCard";
 import { PromoVideo } from "@/components/ui/PromoVideo";
+import { StatementBand } from "@/components/ui/StatementBand";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { resolveForm } from "@/lib/forms/resolve";
 
@@ -56,6 +57,10 @@ export default async function EcosystemPage() {
         </div>
       </section>
   );
+
+  // A scrolling strip of brand lines, the same band the homepage uses,
+  // breaking straight out of the hero.
+  sections.statement = <StatementBand lines={eco.statement.lines} />;
 
   // Commercial — video only, so this quietly skips itself until one is
   // uploaded.

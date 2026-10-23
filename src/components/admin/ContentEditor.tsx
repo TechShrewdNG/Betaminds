@@ -12,6 +12,7 @@ import {
   type SectionSchema,
 } from "@/lib/content/schema";
 import { ImageField, ImagesField } from "./ImagePicker";
+import { RichTextField } from "./RichTextEditor";
 
 type Data = Record<string, unknown>;
 type Path = (string | number)[];
@@ -346,6 +347,16 @@ function FieldView({
           />
           {field.help ? <p className="a-help">{field.help}</p> : null}
         </div>
+      );
+
+    case "richtext":
+      return (
+        <RichTextField
+          label={field.label}
+          help={field.help}
+          value={typeof raw === "string" ? raw : ""}
+          onChange={(html) => update(path, html)}
+        />
       );
 
     case "number":

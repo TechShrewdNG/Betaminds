@@ -92,12 +92,9 @@ export default async function BlogPostPage({
               {post.excerpt}
             </p>
           ) : null}
-          {/* Paragraph breaks come from blank lines in the CMS textarea. */}
-          {post.body.split(/\n{2,}/).map((paragraph, index) => (
-            <p key={index} className="body" style={{ marginBottom: 18 }}>
-              {paragraph}
-            </p>
-          ))}
+          {/* Typed in the admin's rich text editor — the markup it can
+              produce is a fixed, known set of tags (see RichTextField). */}
+          <div className="prose" dangerouslySetInnerHTML={{ __html: post.body }} />
         </div>
       </section>
 
