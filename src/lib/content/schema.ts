@@ -966,6 +966,11 @@ export const schemas: DocSchema[] = [
             label: "Enquire button prefix",
             help: 'Rendered as "<prefix> <package name>".',
           },
+          rateCardLabel: {
+            kind: "text",
+            label: "Rate card button label",
+            help: "Shown next to the enquire link, here and on the homepage's media tabs, once a package has a rate card uploaded.",
+          },
           items: {
             kind: "repeater",
             label: "Packages",
@@ -981,6 +986,11 @@ export const schemas: DocSchema[] = [
                 help: `Shown as a banner when the package is open here, and above the selected package on the homepage's media tabs. Leave empty to show neither. ${PX_HERO}`,
               },
               items: { kind: "list", label: "Deliverables" },
+              rateCard: {
+                kind: "doc",
+                label: "Rate card (PDF)",
+                help: "Opens in a new tab. Leave empty to hide the rate card link for this package.",
+              },
             },
           },
         },

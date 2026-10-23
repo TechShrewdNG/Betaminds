@@ -50,6 +50,7 @@ export default async function MediaServicesPage() {
             packages={media.packages.items}
             deliverablesLabel={media.packages.deliverablesLabel}
             enquirePrefix={media.packages.enquirePrefix}
+            rateCardLabel={media.packages.rateCardLabel}
           />
         </div>
       </section>

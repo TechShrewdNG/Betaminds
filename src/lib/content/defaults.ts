@@ -742,6 +742,7 @@ export const defaults = {
       contentsLabel: "In this page",
       deliverablesLabel: "Deliverables",
       enquirePrefix: "Enquire about",
+      rateCardLabel: "View rate card",
       items: [
         {
           label: "Brand identity",
@@ -757,6 +758,8 @@ export const defaults = {
             "Brand guidelines document",
             "Stationery and social templates",
           ],
+          // Pending upload via /admin.
+          rateCard: "",
         },
         {
           label: "Company profile",
@@ -769,6 +772,7 @@ export const defaults = {
             "Infographics and data visuals",
             "Print-ready and digital versions",
           ],
+          rateCard: "",
         },
         {
           label: "Content creation",
@@ -783,6 +787,7 @@ export const defaults = {
             "Copy and caption bank",
             "Monthly content calendar",
           ],
+          rateCard: "",
         },
         {
           label: "Website design",
@@ -797,6 +802,7 @@ export const defaults = {
             "SEO foundations",
             "Payment and analytics integration",
           ],
+          rateCard: "",
         },
         {
           label: "Social media management",
@@ -810,6 +816,7 @@ export const defaults = {
             "Influencer coordination",
             "Monthly analytics report",
           ],
+          rateCard: "",
         },
         {
           label: "Property photography & videography",
@@ -822,6 +829,7 @@ export const defaults = {
             "Twilight and lifestyle sets",
             "Retouching and delivery in listing formats",
           ],
+          rateCard: "",
         },
         {
           label: "Ads campaign placement",
@@ -835,6 +843,7 @@ export const defaults = {
             "Budget management and pacing",
             "Weekly optimization and reporting",
           ],
+          rateCard: "",
         },
       ],
     },

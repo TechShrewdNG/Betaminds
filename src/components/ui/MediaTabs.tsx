@@ -9,6 +9,7 @@ export type MediaPackage = {
   blurb: string;
   image?: string;
   items: string[];
+  rateCard?: string;
 };
 
 /**
@@ -18,9 +19,11 @@ export type MediaPackage = {
 export function MediaTabs({
   packages,
   enquireLabel,
+  rateCardLabel,
 }: {
   packages: MediaPackage[];
   enquireLabel: string;
+  rateCardLabel?: string;
 }) {
   const [active, setActive] = useState(0);
   const current = packages[active] ?? packages[0];
@@ -74,12 +77,24 @@ export function MediaTabs({
           >
             {current.blurb}
           </p>
-          <Link
-            href={`/lets-work?need=${encodeURIComponent(current.label)}`}
-            className="pill pill--accent-outline"
-          >
-            {enquireLabel}
-          </Link>
+          <div className="row-wrap" style={{ gap: 14 }}>
+            <Link
+              href={`/lets-work?need=${encodeURIComponent(current.label)}`}
+              className="pill pill--accent-outline"
+            >
+              {enquireLabel}
+            </Link>
+            {current.rateCard ? (
+              <a
+                href={current.rateCard}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="pill pill--accent-outline"
+              >
+                {rateCardLabel}
+              </a>
+            ) : null}
+          </div>
         </div>
 
         <div className="hairline-stack" style={{ borderRadius: 12 }}>

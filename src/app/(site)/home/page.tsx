@@ -400,6 +400,7 @@ export default async function HomePage() {
           <MediaTabs
             packages={media.packages.items}
             enquireLabel={home.media.enquireLabel}
+            rateCardLabel={media.packages.rateCardLabel}
           />
         </div>
       </section>

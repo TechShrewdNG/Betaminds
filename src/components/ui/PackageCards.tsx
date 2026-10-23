@@ -18,10 +18,12 @@ export function PackageCards({
   packages,
   deliverablesLabel,
   enquirePrefix,
+  rateCardLabel,
 }: {
   packages: MediaPackage[];
   deliverablesLabel: string;
   enquirePrefix: string;
+  rateCardLabel?: string;
 }) {
   // First package opens on load: with the panels genuinely collapsing now,
   // a closed-by-default list left the page as seven titles and nothing else.
@@ -110,12 +112,24 @@ export function PackageCards({
                   </div>
                 ))}
               </div>
-              <Link
-                href={`/lets-work?need=${encodeURIComponent(pkg.label)}`}
-                className={styles.pkgLink}
-              >
-                {enquirePrefix} {pkg.label} <span aria-hidden="true">→</span>
-              </Link>
+              <div className="row-wrap" style={{ gap: 24, alignItems: "baseline" }}>
+                <Link
+                  href={`/lets-work?need=${encodeURIComponent(pkg.label)}`}
+                  className={styles.pkgLink}
+                >
+                  {enquirePrefix} {pkg.label} <span aria-hidden="true">→</span>
+                </Link>
+                {pkg.rateCard ? (
+                  <a
+                    href={pkg.rateCard}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className={styles.pkgLink}
+                  >
+                    {rateCardLabel} <span aria-hidden="true">↓</span>
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         );
