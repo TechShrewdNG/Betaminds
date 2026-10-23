@@ -1688,22 +1688,28 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "Press",
-        note: "Same layout as The Pinnacle Magazine above — a standout cover beside the heading and body. The standout is the first publication below with a cover; every other one with a cover scrolls in a carousel underneath, each with a \"read more\" badge riding on it. A row with no cover uploaded doesn't appear anywhere on the page.",
+        note: "Same layout as The Pinnacle Magazine above — a featured image beside the heading and body, not a link. Every publication below with a cover then scrolls in a carousel underneath, each a link out with a \"read more\" badge riding on it. A row with no cover uploaded doesn't appear in the carousel.",
         fields: {
           eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
           lead: { kind: "textarea", label: "Body", rows: 3 },
+          featuredImage: {
+            kind: "image",
+            label: "Featured image",
+            ratio: "3 / 4",
+            help: `Shown beside the heading and body. Not a link. ${PX_PORTRAIT_3_4}`,
+          },
+          featuredImageAlt: { kind: "text", label: "Featured image alt text" },
           readLabel: {
             kind: "text",
             label: "\"Read more\" badge label",
-            help: "Shown on the scrolling covers underneath the standout.",
+            help: "Shown on the scrolling covers.",
           },
           items: {
             kind: "repeater",
             label: "Publications",
             itemLabel: "Publication",
             titleKey: "title",
-            help: "Reorder rows to change which publication is the standout — it's always the first one with a cover image.",
             fields: {
               title: {
                 kind: "text",
@@ -1714,7 +1720,7 @@ export const schemas: DocSchema[] = [
                 kind: "image",
                 label: "Cover image",
                 ratio: "3 / 4",
-                help: `Required for this row to appear — it's the whole slide (or the standout, if it's the first with a cover). ${PX_PORTRAIT_3_4}`,
+                help: `Required for this row to appear in the scrolling carousel. ${PX_PORTRAIT_3_4}`,
               },
               href: {
                 kind: "text",

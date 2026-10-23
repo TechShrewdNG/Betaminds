@@ -51,7 +51,7 @@ export default async function PrPage() {
               { href: "#packages", text: pr.packages.heading },
               { href: "#events", text: pr.event.heading },
               { href: "#magazine", text: pr.magazine.eyebrow },
-              ...(pressWithCover.length > 0
+              ...(pr.press.featuredImage || pressWithCover.length > 0
                 ? [{ href: "#press", text: pr.press.heading }]
                 : []),
               { href: "#billboards", text: pr.billboards.heading },
@@ -212,70 +212,56 @@ export default async function PrPage() {
       </section>
   );
 
-  // Press features. A featured photo fills the top of the band with the
-  // headline and body sitting on it — the standout is simply the first
-  // publication with a cover in the admin's list; reorder that list to
-  // change which one it is. Every other publication with a cover then
-  // scrolls beneath as a carousel. Nothing to show until at least one
-  // cover exists.
-  const [pressStandout, ...pressRest] = pressWithCover;
+  // Press features. Same shape as the Magazine above — a featured image
+  // beside the heading and body, uploaded directly here rather than pulled
+  // from the publications list, and not a link. Every publication with a
+  // cover then scrolls beneath as a carousel.
+  sections.press =
+    pr.press.featuredImage || pressWithCover.length > 0 ? (
+        <section id="press" data-reveal className="band band--ruled">
+          <div className="shell section">
+            <div className={styles.magGrid}>
+              <div className={styles.magCover}>
+                {pr.press.featuredImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={pr.press.featuredImage}
+                    alt={pr.press.featuredImageAlt}
+                    className="bm-settle"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className={styles.emptyTile} style={{ position: "absolute", inset: 0 }}>
+                    Image coming soon
+                  </div>
+                )}
+              </div>
 
-  sections.press = pressStandout ? (
-      <>
-        <a
-          id="press"
-          data-reveal
-          href={pressStandout.href || undefined}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="hero"
-          style={{ display: "block" }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={pressStandout.cover}
-            alt={pressStandout.title}
-            className="hero__img"
-            loading="lazy"
-          />
-          <div
-            className="hero__wash"
-            style={{
-              background:
-                "linear-gradient(100deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.55))",
-            }}
-          />
-          <div
-            className="shell"
-            style={{ position: "relative", paddingTop: 92, paddingBottom: 92 }}
-          >
-            <div className="measure-660">
-              <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
-              <h2 className="h2" style={{ marginBottom: 16 }}>
-                <SplitText text={pr.press.heading} />
-              </h2>
-              <p className="body measure-520" style={{ margin: 0, color: "var(--ink-84)" }}>
-                {pr.press.lead}
-              </p>
+              <div>
+                <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
+                <h2 className="h2" style={{ marginBottom: 16 }}>
+                  <SplitText text={pr.press.heading} />
+                </h2>
+                <p className="body measure-520" style={{ margin: 0 }}>
+                  {pr.press.lead}
+                </p>
+              </div>
             </div>
+
+            {pressWithCover.length > 0 ? (
+              <div className="mt-40">
+                <ImageCarousel
+                  items={pressWithCover.map((item) => ({
+                    src: item.cover,
+                    alt: item.title,
+                    href: item.href || undefined,
+                  }))}
+                  readLabel={pr.press.readLabel}
+                />
+              </div>
+            ) : null}
           </div>
-        </a>
-
-        {pressRest.length > 0 ? (
-          <section data-reveal className="band band--ruled">
-            <div className="shell section">
-              <ImageCarousel
-                items={pressRest.map((item) => ({
-                  src: item.cover,
-                  alt: item.title,
-                  href: item.href || undefined,
-                }))}
-                readLabel={pr.press.readLabel}
-              />
-            </div>
-          </section>
-        ) : null}
-      </>
+        </section>
   ) : null;
 
   // Billboards. Landscape, and deliberately without links. The section
