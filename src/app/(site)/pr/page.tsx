@@ -223,7 +223,7 @@ export default async function PrPage() {
 
   sections.press =
     press.length > 0 ? (
-        <section id="press" data-reveal className="band band--ink band--ruled">
+        <section id="press" data-reveal className="band band--ruled">
           <div className="shell section">
             <div className={styles.magGrid}>
               {pressWithCover.length > 0 ? (
