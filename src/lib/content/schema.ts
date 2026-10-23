@@ -1688,15 +1688,12 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "Press",
-        note: "Same layout as The Pinnacle Magazine above, but the cover is a self-scrolling carousel of every publication with a photo instead of one static image, and there's no button — click a slide to open that publication. A row needs a title or a link to show; one without a cover yet falls back to a plain text row underneath the carousel.",
+        note: "A self-scrolling strip of cover photos — no headline text or separate link on the page, just the cover and a \"read more\" badge riding on it, click-through to the publication. A row with no cover uploaded doesn't appear. Heading is used only as this section's label in the page's \"In this page\" contents list.",
         fields: {
-          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
-          lead: { kind: "textarea", label: "Body", rows: 3 },
           readLabel: {
             kind: "text",
-            label: "Link label",
-            help: "Used only by the plain-text fallback rows for publications with no cover image yet.",
+            label: "\"Read more\" badge label",
           },
           items: {
             kind: "repeater",
@@ -1704,12 +1701,16 @@ export const schemas: DocSchema[] = [
             itemLabel: "Publication",
             titleKey: "title",
             fields: {
-              title: { kind: "text", label: "Publication" },
+              title: {
+                kind: "text",
+                label: "Publication",
+                help: "Not shown on the page — used as this cover's image description for screen readers.",
+              },
               cover: {
                 kind: "image",
                 label: "Cover image",
                 ratio: "3 / 4",
-                help: `Shown as a slide in the scrolling carousel, linking to this row's URL below. ${PX_PORTRAIT_3_4}`,
+                help: `Required for this row to appear — it's the whole slide. ${PX_PORTRAIT_3_4}`,
               },
               href: {
                 kind: "text",

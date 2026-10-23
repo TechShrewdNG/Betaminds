@@ -6,19 +6,23 @@ import styles from "./ui.module.css";
 export type CarouselItem = { src: string; alt: string; href?: string };
 
 /**
- * A self-advancing strip of full-bleed images, sized like a single cover
- * (see `.magCover` in ui.module.css) but cycling through several — the
- * Press section's answer to the Magazine's static cover-plus-button, for a
- * set of covers with no one "the" cover among them.
+ * A self-advancing strip of cover photos — several tiles wide, continuously
+ * scrolling, each one a link straight out to the story it's the cover of.
+ * The Press section's whole content: no caption, no separate text row, just
+ * the image and a "read more" badge riding on top of it.
  *
  * Same `scrollLeft`-driven native-scroll mechanism as Marquee and
  * StatementBand (see Marquee's comment for why: a transform-animated
  * element is what once let a compositor layer escape `overflow: hidden`
- * and stretch the page on iOS). Each slide is full container width rather
- * than Marquee's narrow logo slots, so it reads as a slow-advancing
- * slideshow instead of a scrolling ticker.
+ * and stretch the page on iOS).
  */
-export function ImageCarousel({ items }: { items: CarouselItem[] }) {
+export function ImageCarousel({
+  items,
+  readLabel,
+}: {
+  items: CarouselItem[];
+  readLabel?: string;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const reducedRef = useRef(false);
@@ -37,14 +41,13 @@ export function ImageCarousel({ items }: { items: CarouselItem[] }) {
     const track = trackRef.current;
     if (!track || items.length < 2) return;
 
-    const speed = 26; // px/s — slow enough to read as a slideshow, not a blur.
+    const speed = 34; // px/s — matches Marquee's pace for a strip this size.
     let last = performance.now();
     let raf = 0;
     // Tracked separately from `track.scrollLeft`, which the browser rounds
-    // to a whole pixel on both read and write — at this speed the per-frame
-    // delta is under half a pixel, so accumulating against the rounded
-    // readback instead of this would round back down to the same integer
-    // every frame and never move at all.
+    // to a whole pixel on both read and write — accumulating against the
+    // rounded readback can round back down to the same integer every frame
+    // and never move, depending on speed and refresh rate.
     let position = track.scrollLeft;
 
     function step(now: number) {
@@ -92,34 +95,25 @@ export function ImageCarousel({ items }: { items: CarouselItem[] }) {
       <div className={`${styles.pressCarouselTrack} bm-marquee-track`}>
         {run.map((item, index) => {
           const duplicate = index >= items.length;
-          const image = (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.src}
-              alt={item.alt}
-              loading={duplicate ? "lazy" : undefined}
-            />
-          );
-          return item.href ? (
+          return (
             <a
               key={`${item.src}-${index}`}
-              href={item.href}
+              href={item.href || undefined}
               target="_blank"
               rel="noreferrer noopener"
               className={styles.pressCarouselSlide}
               aria-hidden={duplicate ? "true" : undefined}
               tabIndex={duplicate ? -1 : undefined}
             >
-              {image}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={item.src} alt={item.alt} loading={duplicate ? "lazy" : undefined} />
+              <span className={styles.pressCarouselWash} aria-hidden="true" />
+              {readLabel ? (
+                <span className={styles.pressCarouselBadge}>
+                  {readLabel} <span aria-hidden="true">→</span>
+                </span>
+              ) : null}
             </a>
-          ) : (
-            <div
-              key={`${item.src}-${index}`}
-              className={styles.pressCarouselSlide}
-              aria-hidden={duplicate ? "true" : undefined}
-            >
-              {image}
-            </div>
           );
         })}
       </div>

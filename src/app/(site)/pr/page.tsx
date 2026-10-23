@@ -21,12 +21,11 @@ export default async function PrPage() {
     getSectionOrder("pr"),
   ]);
 
-  // Magazine, press and billboards all show as soon as there's a heading and
-  // lead worth reading — the cover, PDF link, and photographs each appear
-  // independently once uploaded, instead of gating the whole section.
-  const press = pr.press.items.filter(
-    (item) => item.title !== "" || item.href !== "",
-  );
+  // Magazine and billboards show as soon as there's a heading and lead
+  // worth reading — the cover, PDF link, and photographs each appear
+  // independently once uploaded, instead of gating the whole section. Press
+  // is pure photos, so it has nothing to show until at least one is set.
+  const pressWithCover = pr.press.items.filter((item) => item.cover !== "");
   const billboards = pr.billboards.images.filter((src) => src !== "");
 
   const sections: Record<string, ReactNode> = {};
@@ -52,7 +51,7 @@ export default async function PrPage() {
               { href: "#packages", text: pr.packages.heading },
               { href: "#events", text: pr.event.heading },
               { href: "#magazine", text: pr.magazine.eyebrow },
-              ...(press.length > 0
+              ...(pressWithCover.length > 0
                 ? [{ href: "#press", text: pr.press.heading }]
                 : []),
               { href: "#billboards", text: pr.billboards.heading },
@@ -213,67 +212,23 @@ export default async function PrPage() {
       </section>
   );
 
-  // Press features. Same band as the Magazine above — a cover-sized slot on
-  // the left, eyebrow/heading/body on the right — except the slot holds a
-  // self-scrolling carousel of every publication with a photo, each slide
-  // linking straight out, and there's no button to carry. Items without a
-  // cover yet fall back to a plain text row underneath, so they still show.
-  const pressWithCover = press.filter((item) => item.cover !== "");
-  const pressWithoutCover = press.filter((item) => item.cover === "");
-
+  // Press features. Just the cover photos, scrolling on their own — no
+  // headline text, no separate link row. Each cover is the whole story:
+  // click it (or the "read more" badge riding on it) to open the
+  // publication. An item with no cover uploaded yet has nothing to show, so
+  // the section stays hidden until at least one does.
   sections.press =
-    press.length > 0 ? (
+    pressWithCover.length > 0 ? (
         <section id="press" data-reveal className="band band--ruled">
           <div className="shell section">
-            <div className={styles.magGrid}>
-              {pressWithCover.length > 0 ? (
-                <ImageCarousel
-                  items={pressWithCover.map((item) => ({
-                    src: item.cover,
-                    alt: item.title,
-                    href: item.href || undefined,
-                  }))}
-                />
-              ) : (
-                <div className={styles.pressCarousel}>
-                  <div className={styles.emptyTile} style={{ position: "absolute", inset: 0 }}>
-                    Covers coming soon
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
-                <h2 className="h2" style={{ marginBottom: 16 }}>
-                  <SplitText text={pr.press.heading} />
-                </h2>
-                <p className="body measure-520" style={{ margin: 0 }}>
-                  {pr.press.lead}
-                </p>
-              </div>
-            </div>
-
-            {pressWithoutCover.length > 0 ? (
-              <div className="grid col2 col2--tight mt-40" data-stagger>
-                {pressWithoutCover.map((item, index) => (
-                  <div key={`${item.title}-${index}`} className={styles.pressRow}>
-                    {item.title ? (
-                      <div className={styles.pressTitle}>{item.title}</div>
-                    ) : null}
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className={styles.pkgLink}
-                      >
-                        {pr.press.readLabel} <span aria-hidden="true">→</span>
-                      </a>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <ImageCarousel
+              items={pressWithCover.map((item) => ({
+                src: item.cover,
+                alt: item.title,
+                href: item.href || undefined,
+              }))}
+              readLabel={pr.press.readLabel}
+            />
           </div>
         </section>
   ) : null;

@@ -1616,10 +1616,8 @@ export const defaults = {
       gallery: [] as string[],
     },
     press: {
-      eyebrow: "In the press",
       heading: "Press",
-      lead: "Newspaper and magazine features we have placed and appeared in.",
-      readLabel: "Read publication",
+      readLabel: "Read more",
       items: [
         {
           title:
