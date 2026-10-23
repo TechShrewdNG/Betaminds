@@ -1211,6 +1211,10 @@ export const defaults = {
             "/summit/first-edition/mo-00661.jpg",
             "/summit/first-edition/mo-00702.jpg",
           ],
+          // "#" until a real gallery/album link is set — same placeholder
+          // convention as the footer socials below.
+          viewMoreLabel: "View more media",
+          viewMoreHref: "#",
         },
         {
           edition: "Second edition",
@@ -1231,6 +1235,10 @@ export const defaults = {
           gallery: [5466279, 9490631, 8761715, 7792860, 9301528, 5060991].map(
             (id) => IMG(id, 600),
           ),
+          viewMoreLabel: "View more media",
+          // The fuller Pixieset gallery this edition's uploaded selects come
+          // from — gated, but a real destination rather than a placeholder.
+          viewMoreHref: "https://creative2career.pixieset.com",
         },
       ],
       /**
@@ -1247,10 +1255,6 @@ export const defaults = {
         venue: "",
         ctaLabel: "Register interest →",
       },
-      // "#" until a real gallery/album link is set in /admin → Summit →
-      // Editions — same placeholder convention as the footer socials below.
-      viewMoreLabel: "View more media",
-      viewMoreHref: "#",
     },
     press: {
       heading: "From the press",
@@ -1603,6 +1607,7 @@ export const defaults = {
       gallery: [] as string[],
     },
     press: {
+      eyebrow: "In the press",
       heading: "Press",
       lead: "Newspaper and magazine features we have placed and appeared in.",
       readLabel: "Read publication",

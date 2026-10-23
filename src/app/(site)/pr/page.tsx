@@ -7,6 +7,7 @@ import { PlanCards } from "@/components/ui/PlanCards";
 import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
 import { SplitText } from "@/components/ui/SplitText";
 import { Icon } from "@/components/ui/Icon";
+import { ImageCarousel } from "@/components/ui/ImageCarousel";
 import styles from "@/components/ui/ui.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -212,56 +213,48 @@ export default async function PrPage() {
       </section>
   );
 
-  // Press features. Covered items get the full card; items without a cover
-  // on file yet get a plain link row instead, so they still show.
+  // Press features. Same band as the Magazine above — a cover-sized slot on
+  // the left, eyebrow/heading/body on the right — except the slot holds a
+  // self-scrolling carousel of every publication with a photo, each slide
+  // linking straight out, and there's no button to carry. Items without a
+  // cover yet fall back to a plain text row underneath, so they still show.
   const pressWithCover = press.filter((item) => item.cover !== "");
   const pressWithoutCover = press.filter((item) => item.cover === "");
 
   sections.press =
     press.length > 0 ? (
-        <section id="press" data-reveal className="band band--ruled">
+        <section id="press" data-reveal className="band band--ink band--ruled">
           <div className="shell section">
-            <h2 className="h2 mb-18">
-              <SplitText text={pr.press.heading} />
-            </h2>
-            <p className="body measure-620 mb-34">{pr.press.lead}</p>
-
-            {pressWithCover.length > 0 ? (
-              <div
-                className={`grid col4 carousel-mobile${pressWithoutCover.length > 0 ? " mb-34" : ""}`}
-                data-stagger
-              >
-                {pressWithCover.map((item, index) => (
-                  <div key={`${item.title}-${index}`} className={styles.pressCard}>
-                    <div className={styles.pressCover}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={item.cover}
-                        alt={item.title}
-                        className="bm-settle"
-                        loading="lazy"
-                      />
-                    </div>
-                    {item.title ? (
-                      <div className={styles.pressTitle}>{item.title}</div>
-                    ) : null}
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className={styles.pkgLink}
-                      >
-                        {pr.press.readLabel} <span aria-hidden="true">→</span>
-                      </a>
-                    ) : null}
+            <div className={styles.magGrid}>
+              {pressWithCover.length > 0 ? (
+                <ImageCarousel
+                  items={pressWithCover.map((item) => ({
+                    src: item.cover,
+                    alt: item.title,
+                    href: item.href || undefined,
+                  }))}
+                />
+              ) : (
+                <div className={styles.pressCarousel}>
+                  <div className={styles.emptyTile} style={{ position: "absolute", inset: 0 }}>
+                    Covers coming soon
                   </div>
-                ))}
+                </div>
+              )}
+
+              <div>
+                <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
+                <h2 className="h2" style={{ marginBottom: 16 }}>
+                  <SplitText text={pr.press.heading} />
+                </h2>
+                <p className="body measure-520" style={{ margin: 0 }}>
+                  {pr.press.lead}
+                </p>
               </div>
-            ) : null}
+            </div>
 
             {pressWithoutCover.length > 0 ? (
-              <div className="grid col2 col2--tight" data-stagger>
+              <div className="grid col2 col2--tight mt-40" data-stagger>
                 {pressWithoutCover.map((item, index) => (
                   <div key={`${item.title}-${index}`} className={styles.pressRow}>
                     {item.title ? (

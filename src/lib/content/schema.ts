@@ -1305,6 +1305,16 @@ export const schemas: DocSchema[] = [
                 label: "Picture gallery",
                 help: `Square crops, three per row. ${PX_TILE_SQUARE}`,
               },
+              viewMoreLabel: {
+                kind: "text",
+                label: "\"View more media\" button label",
+                help: "Shown under this edition's gallery. Leave empty to hide the button.",
+              },
+              viewMoreHref: {
+                kind: "text",
+                label: "\"View more media\" button link",
+                help: "A URL, or paste the address of a folder/album from the media library.",
+              },
             },
           },
           upcoming: {
@@ -1321,16 +1331,6 @@ export const schemas: DocSchema[] = [
               },
               ctaLabel: { kind: "text", label: "Button label" },
             },
-          },
-          viewMoreLabel: {
-            kind: "text",
-            label: "\"View more media\" button label",
-            help: "Shown below the past editions. Leave empty to hide the button.",
-          },
-          viewMoreHref: {
-            kind: "text",
-            label: "\"View more media\" button link",
-            help: "A URL, or paste the address of a folder/album from the media library.",
           },
         },
       },
@@ -1678,11 +1678,16 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "Press",
-        note: "Newspaper and magazine features. A row needs a title or a link to show — add a cover image too when you have one, for the fuller card treatment.",
+        note: "Same layout as The Pinnacle Magazine above, but the cover is a self-scrolling carousel of every publication with a photo instead of one static image, and there's no button — click a slide to open that publication. A row needs a title or a link to show; one without a cover yet falls back to a plain text row underneath the carousel.",
         fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
-          lead: { kind: "textarea", label: "Sub-line", rows: 2 },
-          readLabel: { kind: "text", label: "Link label" },
+          lead: { kind: "textarea", label: "Body", rows: 3 },
+          readLabel: {
+            kind: "text",
+            label: "Link label",
+            help: "Used only by the plain-text fallback rows for publications with no cover image yet.",
+          },
           items: {
             kind: "repeater",
             label: "Publications",
@@ -1694,7 +1699,7 @@ export const schemas: DocSchema[] = [
                 kind: "image",
                 label: "Cover image",
                 ratio: "3 / 4",
-                help: PX_PORTRAIT_3_4,
+                help: `Shown as a slide in the scrolling carousel, linking to this row's URL below. ${PX_PORTRAIT_3_4}`,
               },
               href: {
                 kind: "text",

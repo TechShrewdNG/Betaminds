@@ -282,6 +282,19 @@ export default async function SummitPage() {
                     />
                   ))}
                 </div>
+
+                {edition.viewMoreLabel ? (
+                  <div style={{ padding: "22px 30px 26px" }}>
+                    <a
+                      href={edition.viewMoreHref}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="pill pill--accent pill--sm"
+                    >
+                      {edition.viewMoreLabel}
+                    </a>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
@@ -333,17 +346,6 @@ export default async function SummitPage() {
                   {summit.editions.upcoming.ctaLabel}
                 </a>
               </div>
-            </div>
-          ) : null}
-
-          {summit.editions.viewMoreLabel ? (
-            <div className="center mt-40">
-              <a
-                href={summit.editions.viewMoreHref}
-                className="pill pill--accent pill--lg"
-              >
-                {summit.editions.viewMoreLabel}
-              </a>
             </div>
           ) : null}
         </div>
