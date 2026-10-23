@@ -2366,6 +2366,7 @@
 }
 
 .magCover {
+  display: block;
   position: relative;
   overflow: hidden;
   border-radius: var(--r-card);

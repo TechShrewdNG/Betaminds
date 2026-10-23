@@ -1688,18 +1688,22 @@ export const schemas: DocSchema[] = [
       {
         key: "press",
         title: "Press",
-        note: "A self-scrolling strip of cover photos — no headline text or separate link on the page, just the cover and a \"read more\" badge riding on it, click-through to the publication. A row with no cover uploaded doesn't appear. Heading is used only as this section's label in the page's \"In this page\" contents list.",
+        note: "Same layout as The Pinnacle Magazine above — a standout cover beside the heading and body. The standout is the first publication below with a cover; every other one with a cover scrolls in a carousel underneath, each with a \"read more\" badge riding on it. A row with no cover uploaded doesn't appear anywhere on the page.",
         fields: {
+          eyebrow: { kind: "text", label: "Eyebrow", mono: true },
           heading: { kind: "text", label: "Heading" },
+          lead: { kind: "textarea", label: "Body", rows: 3 },
           readLabel: {
             kind: "text",
             label: "\"Read more\" badge label",
+            help: "Shown on the scrolling covers underneath the standout.",
           },
           items: {
             kind: "repeater",
             label: "Publications",
             itemLabel: "Publication",
             titleKey: "title",
+            help: "Reorder rows to change which publication is the standout — it's always the first one with a cover image.",
             fields: {
               title: {
                 kind: "text",
@@ -1710,7 +1714,7 @@ export const schemas: DocSchema[] = [
                 kind: "image",
                 label: "Cover image",
                 ratio: "3 / 4",
-                help: `Required for this row to appear — it's the whole slide. ${PX_PORTRAIT_3_4}`,
+                help: `Required for this row to appear — it's the whole slide (or the standout, if it's the first with a cover). ${PX_PORTRAIT_3_4}`,
               },
               href: {
                 kind: "text",

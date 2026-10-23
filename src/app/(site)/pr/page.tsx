@@ -212,25 +212,57 @@ export default async function PrPage() {
       </section>
   );
 
-  // Press features. Just the cover photos, scrolling on their own — no
-  // headline text, no separate link row. Each cover is the whole story:
-  // click it (or the "read more" badge riding on it) to open the
-  // publication. An item with no cover uploaded yet has nothing to show, so
-  // the section stays hidden until at least one does.
-  sections.press =
-    pressWithCover.length > 0 ? (
-        <section id="press" data-reveal className="band band--ruled">
-          <div className="shell section">
-            <ImageCarousel
-              items={pressWithCover.map((item) => ({
-                src: item.cover,
-                alt: item.title,
-                href: item.href || undefined,
-              }))}
-              readLabel={pr.press.readLabel}
-            />
+  // Press features. Same shape as the Magazine above — a standout cover
+  // beside the heading and body — then every other publication with a cover
+  // scrolls beneath as a carousel. The standout is simply the first
+  // publication with a cover in the admin's list; reorder that list to
+  // change which one it is. Nothing to show until at least one cover exists.
+  const [pressStandout, ...pressRest] = pressWithCover;
+
+  sections.press = pressStandout ? (
+      <section id="press" data-reveal className="band band--ruled">
+        <div className="shell section">
+          <div className={styles.magGrid}>
+            <a
+              href={pressStandout.href || undefined}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={styles.magCover}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={pressStandout.cover}
+                alt={pressStandout.title}
+                className="bm-settle"
+                loading="lazy"
+              />
+            </a>
+
+            <div>
+              <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
+              <h2 className="h2" style={{ marginBottom: 16 }}>
+                <SplitText text={pr.press.heading} />
+              </h2>
+              <p className="body measure-520" style={{ margin: 0 }}>
+                {pr.press.lead}
+              </p>
+            </div>
           </div>
-        </section>
+
+          {pressRest.length > 0 ? (
+            <div className="mt-40">
+              <ImageCarousel
+                items={pressRest.map((item) => ({
+                  src: item.cover,
+                  alt: item.title,
+                  href: item.href || undefined,
+                }))}
+                readLabel={pr.press.readLabel}
+              />
+            </div>
+          ) : null}
+        </div>
+      </section>
   ) : null;
 
   // Billboards. Landscape, and deliberately without links. The section
