@@ -212,45 +212,58 @@ export default async function PrPage() {
       </section>
   );
 
-  // Press features. Same shape as the Magazine above — a standout cover
-  // beside the heading and body — then every other publication with a cover
-  // scrolls beneath as a carousel. The standout is simply the first
+  // Press features. A featured photo fills the top of the band with the
+  // headline and body sitting on it — the standout is simply the first
   // publication with a cover in the admin's list; reorder that list to
-  // change which one it is. Nothing to show until at least one cover exists.
+  // change which one it is. Every other publication with a cover then
+  // scrolls beneath as a carousel. Nothing to show until at least one
+  // cover exists.
   const [pressStandout, ...pressRest] = pressWithCover;
 
   sections.press = pressStandout ? (
-      <section id="press" data-reveal className="band band--ruled">
-        <div className="shell section">
-          <div className={styles.magGrid}>
-            <a
-              href={pressStandout.href || undefined}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={styles.magCover}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={pressStandout.cover}
-                alt={pressStandout.title}
-                className="bm-settle"
-                loading="lazy"
-              />
-            </a>
-
-            <div>
+      <>
+        <a
+          id="press"
+          data-reveal
+          href={pressStandout.href || undefined}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="hero"
+          style={{ display: "block" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={pressStandout.cover}
+            alt={pressStandout.title}
+            className="hero__img"
+            loading="lazy"
+          />
+          <div
+            className="hero__wash"
+            style={{
+              background:
+                "linear-gradient(100deg, rgba(var(--scrim-rgb),.95), rgba(var(--scrim-rgb),.55))",
+            }}
+          />
+          <div
+            className="shell"
+            style={{ position: "relative", paddingTop: 92, paddingBottom: 92 }}
+          >
+            <div className="measure-660">
               <div className="eyebrow mb-22">{pr.press.eyebrow}</div>
               <h2 className="h2" style={{ marginBottom: 16 }}>
                 <SplitText text={pr.press.heading} />
               </h2>
-              <p className="body measure-520" style={{ margin: 0 }}>
+              <p className="body measure-520" style={{ margin: 0, color: "var(--ink-84)" }}>
                 {pr.press.lead}
               </p>
             </div>
           </div>
+        </a>
 
-          {pressRest.length > 0 ? (
-            <div className="mt-40">
+        {pressRest.length > 0 ? (
+          <section data-reveal className="band band--ruled">
+            <div className="shell section">
               <ImageCarousel
                 items={pressRest.map((item) => ({
                   src: item.cover,
@@ -260,9 +273,9 @@ export default async function PrPage() {
                 readLabel={pr.press.readLabel}
               />
             </div>
-          ) : null}
-        </div>
-      </section>
+          </section>
+        ) : null}
+      </>
   ) : null;
 
   // Billboards. Landscape, and deliberately without links. The section
