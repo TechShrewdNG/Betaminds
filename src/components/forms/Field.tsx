@@ -182,6 +182,163 @@ export function SelectField({
   );
 }
 
+/**
+ * Keeps a group of radio/checkbox inputs in step with React state after a
+ * form reset, the same problem `useResetGuard` solves for a single control —
+ * see that function's comment. A native form reset touches every input in
+ * the group directly, so each one needs re-asserting, not just one node.
+ */
+function useGroupResetGuard(sync: (container: HTMLDivElement) => void) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) sync(ref.current);
+  });
+  return ref;
+}
+
+const slugify = (value: string, index: number) =>
+  `opt${index}-${value.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)}`;
+
+/** A single-choice question rendered as visible options rather than a dropdown. */
+export function RadioGroupField({
+  options,
+  ...props
+}: Common & { options: string[] }) {
+  const { name, label, error, required, defaultValue } = props;
+  const { id, errorId } = useFieldIds(name, error);
+  const [value, setValue] = useState(defaultValue ?? "");
+  const ref = useGroupResetGuard((container) => {
+    container
+      .querySelectorAll<HTMLInputElement>('input[type="radio"]')
+      .forEach((input) => {
+        const shouldBeChecked = input.value === value;
+        if (input.checked !== shouldBeChecked) input.checked = shouldBeChecked;
+      });
+  });
+
+  return (
+    <fieldset className={`${styles.field} ${styles.fieldset}`}>
+      <legend className={styles.label} id={id}>
+        {label}
+        {required ? (
+          <span className={styles.required} aria-hidden="true">
+            *
+          </span>
+        ) : null}
+      </legend>
+      <div
+        ref={ref}
+        className={styles.optionGroup}
+        role="radiogroup"
+        aria-labelledby={id}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={errorId}
+      >
+        {options.map((option, index) => {
+          const optionId = `${id}-${slugify(option, index)}`;
+          return (
+            <label key={option} className={styles.option} htmlFor={optionId}>
+              <input
+                id={optionId}
+                type="radio"
+                name={name}
+                value={option}
+                required={required}
+                checked={value === option}
+                onChange={() => setValue(option)}
+              />
+              <span>{option}</span>
+            </label>
+          );
+        })}
+      </div>
+      <ErrorText id={errorId} error={error} />
+    </fieldset>
+  );
+}
+
+/**
+ * A "select all that apply" question. Submitted as one comma-joined string
+ * under a single field key, via a hidden input, so it fits the same
+ * one-string-per-answer model as every other field — a set of checkboxes
+ * sharing one `name` would instead arrive as several same-named form fields,
+ * clobbering down to the last one by the time it reaches a plain object.
+ */
+export function CheckboxGroupField({
+  options,
+  ...props
+}: Common & { options: string[] }) {
+  const { name, label, error, required, defaultValue } = props;
+  const { id, errorId } = useFieldIds(name, error);
+  const [selected, setSelected] = useState<Set<string>>(
+    () =>
+      new Set(
+        (defaultValue ?? "")
+          .split(",")
+          .map((entry) => entry.trim())
+          .filter(Boolean),
+      ),
+  );
+  const value = Array.from(selected).join(", ");
+  const hiddenRef = useResetGuard<HTMLInputElement>(value);
+  const ref = useGroupResetGuard((container) => {
+    container
+      .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+      .forEach((input) => {
+        const shouldBeChecked = selected.has(input.value);
+        if (input.checked !== shouldBeChecked) input.checked = shouldBeChecked;
+      });
+  });
+
+  function toggle(option: string) {
+    setSelected((previous) => {
+      const next = new Set(previous);
+      if (next.has(option)) next.delete(option);
+      else next.add(option);
+      return next;
+    });
+  }
+
+  return (
+    <fieldset className={`${styles.field} ${styles.fieldset}`}>
+      <legend className={styles.label} id={id}>
+        {label}
+        {required ? (
+          <span className={styles.required} aria-hidden="true">
+            *
+          </span>
+        ) : null}
+      </legend>
+      <input ref={hiddenRef} type="hidden" name={name} defaultValue={value} />
+      <div
+        ref={ref}
+        className={styles.optionGroup}
+        role="group"
+        aria-labelledby={id}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={errorId}
+      >
+        {options.map((option, index) => {
+          const optionId = `${id}-${slugify(option, index)}`;
+          return (
+            <label key={option} className={styles.option} htmlFor={optionId}>
+              <input
+                id={optionId}
+                type="checkbox"
+                value={option}
+                checked={selected.has(option)}
+                onChange={() => toggle(option)}
+              />
+              <span>{option}</span>
+            </label>
+          );
+        })}
+      </div>
+      <ErrorText id={errorId} error={error} />
+    </fieldset>
+  );
+}
+
 /** Bot trap. Anything typed in here rejects the submission server-side. */
 export function Honeypot() {
   return (

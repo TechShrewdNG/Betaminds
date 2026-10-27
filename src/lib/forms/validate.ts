@@ -17,6 +17,9 @@ const MAX_LENGTH: Record<FormField["type"], number> = {
   url: 500,
   textarea: 5000,
   select: 200,
+  radio: 200,
+  // Comma-joined selected options.
+  multiselect: 1000,
 };
 
 function fieldSchema(field: FormField): z.ZodTypeAny {
@@ -47,11 +50,29 @@ function fieldSchema(field: FormField): z.ZodTypeAny {
     );
   }
 
-  if (field.type === "select" && field.options.length > 0) {
+  if (
+    (field.type === "select" || field.type === "radio") &&
+    field.options.length > 0
+  ) {
     // Guards against a tampered payload naming an option that isn't offered.
     schema = schema.refine(
       (value) => value === "" || field.options.includes(value),
       { message: `Choose one of the listed options for ${field.label}.` },
+    );
+  }
+
+  if (field.type === "multiselect" && field.options.length > 0) {
+    // Stored as a comma-joined string; every chosen entry must be a real option.
+    schema = schema.refine(
+      (value: string) => {
+        if (value === "") return true;
+        const chosen = value
+          .split(",")
+          .map((entry: string) => entry.trim())
+          .filter(Boolean);
+        return chosen.every((entry: string) => field.options.includes(entry));
+      },
+      { message: `Choose from the listed options for ${field.label}.` },
     );
   }
 

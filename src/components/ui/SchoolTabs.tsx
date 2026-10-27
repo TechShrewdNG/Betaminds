@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import styles from "./ui.module.css";
 import { Icon, type IconName } from "./Icon";
 import { AcademyForm } from "@/components/forms/AcademyForm";
-import type { FormField } from "@/lib/forms/definition";
+import type { FormGroup } from "@/lib/forms/definition";
 import type { ContentDefaults } from "@/lib/content/defaults";
 
 export type Course = {
@@ -44,7 +44,7 @@ export function SchoolTabs({
   certificateLabel,
   enrolLabel,
   apply,
-  fields,
+  groups,
   crash,
 }: {
   heading: string;
@@ -52,7 +52,7 @@ export function SchoolTabs({
   certificateLabel: string;
   enrolLabel: string;
   apply: Apply;
-  fields: FormField[];
+  groups: FormGroup[];
   /** Short, standalone sessions shown in their own row below the schools —
    *  not a school of their own, so they skip the tab track entirely. */
   crash?: CrashCourses;
@@ -287,7 +287,7 @@ export function SchoolTabs({
               <Suspense fallback={null}>
                 <AcademyForm
                   apply={apply}
-                  fields={fields}
+                  groups={groups}
                   presetCourse={openCourse.name}
                 />
               </Suspense>

@@ -19,7 +19,7 @@ export default async function AcademyPage() {
     getContent("academy"),
     getSectionOrder("academy"),
   ]);
-  const { fields: applyFields } = await resolveForm("academy");
+  const { groups: applyGroups } = await resolveForm("academy");
 
   const sections: Record<string, ReactNode> = {};
 
@@ -116,7 +116,7 @@ export default async function AcademyPage() {
             certificateLabel={academy.courses.certificateLabel}
             enrolLabel={academy.courses.enrolLabel}
             apply={academy.apply}
-            fields={applyFields}
+            groups={applyGroups ?? []}
             crash={academy.crashCourses}
           />
         </div>
@@ -359,7 +359,7 @@ export default async function AcademyPage() {
               {academy.apply.body}
             </p>
             <Suspense fallback={null}>
-              <AcademyForm apply={academy.apply} fields={applyFields} />
+              <AcademyForm apply={academy.apply} groups={applyGroups ?? []} />
             </Suspense>
           </div>
         </div>

@@ -150,9 +150,11 @@ function digestFromFields(
   // A one-line preview for the inbox: the chosen options first (required ones
   // lead, since those are the questions that matter), then the first long
   // answer. The detail view carries everything.
+  const isChoice = (f: FormField) =>
+    f.type === "select" || f.type === "radio" || f.type === "multiselect";
   const selects = [
-    ...fields.filter((f) => f.type === "select" && f.required),
-    ...fields.filter((f) => f.type === "select" && !f.required),
+    ...fields.filter((f) => isChoice(f) && f.required),
+    ...fields.filter((f) => isChoice(f) && !f.required),
   ]
     .map((field) => value(field.key))
     .filter(Boolean);

@@ -31,7 +31,9 @@ const f = (
     | "date"
     | "url"
     | "textarea"
-    | "select" = "text",
+    | "select"
+    | "radio"
+    | "multiselect" = "text",
   extra: {
     required?: boolean;
     half?: boolean;
@@ -656,31 +658,101 @@ export const defaults = {
        * success screen.
        */
       schedulingUrl: "",
-      submitLabel: "Get My Schedule Link",
+      submitLabel: "Book a consultation session",
       successHeading: "Thank you. We have your answers.",
       successBody:
         "We review every questionnaire before the call. You'll hear from us within one working day with your scheduling link and, where a booking fee applies, the payment details.",
       /**
-       * Cut down from the original eight-part, 25-field version: brand basics
-       * and what's needed, nothing a call itself can't cover. The outline
-       * shown beside the form is derived from these labels, so there is one
-       * source of truth.
+       * The outline shown beside the form is derived from these labels, so
+       * there is one source of truth.
        */
       groups: [
         {
-          title: "Your brand",
+          title: "Your business",
           fields: [
-            f("brandName", "Brand name", "text", { required: true, half: true }),
+            f("businessName", "Business name", "text", {
+              required: true,
+              half: true,
+            }),
             f("email", "Email", "email", {
               required: true,
               half: true,
               placeholder: "you@brand.com",
             }),
             f("phone", "Phone", "tel", { required: true, half: true }),
-            f("website", "Website / social media", "text", {
+            f("location", "Business location", "text", {
               required: true,
               half: true,
-              placeholder: "brand.com or @brand",
+            }),
+            f("overview", "Briefly tell us about your business", "textarea", {
+              required: true,
+            }),
+          ],
+        },
+        {
+          title: "Where you are now",
+          fields: [
+            f(
+              "businessType",
+              "What best describes your business?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "I'm launching a new business",
+                  "I need a digital presence",
+                  "I'm looking to grow my existing online business",
+                  "I need better systems/processes",
+                  "I'm repositioning/rebranding",
+                ],
+              },
+            ),
+            f("primaryGoal", "What is your primary goal right now?", "radio", {
+              required: true,
+              options: [
+                "Build brand & digital presence",
+                "Launch an online store/marketplace",
+                "Increase sales & customer acquisition",
+                "Improve existing digital platforms",
+                "Scale my online business",
+                "Build a stronger long-term digital strategy",
+              ],
+            }),
+            f(
+              "hasWebsite",
+              "Do you currently have a website or online store?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "No, starting from scratch",
+                  "Yes, but it needs improvement",
+                  "Yes, but it's not generating enough sales",
+                  "Yes, and I want to scale it",
+                ],
+              },
+            ),
+            f(
+              "websiteDetail",
+              "If yes, share the link or tell us a little more",
+              "text",
+            ),
+            f(
+              "socialActivity",
+              "How active is your business on social media?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "Not active",
+                  "Somewhat active",
+                  "Very active, but not converting",
+                  "Active and generating sales",
+                ],
+              },
+            ),
+            f("socialHandle", "Your social media handle", "text", {
+              half: true,
             }),
           ],
         },
@@ -688,9 +760,46 @@ export const defaults = {
           title: "What you need",
           fields: [
             f(
+              "helpNeeded",
+              "What do you need the most help with? Select all that apply.",
+              "multiselect",
+              {
+                required: true,
+                options: [
+                  "Brand identity & positioning",
+                  "Website/e-commerce development",
+                  "Social media management",
+                  "Content creation",
+                  "Digital advertising",
+                  "SEO",
+                  "Customer experience",
+                  "Sales/conversion",
+                  "Analytics & performance tracking",
+                  "Complete digital growth solution",
+                ],
+              },
+            ),
+            f("stage", "What stage is your business currently in?", "radio", {
+              required: true,
+              options: [
+                "Idea/Pre-launch",
+                "New business",
+                "Growing business",
+                "Established business",
+                "Scaling business",
+              ],
+            }),
+          ],
+        },
+        {
+          title: "Partnership & investment",
+          fields: [
+            // Options are replaced with the live engagement plans at render
+            // time; these names are only the floor if that list is ever empty.
+            f(
               "plan",
-              "What partnership plan are you interested in?",
-              "select",
+              "What level of support are you looking for?",
+              "radio",
               {
                 required: true,
                 options: [
@@ -701,19 +810,39 @@ export const defaults = {
                 ],
               },
             ),
-            f("budget", "What is your budget?", "text", {
+            f(
+              "investment",
+              "What is your expected investment level for digital growth?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "₦500,000 – ₦1,500,000",
+                  "₦1,500,000 – ₦3,000,000",
+                  "₦3,000,000 – ₦5,000,000",
+                  "I'm open to a recommended plan",
+                ],
+              },
+            ),
+            f("startTiming", "When would you like to start?", "radio", {
               required: true,
-              half: true,
-              placeholder: "Range is fine",
+              options: [
+                "Immediately",
+                "Within 1 month",
+                "Within 1–3 months",
+                "I'm still planning",
+              ],
             }),
-            f("startDate", "Ideal start date", "date", {
-              required: true,
-              half: true,
-            }),
-            f("whyNow", "What's prompting you to reach out now?", "textarea", {
-              required: true,
-              placeholder: "A launch, a rebrand, stalled sales…",
-            }),
+          ],
+        },
+        {
+          title: "Anything else",
+          fields: [
+            f(
+              "notes",
+              "Any other information or details you would like us to know",
+              "textarea",
+            ),
           ],
         },
       ],
@@ -1113,20 +1242,152 @@ export const defaults = {
       submitLabel: "Submit application →",
       successHeading: "Application received.",
       successBody:
-        "Our admissions team will be in touch within one working day with next steps, fees and start dates.",
+        "Our admissions team will be in touch within one working day with next steps, fees and start dates. Payment information and prompts will be sent to your email after submission.",
       /**
-       * The course dropdown is filled from the schools above at render time, so
-       * adding a course makes it applicable for without touching this list.
+       * The 'course' and 'format' dropdowns are filled from the Courses
+       * section and the hero's learning formats at render time, so adding a
+       * course or format here makes it available without touching this list.
        */
-      fields: [
-        f("name", "Your name", "text", { required: true, half: true }),
-        f("email", "Email", "email", { required: true, half: true }),
-        f("phone", "Phone", "tel", { half: true }),
-        f("format", "Preferred format", "select", { half: true }),
-        f("course", "Which course?", "select", { required: true }),
-        f("background", "Tell us about your background", "textarea", {
-          placeholder: "Where you are now, and what you want to be doing.",
-        }),
+      groups: [
+        {
+          title: "Personal information",
+          fields: [
+            f("name", "Full name", "text", { required: true, half: true }),
+            f("email", "Email address", "email", {
+              required: true,
+              half: true,
+            }),
+            f("phone", "Phone / WhatsApp number", "tel", {
+              required: true,
+              half: true,
+            }),
+            f("country", "Country of residence", "text", {
+              required: true,
+              half: true,
+            }),
+            f("cityState", "City / State", "text", {
+              required: true,
+              half: true,
+            }),
+            f("ageRange", "Age range", "radio", {
+              required: true,
+              options: ["Under 18", "18–24", "25–34", "35–44", "45 and above"],
+            }),
+            f("gender", "Gender", "radio", {
+              required: true,
+              options: ["Female", "Male", "Prefer not to say"],
+            }),
+          ],
+        },
+        {
+          title: "Course selection",
+          fields: [
+            f("course", "Which course are you registering for?", "select", {
+              required: true,
+            }),
+            f("format", "Preferred format", "select", { half: true }),
+            f("whyCourse", "Why do you want to take this course?", "textarea", {
+              required: true,
+            }),
+            f(
+              "goals",
+              "What do you hope to achieve after completing this course?",
+              "textarea",
+              { required: true },
+            ),
+            f(
+              "hasExperience",
+              "Do you already have experience in this area?",
+              "radio",
+              { required: true, options: ["Yes", "No"] },
+            ),
+            f(
+              "experienceDetail",
+              "If yes, briefly describe your previous experience",
+              "textarea",
+            ),
+          ],
+        },
+        {
+          title: "Experience & readiness",
+          fields: [
+            f(
+              "skillLevel",
+              "How would you rate your current skill level?",
+              "radio",
+              {
+                required: true,
+                options: ["Beginner", "Basic", "Intermediate", "Advanced"],
+              },
+            ),
+            f(
+              "occupation",
+              "What is your current occupation/status?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "Student",
+                  "Employed",
+                  "Self-employed/Business owner",
+                  "Freelancer",
+                  "Unemployed",
+                  "Other",
+                ],
+              },
+            ),
+            f(
+              "deviceAccess",
+              "Do you have reliable access to a smartphone or computer and internet?",
+              "radio",
+              { required: true, options: ["Yes", "No"] },
+            ),
+          ],
+        },
+        {
+          title: "Payment & enrolment",
+          fields: [
+            f(
+              "paymentMethod",
+              "How do you intend to pay for the course?",
+              "text",
+              { required: true },
+            ),
+            f("paymentCompleted", "Have you completed payment?", "radio", {
+              required: true,
+              options: ["Yes", "No"],
+            }),
+          ],
+        },
+        {
+          title: "Commitment & confirmation",
+          fields: [
+            f(
+              "hearAbout",
+              "How did you hear about Betaminds Africa Academy?",
+              "radio",
+              {
+                required: true,
+                options: [
+                  "Facebook",
+                  "Instagram",
+                  "WhatsApp",
+                  "LinkedIn",
+                  "TikTok",
+                  "Referral",
+                  "Website",
+                  "Other",
+                ],
+              },
+            ),
+            f(
+              "agreeComms",
+              "Do you agree to receive important course-related communication from Betaminds Africa Academy via email/WhatsApp?",
+              "radio",
+              { required: true, options: ["Yes", "No"] },
+            ),
+          ],
+        },
       ],
     },
   },
@@ -1391,21 +1652,72 @@ export const defaults = {
       successBody:
         "We'll email you as soon as registration for the next edition opens.",
       fields: [
-        f("name", "Your name", "text", { required: true, half: true }),
+        f("name", "Full name", "text", { required: true, half: true }),
         f("email", "Email", "email", { required: true, half: true }),
-        f("organisation", "Organisation", "text", { half: true }),
-        f("role", "Role", "text", { half: true }),
-        f("interest", "How would you like to take part?", "select", {
+        f("phone", "WhatsApp / Phone number", "tel", {
+          required: true,
+          half: true,
+        }),
+        f("cityState", "City & State", "text", { required: true, half: true }),
+        f("describesYou", "What best describes you?", "radio", {
           required: true,
           options: [
-            "Attend",
-            "Speak",
-            "Sponsor or partner",
-            "Volunteer",
-            "Exhibit",
+            "Creative / Artist",
+            "Entrepreneur",
+            "Student",
+            "Professional / Employee",
+            "Organisation / Brand representative",
+            "Other",
           ],
         }),
-        f("message", "Anything else?", "textarea"),
+        f(
+          "occupation",
+          "Occupation / Business / Organisation",
+          "text",
+          { required: true, half: true },
+        ),
+        f("sector", "Creative / Professional sector", "text", {
+          required: true,
+          half: true,
+        }),
+        f("experienceYears", "Years of experience", "radio", {
+          required: true,
+          options: [
+            "Under 1 year",
+            "1–3 years",
+            "3–5 years",
+            "5–10 years",
+            "10+ years",
+          ],
+        }),
+        f("whyAttend", "Why do you want to attend?", "textarea", {
+          required: true,
+        }),
+        f(
+          "hopeToGain",
+          "What do you hope to gain from the summit?",
+          "textarea",
+          { required: true },
+        ),
+        f(
+          "biggestChallenge",
+          "What is your biggest current challenge?",
+          "textarea",
+          { required: true },
+        ),
+        f("hearAbout", "How did you hear about the summit?", "radio", {
+          required: true,
+          options: [
+            "Facebook",
+            "Instagram",
+            "WhatsApp",
+            "LinkedIn",
+            "TikTok",
+            "Referral",
+            "Website",
+            "Other",
+          ],
+        }),
       ],
     },
   },

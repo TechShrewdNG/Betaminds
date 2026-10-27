@@ -194,6 +194,52 @@
   gap: 14px;
 }
 
+/* Radio and checkbox groups — an options-based question rendered as visible
+   choices instead of a dropdown. */
+.fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.optionGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.optionGroup[aria-invalid="true"] .option {
+  border-color: #b4453a;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line-input);
+  background: var(--surface-alt);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.option:has(input:checked) {
+  border-color: var(--accent-fill);
+  background: var(--surface);
+}
+
+.option input {
+  accent-color: var(--accent-fill);
+  flex: none;
+  margin-top: 2px;
+}
+
 .inline {
   display: flex;
   gap: 8px;
