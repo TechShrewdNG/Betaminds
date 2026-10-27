@@ -700,20 +700,20 @@ export const defaults = {
                 required: true,
                 options: [
                   "I'm launching a new business",
-                  "I need a digital presence",
-                  "I'm looking to grow my existing online business",
-                  "I need better systems/processes",
-                  "I'm repositioning/rebranding",
+                  "I already have a business but need to establish my digital presence",
+                  "I have an existing online business and want to grow it",
+                  "I already sell online but need better systems and performance",
+                  "I'm repositioning/rebranding my business",
                 ],
               },
             ),
             f("primaryGoal", "What is your primary goal right now?", "radio", {
               required: true,
               options: [
-                "Build brand & digital presence",
-                "Launch an online store/marketplace",
-                "Increase sales & customer acquisition",
-                "Improve existing digital platforms",
+                "Build my brand and digital presence",
+                "Launch my online store/marketplace",
+                "Increase sales and customer acquisition",
+                "Improve my existing digital platforms",
                 "Scale my online business",
                 "Build a stronger long-term digital strategy",
               ],
@@ -725,16 +725,16 @@ export const defaults = {
               {
                 required: true,
                 options: [
-                  "No, starting from scratch",
+                  "No, I'm starting from scratch",
                   "Yes, but it needs improvement",
-                  "Yes, but it's not generating enough sales",
+                  "Yes, but it is not generating enough sales",
                   "Yes, and I want to scale it",
                 ],
               },
             ),
             f(
               "websiteDetail",
-              "If yes, share the link or tell us a little more",
+              "If yes, type…",
               "text",
             ),
             f(
@@ -744,9 +744,9 @@ export const defaults = {
               {
                 required: true,
                 options: [
-                  "Not active",
+                  "Not active yet",
                   "Somewhat active",
-                  "Very active, but not converting",
+                  "Very active but not converting enough",
                   "Active and generating sales",
                 ],
               },
@@ -794,19 +794,16 @@ export const defaults = {
         {
           title: "Partnership & investment",
           fields: [
-            // Options are replaced with the live engagement plans at render
-            // time; these names are only the floor if that list is ever empty.
             f(
-              "plan",
+              "supportLevel",
               "What level of support are you looking for?",
               "radio",
               {
                 required: true,
                 options: [
-                  "Starter Partnership",
-                  "Growth Partnership",
-                  "Strategic Partnership",
-                  "Not sure yet. Recommend one.",
+                  "3 Months — Starter Partnership: Establish, reposition or accelerate",
+                  "6 Months — Growth Partnership: Build sustained digital growth",
+                  "9 Months — Strategic Partnership: Long-term digital growth and optimization",
                 ],
               },
             ),
@@ -1252,24 +1249,24 @@ export const defaults = {
         {
           title: "Personal information",
           fields: [
-            f("name", "Full name", "text", { required: true, half: true }),
-            f("email", "Email address", "email", {
+            f("name", "Full Name", "text", { required: true, half: true }),
+            f("email", "Email Address", "email", {
               required: true,
               half: true,
             }),
-            f("phone", "Phone / WhatsApp number", "tel", {
+            f("phone", "Phone/WhatsApp Number", "tel", {
               required: true,
               half: true,
             }),
-            f("country", "Country of residence", "text", {
+            f("country", "Country of Residence", "text", {
               required: true,
               half: true,
             }),
-            f("cityState", "City / State", "text", {
+            f("cityState", "City/State", "text", {
               required: true,
               half: true,
             }),
-            f("ageRange", "Age range", "radio", {
+            f("ageRange", "Age Range", "radio", {
               required: true,
               options: ["Under 18", "18–24", "25–34", "35–44", "45 and above"],
             }),
@@ -1291,7 +1288,7 @@ export const defaults = {
             }),
             f(
               "goals",
-              "What do you hope to achieve after completing this course?",
+              "What do you hope to achieve after completing the course?",
               "textarea",
               { required: true },
             ),
@@ -1313,7 +1310,7 @@ export const defaults = {
           fields: [
             f(
               "skillLevel",
-              "How would you rate your current skill level?",
+              "How would you rate your current knowledge/skill in this area?",
               "radio",
               {
                 required: true,
@@ -1652,9 +1649,9 @@ export const defaults = {
       successBody:
         "We'll email you as soon as registration for the next edition opens.",
       fields: [
-        f("name", "Full name", "text", { required: true, half: true }),
+        f("name", "Full Name", "text", { required: true, half: true }),
         f("email", "Email", "email", { required: true, half: true }),
-        f("phone", "WhatsApp / Phone number", "tel", {
+        f("phone", "WhatsApp/Phone Number", "tel", {
           required: true,
           half: true,
         }),
@@ -1672,11 +1669,11 @@ export const defaults = {
         }),
         f(
           "occupation",
-          "Occupation / Business / Organisation",
+          "Occupation/Business/Organisation",
           "text",
           { required: true, half: true },
         ),
-        f("sector", "Creative / Professional sector", "text", {
+        f("sector", "Creative/Professional Sector", "text", {
           required: true,
           half: true,
         }),

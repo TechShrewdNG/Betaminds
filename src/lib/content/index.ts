@@ -83,7 +83,7 @@ const RETIRED_FORM_SECTIONS: Record<
 > = {
   ecosystem: {
     section: "questionnaire",
-    retiredKeys: ["brandName", "budget", "startDate", "whyNow"],
+    retiredKeys: ["brandName", "budget", "startDate", "whyNow", "plan"],
   },
   academy: { section: "apply", retiredKeys: ["background"] },
   summit: { section: "interest", retiredKeys: ["organisation", "role", "message"] },
