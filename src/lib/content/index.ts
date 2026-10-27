@@ -62,6 +62,63 @@ function stripSectionNumbering<T>(value: T): T {
   return out as T;
 }
 
+/**
+ * One-time reconciliation for the Digital Marketplace questionnaire, Academy
+ * application and Summit registration forms: all three were rewritten to a
+ * completely new question set. A document saved before that rewrite still
+ * carries the *entire* old section — not just the old field list, since the
+ * admin form posts the whole document on every save — which would otherwise
+ * freeze the retired copy (old labels, old submit button text, old success
+ * message) in place indefinitely, the same way a numbered eyebrow or a
+ * missing nav route used to.
+ *
+ * Detected by a handful of field keys from the old shape that have no
+ * equivalent in the new one; when found, the whole section is dropped from
+ * the saved patch so it merges as if it had never been saved, rather than
+ * leaving a part-old, part-new mix.
+ */
+const RETIRED_FORM_SECTIONS: Record<
+  string,
+  { section: string; retiredKeys: string[] }
+> = {
+  ecosystem: {
+    section: "questionnaire",
+    retiredKeys: ["brandName", "budget", "startDate", "whyNow"],
+  },
+  academy: { section: "apply", retiredKeys: ["background"] },
+  summit: { section: "interest", retiredKeys: ["organisation", "role", "message"] },
+};
+
+function sectionFieldKeys(section: Plain): unknown[] {
+  const groups = Array.isArray(section.groups) ? section.groups : null;
+  if (groups) {
+    return groups.flatMap((group) =>
+      isPlainObject(group) && Array.isArray(group.fields) ? group.fields : [],
+    );
+  }
+  return Array.isArray(section.fields) ? section.fields : [];
+}
+
+function withRetiredFormsCleared(id: string, saved: unknown): unknown {
+  const rule = RETIRED_FORM_SECTIONS[id];
+  if (!rule || !isPlainObject(saved)) return saved;
+
+  const section = saved[rule.section];
+  if (!isPlainObject(section)) return saved;
+
+  const isRetired = sectionFieldKeys(section).some(
+    (field) =>
+      isPlainObject(field) &&
+      typeof field.key === "string" &&
+      rule.retiredKeys.includes(field.key),
+  );
+  if (!isRetired) return saved;
+
+  const rest = { ...saved };
+  delete rest[rule.section];
+  return rest;
+}
+
 function parse(raw: string | null | undefined): unknown {
   if (!raw) return undefined;
   try {
@@ -179,7 +236,10 @@ export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  const patched = id === "global" ? withMissingRoutes(saved) : saved;
+  const patched = withRetiredFormsCleared(
+    id,
+    id === "global" ? withMissingRoutes(saved) : saved,
+  );
   return stripSectionNumbering(merge(defaults[id], patched));
 }
 
@@ -198,8 +258,10 @@ export async function getRawDoc(id: string): Promise<Plain> {
 export async function getMergedDoc(id: DocId): Promise<Plain> {
   const saved = await readDoc(id);
   // Normalised here too, so the admin form shows the same wording the site
-  // serves rather than re-saving the stale numbering straight back in.
-  const merged = stripSectionNumbering(merge(defaults[id], saved)) as Plain;
+  // serves rather than re-saving the stale numbering — or a retired form
+  // section — straight back in.
+  const cleared = withRetiredFormsCleared(id, saved);
+  const merged = stripSectionNumbering(merge(defaults[id], cleared)) as Plain;
   // Resolved rather than copied raw, so the editor already shows any section
   // added to the schema since this document was last saved.
   merged[SECTION_ORDER_KEY] = resolveSectionOrder(id, saved);
