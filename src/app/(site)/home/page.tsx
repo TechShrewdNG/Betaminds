@@ -465,8 +465,10 @@ export default async function HomePage() {
       </section>
   );
 
-  // Projects.
-  sections.portfolio = (
+  // Projects. Hidden entirely until the portfolio has something real to show
+  // — see the comment on `projects.list.items` in defaults.ts.
+  sections.portfolio =
+    projects.length > 0 ? (
       <section data-reveal id="projects" className="band band--ink band--ruled">
         <div className="shell section">
           <div className="section-name mb-18">{home.portfolio.eyebrow}</div>
@@ -494,7 +496,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-  );
+    ) : null;
 
   // Testimonials.
   sections.testimonials = (

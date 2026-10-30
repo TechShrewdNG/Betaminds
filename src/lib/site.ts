@@ -29,7 +29,10 @@ export const PUBLIC_ROUTES = [
   { path: "/pr", doc: "pr", priority: 0.9 },
   { path: "/academy", doc: "academy", priority: 0.9 },
   { path: "/summit", doc: "summit", priority: 0.8 },
-  { path: "/projects", doc: "projects", priority: 0.8 },
+  // /projects is left out of the sitemap while the portfolio is empty (see
+  // the comment on `projects.list.items` in defaults.ts) — the page itself
+  // still works for anyone who lands on it directly, it just isn't
+  // promoted for indexing. Add it back once there's real work to show.
   { path: "/blog", doc: "blog", priority: 0.8 },
   { path: "/lets-work", doc: "work", priority: 0.8 },
 ] as const;

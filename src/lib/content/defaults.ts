@@ -108,9 +108,11 @@ export const defaults = {
       tagline: "We add the spark that makes brands move.",
     },
     nav: {
+      // "Projects" is left out while the portfolio is empty — see the
+      // `projects.list.items` comment. Add it back once there's real work
+      // to send visitors to.
       items: [
         { label: "Home", href: "/home" },
-        { label: "Projects", href: "/projects" },
         { label: "Digital Marketplace", href: "/digital-ecosystem" },
         { label: "Media Services", href: "/media-services" },
         { label: "PR & Events", href: "/pr" },
@@ -167,7 +169,6 @@ export const defaults = {
           title: "Connect",
           links: [
             { label: "Let's work", href: "/lets-work" },
-            { label: "Projects", href: "/projects" },
             { label: "Blog", href: "/blog" },
             { label: "Book a discovery call", href: "/digital-ecosystem#book" },
           ],
@@ -234,8 +235,12 @@ export const defaults = {
           imageAlt: "Team reviewing analytics on a screen",
           primaryLabel: "See how we build",
           primaryHref: "/digital-ecosystem",
-          secondaryLabel: "View our work",
-          secondaryHref: "/projects",
+          // Left blank rather than pointed at /projects while the portfolio
+          // is empty — the slider only renders a secondary button when both
+          // fields are set. Restore "View our work" / "/projects" once
+          // there's real work to show.
+          secondaryLabel: "",
+          secondaryHref: "",
         },
         {
           eyebrow: "Betaminds Academy",
@@ -511,14 +516,13 @@ export const defaults = {
       readLabel: "Read the case study →",
     },
     list: {
-      items: [
-        proj("Sunset Hospitality", "Hospitality", "Brand identity", IMG(9490631, 800), IMG(9490631, 1800)),
-        proj("Nourish Med", "Healthcare", "Content & ads", IMG(8730849, 800), IMG(8730849, 1800)),
-        proj("Charoite Homes", "Real estate", "Property film", IMG(12179670, 800), IMG(12179670, 1800)),
-        proj("Mama Africa Foods", "FMCG", "Commerce ecosystem", IMG(9301528, 800), IMG(9301528, 1800)),
-        proj("MKR Logistics", "Logistics", "Website design", IMG(5058927, 800), IMG(5058927, 1800)),
-        proj("Glams Beauty", "Beauty", "Social management", IMG(4183516, 800), IMG(4183516, 1800)),
-      ],
+      // Emptied until there are real case studies to show — these were
+      // placeholder entries with stock photography standing in for actual
+      // client work. The index page, home's portfolio section and Media
+      // Services' proof strip all already handle an empty list gracefully
+      // (see their own empty-state / conditional-render comments); add real
+      // projects back here via /admin → Projects → Project list.
+      items: [],
     },
   },
 
