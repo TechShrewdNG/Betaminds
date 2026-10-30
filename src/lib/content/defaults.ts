@@ -1477,6 +1477,10 @@ export const defaults = {
             "/summit/first-edition/img-0582.jpg",
             "/summit/first-edition/mo-00661.jpg",
             "/summit/first-edition/mo-00702.jpg",
+            "/summit/first-edition/img-0923-woman-chatting.jpg",
+            "/summit/first-edition/img-0956-panel-discussion.jpg",
+            "/summit/first-edition/img-0987-group-photo.jpg",
+            "/summit/first-edition/img-1012-team-candid.jpg",
           ],
           // "#" until a real gallery/album link is set — same placeholder
           // convention as the footer socials below.

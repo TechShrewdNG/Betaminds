@@ -6,6 +6,7 @@ import { getContent, getSectionOrder } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { Accordion } from "@/components/ui/Accordion";
 import { Marquee } from "@/components/ui/Marquee";
+import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { VideoSlider } from "@/components/ui/VideoSlider";
 import { SplitText } from "@/components/ui/SplitText";
 import {
@@ -258,30 +259,12 @@ export default async function SummitPage() {
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: 1,
-                    background: "var(--line)",
-                  }}
-                >
-                  {edition.gallery.map((src, index) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={`${src}-${index}`}
-                      src={src}
-                      alt={`${edition.edition} gallery image ${index + 1}`}
-                      className="ratio-1-1"
-                      style={{
-                        display: "block",
-                        width: "100%",
-                        objectFit: "cover",
-                      }}
-                      loading="lazy"
-                    />
-                  ))}
-                </div>
+                <PhotoGallery
+                  items={edition.gallery.map((src, index) => ({
+                    src,
+                    alt: `${edition.edition} gallery image ${index + 1}`,
+                  }))}
+                />
 
                 {edition.viewMoreLabel ? (
                   <div style={{ padding: "22px 30px 26px" }}>

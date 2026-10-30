@@ -120,30 +120,40 @@ function withRetiredFormsCleared(id: string, saved: unknown): unknown {
 }
 
 /**
- * One-time reconciliation: the Summit's Second edition gallery was switched
- * from Pexels placeholders to the real event photos. A document saved
- * before that still carries the old placeholder array for that one edition
- * — replaced here with the current default so the real photos show up
- * without waiting on a re-save, while anything else an editor has changed
- * under Summit → Editions (including the First edition's own gallery)
- * survives untouched.
+ * One-time reconciliation for Summit edition galleries: each time real event
+ * photos replace a placeholder or extend an earlier batch, a document saved
+ * before that change still carries the old array — replaced here with the
+ * current default so the real photos show up without waiting on a re-save,
+ * while anything else an editor has changed under Summit → Editions
+ * survives untouched. Freshness for one edition is "the saved gallery
+ * contains at least one path only the new default has."
  */
-function withFreshSecondEditionGallery(id: string, saved: unknown): unknown {
+const EDITION_GALLERY_FRESHNESS_MARKERS: Record<string, string> = {
+  "First edition": "/summit/first-edition/img-0923-woman-chatting.jpg",
+  "Second edition": "/summit/second-edition/",
+};
+
+function withFreshEditionGalleries(id: string, saved: unknown): unknown {
   if (id !== "summit" || !isPlainObject(saved)) return saved;
   const editions = saved.editions;
   if (!isPlainObject(editions) || !Array.isArray(editions.items)) return saved;
 
+  const defaultItems = defaults.summit.editions.items;
   let changed = false;
   const items = editions.items.map((item) => {
-    if (!isPlainObject(item) || item.edition !== "Second edition") return item;
+    if (!isPlainObject(item) || typeof item.edition !== "string") return item;
+    const marker = EDITION_GALLERY_FRESHNESS_MARKERS[item.edition];
+    if (!marker) return item;
+    const fallback = defaultItems.find((d) => d.edition === item.edition);
+    if (!fallback) return item;
+
     const gallery = Array.isArray(item.gallery) ? item.gallery : [];
     const isFresh = gallery.some(
-      (src) =>
-        typeof src === "string" && src.startsWith("/summit/second-edition/"),
+      (src) => typeof src === "string" && src.includes(marker),
     );
     if (isFresh) return item;
     changed = true;
-    return { ...item, gallery: defaults.summit.editions.items[1].gallery };
+    return { ...item, gallery: fallback.gallery };
   });
 
   if (!changed) return saved;
@@ -267,7 +277,7 @@ export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  const patched = withFreshSecondEditionGallery(
+  const patched = withFreshEditionGalleries(
     id,
     withRetiredFormsCleared(
       id,
@@ -294,7 +304,7 @@ export async function getMergedDoc(id: DocId): Promise<Plain> {
   // Normalised here too, so the admin form shows the same wording the site
   // serves rather than re-saving the stale numbering — or a retired form
   // section — straight back in.
-  const cleared = withFreshSecondEditionGallery(
+  const cleared = withFreshEditionGalleries(
     id,
     withRetiredFormsCleared(id, saved),
   );
