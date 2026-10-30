@@ -1,6 +1,7 @@
 import { unstable_cache, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { defaults, type ContentDefaults, type DocId } from "./defaults";
+import { schemaById, orderableSectionKeys, SECTION_ORDER_KEY } from "./schema";
 
 export { defaults, DOC_IDS, type DocId } from "./defaults";
 export * from "./schema";
@@ -32,6 +33,195 @@ function merge<T>(base: T, patch: unknown): T {
   return patch as T;
 }
 
+/**
+ * Strips the legacy "01 / " index prefix off section eyebrows.
+ *
+ * The numbering was removed from the defaults, but a document saved in the
+ * admin stores its own copy of every field it holds, so any page an editor had
+ * already saved kept serving the numbered wording no matter what the defaults
+ * said. Rather than leave that stranded until someone retypes eight fields by
+ * hand, the prefix is treated as a formatting artefact and dropped on read.
+ *
+ * Scoped to keys literally named `eyebrow` so it can only ever touch a section
+ * label — body copy that happens to start with a number is left alone.
+ */
+const INDEX_PREFIX = /^\s*\d{1,2}\s*\/\s*/;
+
+function stripSectionNumbering<T>(value: T): T {
+  if (typeof value === "string") return value as T;
+  if (Array.isArray(value)) return value.map(stripSectionNumbering) as T;
+  if (!isPlainObject(value)) return value;
+
+  const out: Plain = {};
+  for (const [key, v] of Object.entries(value)) {
+    out[key] =
+      key === "eyebrow" && typeof v === "string"
+        ? v.replace(INDEX_PREFIX, "")
+        : stripSectionNumbering(v);
+  }
+  return out as T;
+}
+
+/**
+ * One-time reconciliation for the Digital Marketplace questionnaire, Academy
+ * application and Summit registration forms: all three were rewritten to a
+ * completely new question set. A document saved before that rewrite still
+ * carries the *entire* old section — not just the old field list, since the
+ * admin form posts the whole document on every save — which would otherwise
+ * freeze the retired copy (old labels, old submit button text, old success
+ * message) in place indefinitely, the same way a numbered eyebrow or a
+ * missing nav route used to.
+ *
+ * Detected by a handful of field keys from the old shape that have no
+ * equivalent in the new one; when found, the whole section is dropped from
+ * the saved patch so it merges as if it had never been saved, rather than
+ * leaving a part-old, part-new mix.
+ */
+const RETIRED_FORM_SECTIONS: Record<
+  string,
+  { section: string; retiredKeys: string[] }
+> = {
+  ecosystem: {
+    section: "questionnaire",
+    retiredKeys: ["brandName", "budget", "startDate", "whyNow", "plan"],
+  },
+  academy: { section: "apply", retiredKeys: ["background"] },
+  summit: { section: "interest", retiredKeys: ["organisation", "role", "message"] },
+};
+
+function sectionFieldKeys(section: Plain): unknown[] {
+  const groups = Array.isArray(section.groups) ? section.groups : null;
+  if (groups) {
+    return groups.flatMap((group) =>
+      isPlainObject(group) && Array.isArray(group.fields) ? group.fields : [],
+    );
+  }
+  return Array.isArray(section.fields) ? section.fields : [];
+}
+
+function withRetiredFormsCleared(id: string, saved: unknown): unknown {
+  const rule = RETIRED_FORM_SECTIONS[id];
+  if (!rule || !isPlainObject(saved)) return saved;
+
+  const section = saved[rule.section];
+  if (!isPlainObject(section)) return saved;
+
+  const isRetired = sectionFieldKeys(section).some(
+    (field) =>
+      isPlainObject(field) &&
+      typeof field.key === "string" &&
+      rule.retiredKeys.includes(field.key),
+  );
+  if (!isRetired) return saved;
+
+  const rest = { ...saved };
+  delete rest[rule.section];
+  return rest;
+}
+
+/**
+ * One-time reconciliation for Summit edition galleries: each time real event
+ * photos replace a placeholder or extend an earlier batch, a document saved
+ * before that change still carries the old array — replaced here with the
+ * current default so the real photos show up without waiting on a re-save,
+ * while anything else an editor has changed under Summit → Editions
+ * survives untouched. Freshness for one edition is "the saved gallery
+ * contains at least one path only the new default has."
+ */
+const EDITION_GALLERY_FRESHNESS_MARKERS: Record<string, string> = {
+  "First edition": "/summit/first-edition/img-0923-woman-chatting.jpg",
+  "Second edition": "/summit/second-edition/",
+};
+
+function withFreshEditionGalleries(id: string, saved: unknown): unknown {
+  if (id !== "summit" || !isPlainObject(saved)) return saved;
+  const editions = saved.editions;
+  if (!isPlainObject(editions) || !Array.isArray(editions.items)) return saved;
+
+  const defaultItems = defaults.summit.editions.items;
+  let changed = false;
+  const items = editions.items.map((item) => {
+    if (!isPlainObject(item) || typeof item.edition !== "string") return item;
+    const marker = EDITION_GALLERY_FRESHNESS_MARKERS[item.edition];
+    if (!marker) return item;
+    const fallback = defaultItems.find((d) => d.edition === item.edition);
+    if (!fallback) return item;
+
+    const gallery = Array.isArray(item.gallery) ? item.gallery : [];
+    const isFresh = gallery.some(
+      (src) => typeof src === "string" && src.includes(marker),
+    );
+    if (isFresh) return item;
+    changed = true;
+    return { ...item, gallery: fallback.gallery };
+  });
+
+  if (!changed) return saved;
+  return { ...saved, editions: { ...editions, items } };
+}
+
+/**
+ * One-time clearing: the six seeded project entries were stock-photo
+ * placeholders standing in for real case studies, now removed from
+ * `defaults.projects.list.items`. A document saved while they were still
+ * there keeps its own frozen copy of them — dropped here by name, so the
+ * portfolio actually goes empty instead of continuing to show placeholder
+ * work. Any other entry (a real project an editor has already added)
+ * survives untouched.
+ */
+const RETIRED_PLACEHOLDER_PROJECT_NAMES = new Set([
+  "Sunset Hospitality",
+  "Nourish Med",
+  "Charoite Homes",
+  "Mama Africa Foods",
+  "MKR Logistics",
+  "Glams Beauty",
+]);
+
+function withoutPlaceholderProjects(id: string, saved: unknown): unknown {
+  if (id !== "projects" || !isPlainObject(saved)) return saved;
+  const list = saved.list;
+  if (!isPlainObject(list) || !Array.isArray(list.items)) return saved;
+
+  const items = list.items.filter(
+    (item) =>
+      !(
+        isPlainObject(item) &&
+        typeof item.name === "string" &&
+        RETIRED_PLACEHOLDER_PROJECT_NAMES.has(item.name)
+      ),
+  );
+  if (items.length === list.items.length) return saved;
+  return { ...saved, list: { ...list, items } };
+}
+
+/**
+ * One-time clearing: the homepage hero slider's second slide used to point
+ * its secondary button at the portfolio — blanked in the defaults along
+ * with the rest of the portfolio links (see `withoutProjectsLinks`). A
+ * document saved with the old slide still carries that href (either
+ * `/projects` or the legacy `/portfolio` alias — this one predated the
+ * `withoutProjectsLinks` fix and was still on `/portfolio` when found);
+ * cleared here by matching on it, since the slide has no other stable
+ * identifier to key off.
+ */
+function withoutProjectsHeroCta(id: string, saved: unknown): unknown {
+  if (id !== "home" || !isPlainObject(saved)) return saved;
+  const heroSlider = saved.heroSlider;
+  if (!isPlainObject(heroSlider) || !Array.isArray(heroSlider.slides)) return saved;
+
+  let changed = false;
+  const slides = heroSlider.slides.map((slide) => {
+    if (!isPlainObject(slide) || !PROJECTS_HREFS.has(String(slide.secondaryHref))) {
+      return slide;
+    }
+    changed = true;
+    return { ...slide, secondaryLabel: "", secondaryHref: "" };
+  });
+  if (!changed) return saved;
+  return { ...saved, heroSlider: { ...heroSlider, slides } };
+}
+
 function parse(raw: string | null | undefined): unknown {
   if (!raw) return undefined;
   try {
@@ -57,12 +247,171 @@ async function readDoc(id: string): Promise<unknown> {
 
 const readDocCached = unstable_cache(readDoc, ["content-doc"], { tags: [TAG] });
 
+/**
+ * Puts back any nav entry the defaults define that a saved menu is missing.
+ *
+ * Arrays replace wholesale on merge — deliberately, so removing a repeater row
+ * actually removes it. The navigation is the one array where that rule bites:
+ * a menu saved in the admin is a frozen copy of the routes that existed the day
+ * it was saved, so adding a page to the site leaves it unreachable from every
+ * menu until someone retypes the row by hand. That is how /pr shipped with no
+ * way to get to it.
+ *
+ * Matching is on href, so an editor's own ordering, renaming and extra links
+ * all survive — a missing route is appended after its neighbour in the
+ * defaults, or at the end.
+ *
+ * The trade-off, stated plainly: a default route cannot be deleted from the
+ * menu in the admin, because this puts it back. Say the word and the schema
+ * grows a "hidden" toggle for that; until it does, the defaults decide which
+ * routes exist and the CMS decides what they are called and in what order.
+ */
+type NavItem = { label: string; href: string };
+
+function withMissingRoutes(saved: unknown): unknown {
+  if (!isPlainObject(saved)) return saved;
+  const nav = saved.nav;
+  if (!isPlainObject(nav) || !Array.isArray(nav.items)) return saved;
+
+  const items = nav.items as NavItem[];
+  const hrefs = new Set(
+    items.map((item) => (isPlainObject(item) ? String(item.href ?? "") : "")),
+  );
+  const fallback = defaults.global.nav.items as readonly NavItem[];
+  if (fallback.every((item) => hrefs.has(item.href))) return saved;
+
+  const merged = [...items];
+  for (const [index, item] of fallback.entries()) {
+    if (hrefs.has(item.href)) continue;
+    // Slot it in beside whichever neighbour the saved menu still has, so a new
+    // route lands where the defaults put it rather than always at the end.
+    const before = fallback[index - 1]?.href;
+    const at = before ? merged.findIndex((m) => m.href === before) : -1;
+    if (at === -1) merged.push({ ...item });
+    else merged.splice(at + 1, 0, { ...item });
+  }
+
+  return { ...saved, nav: { ...nav, items: merged } };
+}
+
+/**
+ * Both hrefs a link to the portfolio could carry: the route itself, and
+ * `/portfolio`, the old path name next.config.ts permanently redirects to
+ * it — a saved document can carry either, predating either naming.
+ */
+const PROJECTS_HREFS = new Set(["/projects", "/portfolio"]);
+
+/**
+ * One-time removal, the mirror image of `withMissingRoutes`: the nav and
+ * footer no longer link to /projects while the portfolio is empty (see the
+ * comment on `projects.list.items`). A document saved while that link was
+ * still in the defaults carries its own frozen copy of it, which wholesale
+ * array replacement would otherwise keep showing regardless of what the
+ * defaults say now — pruned here so the removal takes effect without
+ * waiting on a re-save. Restore it in /admin → Site-wide once there's a
+ * portfolio to send visitors to, or drop this once every document that
+ * predates the change has been re-saved.
+ */
+function withoutProjectsLinks(id: string, saved: unknown): unknown {
+  if (id !== "global" || !isPlainObject(saved)) return saved;
+
+  const dropProjectsLinks = <T extends { href?: unknown }>(links: T[]) =>
+    links.filter(
+      (link) =>
+        !(isPlainObject(link) && PROJECTS_HREFS.has(String(link.href))),
+    );
+
+  let out = saved;
+
+  const nav = out.nav;
+  if (isPlainObject(nav) && Array.isArray(nav.items)) {
+    const items = dropProjectsLinks(nav.items);
+    if (items.length !== nav.items.length) out = { ...out, nav: { ...nav, items } };
+  }
+
+  const footer = out.footer;
+  if (isPlainObject(footer) && Array.isArray(footer.columns)) {
+    let footerChanged = false;
+    const columns = footer.columns.map((column) => {
+      if (!isPlainObject(column) || !Array.isArray(column.links)) return column;
+      const links = dropProjectsLinks(column.links);
+      if (links.length === column.links.length) return column;
+      footerChanged = true;
+      return { ...column, links };
+    });
+    if (footerChanged) out = { ...out, footer: { ...footer, columns } };
+  }
+
+  return out;
+}
+
+/**
+ * Reconciles a saved section order against the schema's current section
+ * keys: a key the schema no longer has (a section that was removed) is
+ * dropped, and a key the saved order doesn't have yet (a section added since
+ * the last save) is slotted in beside whichever neighbour the saved order
+ * still has — the same trade-off as `withMissingRoutes`, generalised to any
+ * ordered list of keys instead of just nav hrefs.
+ */
+function reconcileOrder(saved: unknown, fallback: string[]): string[] {
+  const known = new Set(fallback);
+  const kept = Array.isArray(saved)
+    ? saved.filter((key): key is string => typeof key === "string" && known.has(key))
+    : [];
+
+  const present = new Set(kept);
+  const merged = [...kept];
+  for (const [index, key] of fallback.entries()) {
+    if (present.has(key)) continue;
+    const before = fallback[index - 1];
+    const at = before ? merged.indexOf(before) : -1;
+    if (at === -1) merged.push(key);
+    else merged.splice(at + 1, 0, key);
+  }
+  return merged;
+}
+
+function resolveSectionOrder(id: DocId, saved: unknown): string[] {
+  const schema = schemaById.get(id);
+  if (!schema) return [];
+  const fallback = orderableSectionKeys(schema);
+  const rawOrder = isPlainObject(saved) ? saved[SECTION_ORDER_KEY] : undefined;
+  return reconcileOrder(rawOrder, fallback);
+}
+
+/** A document's sections, in the order an editor has arranged them. */
+export async function getSectionOrder(id: DocId): Promise<string[]> {
+  const saved = await readDocCached(id);
+  return resolveSectionOrder(id, saved);
+}
+
+/**
+ * Every one-time reconciliation a saved document passes through before it's
+ * merged over the defaults, applied in order. Each one is a no-op unless the
+ * saved content actually matches what it's looking for, so adding one here
+ * never affects a document it doesn't apply to.
+ */
+function reconcileSavedDoc(id: string, saved: unknown): unknown {
+  const steps = [
+    withoutProjectsLinks,
+    withRetiredFormsCleared,
+    withFreshEditionGalleries,
+    withoutProjectsHeroCta,
+    withoutPlaceholderProjects,
+  ];
+  return steps.reduce((patch, step) => step(id, patch), saved);
+}
+
 /** Content for one document, defaults merged with whatever the admin saved. */
 export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  return merge(defaults[id], saved);
+  const patched = reconcileSavedDoc(
+    id,
+    id === "global" ? withMissingRoutes(saved) : saved,
+  );
+  return stripSectionNumbering(merge(defaults[id], patched));
 }
 
 /** Site-wide chrome. Every page needs it, so it gets its own helper. */
@@ -79,7 +428,15 @@ export async function getRawDoc(id: string): Promise<Plain> {
 /** Defaults merged with the saved patch, for pre-filling the admin form. */
 export async function getMergedDoc(id: DocId): Promise<Plain> {
   const saved = await readDoc(id);
-  return merge(defaults[id], saved) as Plain;
+  // Normalised here too, so the admin form shows the same wording the site
+  // serves rather than re-saving the stale numbering — or a retired form
+  // section — straight back in.
+  const cleared = reconcileSavedDoc(id, saved);
+  const merged = stripSectionNumbering(merge(defaults[id], cleared)) as Plain;
+  // Resolved rather than copied raw, so the editor already shows any section
+  // added to the schema since this document was last saved.
+  merged[SECTION_ORDER_KEY] = resolveSectionOrder(id, saved);
+  return merged;
 }
 
 export async function saveDoc(id: DocId, data: Plain, updatedBy?: string) {

@@ -26,7 +26,11 @@ export type ResolvedForm = {
   groups?: FormGroup[];
 };
 
-/** Replaces a select's options where the list is derived from other content. */
+/**
+ * Replaces a field's options where the list is derived from other content.
+ * The field keeps whatever type the editor gave it (select, radio, …) — only
+ * the options are swapped in.
+ */
 function inject(
   fields: FormField[],
   sources: Record<string, string[]>,
@@ -34,7 +38,7 @@ function inject(
   return fields.map((field) => {
     const options = sources[field.key];
     if (!options || options.length === 0) return field;
-    return { ...field, type: "select", options };
+    return { ...field, options };
   });
 }
 
@@ -79,20 +83,24 @@ export async function resolveForm(kind: DynamicKind): Promise<ResolvedForm> {
 
   if (kind === "academy") {
     const academy = await getContent("academy");
-    const fields = withFallback(
-      normaliseFields,
-      academy.apply.fields,
-      defaults.academy.apply.fields,
-    );
+    let groups = normaliseGroups(academy.apply.groups);
+    if (groups.length === 0) {
+      groups = normaliseGroups(defaults.academy.apply.groups);
+    }
 
-    return {
-      fields: inject(fields, {
-        course: academy.courses.schools.flatMap((school) =>
-          school.courses.map((course) => course.name),
-        ),
-        format: academy.hero.formats,
-      }),
+    const sources = {
+      course: academy.courses.schools.flatMap((school) =>
+        school.courses.map((course) => course.name),
+      ),
+      format: academy.hero.formats,
     };
+
+    const resolved = groups.map((group) => ({
+      ...group,
+      fields: inject(group.fields, sources),
+    }));
+
+    return { groups: resolved, fields: flattenGroups(resolved) };
   }
 
   const summit = await getContent("summit");
