@@ -1488,20 +1488,17 @@ export const defaults = {
           theme: "Turning creativity into careers",
           date: "17 July 2026",
           venue: "Gracetone Studio, Yaba, Lagos",
-          /**
-           * Still placeholder. The real photos are the two Pixieset
-           * galleries (creative2career.pixieset.com and
-           * betaminds.pixieset.com), which sit behind both a Cloudflare
-           * bot challenge and their own password gate — not something to
-           * script past, and proofing-gallery photography is typically
-           * still the photographer's copyright even once a client has the
-           * viewing password, so it needs a human decision either way.
-           * Download the selects from Pixieset (the codes already shared)
-           * and upload them in /admin → Summit → Editions.
-           */
-          gallery: [5466279, 9490631, 8761715, 7792860, 9301528, 5060991].map(
-            (id) => IMG(id, 600),
-          ),
+          // Real event photos, served as static assets the same way the
+          // First edition's gallery is — an attendee question from the
+          // floor, the audience, a speaker fireside chat, and the closing
+          // panel on building in the African creative ecosystem.
+          gallery: [
+            "/summit/second-edition/summit2-panel-attendee-question.jpg",
+            "/summit/second-edition/summit2-audience.jpg",
+            "/summit/second-edition/summit2-speaker-seyi-olaniyan.jpg",
+            "/summit/second-edition/summit2-fireside-chat.jpg",
+            "/summit/second-edition/summit2-panel-realities-of-building.jpg",
+          ],
           viewMoreLabel: "View more media",
           // The fuller Pixieset gallery this edition's uploaded selects come
           // from — gated, but a real destination rather than a placeholder.
