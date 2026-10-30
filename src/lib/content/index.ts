@@ -197,10 +197,13 @@ function withoutPlaceholderProjects(id: string, saved: unknown): unknown {
 
 /**
  * One-time clearing: the homepage hero slider's second slide used to point
- * its secondary button at /projects — blanked in the defaults along with
- * the rest of the portfolio links (see `withoutProjectsLinks`). A document
- * saved with the old slide still carries that href; cleared here by
- * matching on it, since the slide has no other stable identifier to key off.
+ * its secondary button at the portfolio — blanked in the defaults along
+ * with the rest of the portfolio links (see `withoutProjectsLinks`). A
+ * document saved with the old slide still carries that href (either
+ * `/projects` or the legacy `/portfolio` alias — this one predated the
+ * `withoutProjectsLinks` fix and was still on `/portfolio` when found);
+ * cleared here by matching on it, since the slide has no other stable
+ * identifier to key off.
  */
 function withoutProjectsHeroCta(id: string, saved: unknown): unknown {
   if (id !== "home" || !isPlainObject(saved)) return saved;
@@ -209,7 +212,9 @@ function withoutProjectsHeroCta(id: string, saved: unknown): unknown {
 
   let changed = false;
   const slides = heroSlider.slides.map((slide) => {
-    if (!isPlainObject(slide) || slide.secondaryHref !== "/projects") return slide;
+    if (!isPlainObject(slide) || !PROJECTS_HREFS.has(String(slide.secondaryHref))) {
+      return slide;
+    }
     changed = true;
     return { ...slide, secondaryLabel: "", secondaryHref: "" };
   });
@@ -290,6 +295,13 @@ function withMissingRoutes(saved: unknown): unknown {
 }
 
 /**
+ * Both hrefs a link to the portfolio could carry: the route itself, and
+ * `/portfolio`, the old path name next.config.ts permanently redirects to
+ * it — a saved document can carry either, predating either naming.
+ */
+const PROJECTS_HREFS = new Set(["/projects", "/portfolio"]);
+
+/**
  * One-time removal, the mirror image of `withMissingRoutes`: the nav and
  * footer no longer link to /projects while the portfolio is empty (see the
  * comment on `projects.list.items`). A document saved while that link was
@@ -304,7 +316,10 @@ function withoutProjectsLinks(id: string, saved: unknown): unknown {
   if (id !== "global" || !isPlainObject(saved)) return saved;
 
   const dropProjectsLinks = <T extends { href?: unknown }>(links: T[]) =>
-    links.filter((link) => !(isPlainObject(link) && link.href === "/projects"));
+    links.filter(
+      (link) =>
+        !(isPlainObject(link) && PROJECTS_HREFS.has(String(link.href))),
+    );
 
   let out = saved;
 
