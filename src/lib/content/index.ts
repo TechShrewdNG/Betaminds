@@ -119,6 +119,37 @@ function withRetiredFormsCleared(id: string, saved: unknown): unknown {
   return rest;
 }
 
+/**
+ * One-time reconciliation: the Summit's Second edition gallery was switched
+ * from Pexels placeholders to the real event photos. A document saved
+ * before that still carries the old placeholder array for that one edition
+ * — replaced here with the current default so the real photos show up
+ * without waiting on a re-save, while anything else an editor has changed
+ * under Summit → Editions (including the First edition's own gallery)
+ * survives untouched.
+ */
+function withFreshSecondEditionGallery(id: string, saved: unknown): unknown {
+  if (id !== "summit" || !isPlainObject(saved)) return saved;
+  const editions = saved.editions;
+  if (!isPlainObject(editions) || !Array.isArray(editions.items)) return saved;
+
+  let changed = false;
+  const items = editions.items.map((item) => {
+    if (!isPlainObject(item) || item.edition !== "Second edition") return item;
+    const gallery = Array.isArray(item.gallery) ? item.gallery : [];
+    const isFresh = gallery.some(
+      (src) =>
+        typeof src === "string" && src.startsWith("/summit/second-edition/"),
+    );
+    if (isFresh) return item;
+    changed = true;
+    return { ...item, gallery: defaults.summit.editions.items[1].gallery };
+  });
+
+  if (!changed) return saved;
+  return { ...saved, editions: { ...editions, items } };
+}
+
 function parse(raw: string | null | undefined): unknown {
   if (!raw) return undefined;
   try {
@@ -236,9 +267,12 @@ export async function getContent<K extends DocId>(
   id: K,
 ): Promise<ContentDefaults[K]> {
   const saved = await readDocCached(id);
-  const patched = withRetiredFormsCleared(
+  const patched = withFreshSecondEditionGallery(
     id,
-    id === "global" ? withMissingRoutes(saved) : saved,
+    withRetiredFormsCleared(
+      id,
+      id === "global" ? withMissingRoutes(saved) : saved,
+    ),
   );
   return stripSectionNumbering(merge(defaults[id], patched));
 }
@@ -260,7 +294,10 @@ export async function getMergedDoc(id: DocId): Promise<Plain> {
   // Normalised here too, so the admin form shows the same wording the site
   // serves rather than re-saving the stale numbering — or a retired form
   // section — straight back in.
-  const cleared = withRetiredFormsCleared(id, saved);
+  const cleared = withFreshSecondEditionGallery(
+    id,
+    withRetiredFormsCleared(id, saved),
+  );
   const merged = stripSectionNumbering(merge(defaults[id], cleared)) as Plain;
   // Resolved rather than copied raw, so the editor already shows any section
   // added to the schema since this document was last saved.
