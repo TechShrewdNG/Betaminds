@@ -17,7 +17,17 @@ export type Field =
   | { kind: "video"; label: string; help?: string }
   | { kind: "doc"; label: string; help?: string }
   | { kind: "images"; label: string; help?: string }
-  | { kind: "list"; label: string; help?: string; placeholder?: string }
+  | {
+      kind: "list";
+      label: string;
+      help?: string;
+      placeholder?: string;
+      /** Flags a row that repeats an earlier one (case/whitespace-insensitive)
+       *  rather than silently allowing it — used where each entry names
+       *  something elsewhere refers back to by that exact text, like the
+       *  blog's category list. */
+      unique?: boolean;
+    }
   | { kind: "select"; label: string; options: string[]; help?: string }
   | { kind: "group"; label: string; fields: Fields; help?: string }
   | {
@@ -758,6 +768,19 @@ export const schemas: DocSchema[] = [
         },
       },
       {
+        key: "categories",
+        title: "Categories",
+        note: "The categories a post can be filed under. Spell a name exactly the same way here and on a post for it to show up under that filter — same text, not case-sensitive.",
+        fields: {
+          items: {
+            kind: "list",
+            label: "Categories",
+            placeholder: "e.g. Brand",
+            unique: true,
+          },
+        },
+      },
+      {
         key: "list",
         title: "Posts",
         note: "Untick Published to keep a post off the site while you write it. New posts add to the end of this list — reorder rows to change display order.",
@@ -776,6 +799,11 @@ export const schemas: DocSchema[] = [
                 help: "Lowercase words separated by hyphens — this becomes /blog/<slug>. Changing it breaks any link already shared.",
               },
               published: { kind: "boolean", label: "Published" },
+              category: {
+                kind: "text",
+                label: "Category",
+                help: "Matches a name from Categories above (not case-sensitive). The blog index's category filter is built from whatever's actually used here, so an empty or unmatched value just leaves the post out of every filter — it still shows under \"All\".",
+              },
               author: { kind: "text", label: "Author" },
               date: {
                 kind: "text",
@@ -1043,6 +1071,28 @@ export const schemas: DocSchema[] = [
           formats: { kind: "list", label: "Learning formats" },
           ctaLabel: { kind: "text", label: "Button label" },
           ctaHref: { kind: "text", label: "Button link" },
+        },
+      },
+      {
+        key: "promo",
+        title: "Commercial",
+        note: "Same slot as the Digital Marketplace page's. Leave the video empty to skip this section entirely.",
+        fields: {
+          label: { kind: "text", label: "Eyebrow", mono: true },
+          heading: { kind: "text", label: "Heading" },
+          body: { kind: "textarea", label: "Body", rows: 3 },
+          video: {
+            kind: "video",
+            label: "Video",
+            help: `${PX_HERO} MP4, ideally under 8MB.`,
+          },
+          poster: {
+            kind: "image",
+            label: "Poster frame",
+            ratio: "16 / 9",
+            help: `Shown before the visitor presses play. ${PX_HERO}`,
+          },
+          posterAlt: { kind: "text", label: "Poster description" },
         },
       },
       {

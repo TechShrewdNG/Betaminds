@@ -88,6 +88,7 @@ const post = (
   author: string,
   date: string,
   cover: string,
+  category = "",
 ) => ({
   slug,
   title,
@@ -96,6 +97,7 @@ const post = (
   body: `<p>Replace this with the full post.</p>`,
   author,
   date,
+  category,
   published: true,
 });
 
@@ -547,6 +549,15 @@ export const defaults = {
       ctaLabel: "Let's work →",
       ctaHref: "/lets-work",
     },
+    /**
+     * The filter shown on the blog index is built from these names — a post
+     * only appears under a given filter if its own `category` matches one of
+     * them (see `list.items` below and `src/lib/blog.ts`), so a typo here or
+     * on a post just means that filter shows fewer posts, never a crash.
+     */
+    categories: {
+      items: ["Brand", "Content", "Commerce"],
+    },
     list: {
       items: [
         post(
@@ -555,6 +566,7 @@ export const defaults = {
           "Betaminds Studio",
           "January 2026",
           IMG(3869639, 1200),
+          "Brand",
         ),
         post(
           "content-that-converts",
@@ -562,6 +574,7 @@ export const defaults = {
           "Betaminds Studio",
           "January 2026",
           IMG(8761735, 1200),
+          "Content",
         ),
         post(
           "why-commerce-ecosystems-beat-standalone-sites",
@@ -569,6 +582,7 @@ export const defaults = {
           "Betaminds Studio",
           "December 2025",
           IMG(8761808, 1200),
+          "Commerce",
         ),
       ],
     },
@@ -1002,6 +1016,16 @@ export const defaults = {
       ],
       ctaLabel: "Apply now →",
       ctaHref: "#apply",
+    },
+    // Same "commercial" slot as the Digital Marketplace page's — video only,
+    // so this quietly skips itself until one is uploaded.
+    promo: {
+      label: "See it in motion",
+      heading: "What a day at the Academy looks like",
+      body: "A walkthrough of the classroom, the mentors and the work students leave with.",
+      video: "",
+      poster: "",
+      posterAlt: "",
     },
     courses: {
       heading: "Academy courses",

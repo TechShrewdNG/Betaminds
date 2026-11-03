@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import styles from "@/components/ui/ui.module.css";
 import { SchoolTabs } from "@/components/ui/SchoolTabs";
 import { Accordion } from "@/components/ui/Accordion";
+import { PromoVideo } from "@/components/ui/PromoVideo";
 import { AcademyForm } from "@/components/forms/AcademyForm";
 import { resolveForm } from "@/lib/forms/resolve";
 import { Counter } from "@/components/ui/Counter";
@@ -103,6 +104,23 @@ export default async function AcademyPage() {
         </div>
       </section>
   );
+
+  // Commercial — same slot as the Digital Marketplace page's, video only, so
+  // this quietly skips itself until one is uploaded.
+  sections.promo = academy.promo.video ? (
+      <section data-reveal className="band band--ruled">
+        <div className="shell section col-920">
+          <PromoVideo
+            video={academy.promo.video}
+            poster={academy.promo.poster}
+            posterAlt={academy.promo.posterAlt}
+            label={academy.promo.label}
+            heading={academy.promo.heading}
+            body={academy.promo.body}
+          />
+        </div>
+      </section>
+  ) : null;
 
   // Courses, tabbed by school. Crash courses render inside SchoolTabs itself
   // (a row below the school grid), so they move with this band rather than

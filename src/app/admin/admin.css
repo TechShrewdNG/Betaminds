@@ -368,6 +368,21 @@
   border-color: var(--a-accent-fill);
 }
 
+/* A row that repeats an earlier one in a list field marked `unique` — see
+   StringList in ContentEditor.tsx. Flags it without blocking typing. */
+.a-input[aria-invalid="true"],
+.a-textarea[aria-invalid="true"] {
+  border-color: var(--a-danger);
+}
+
+.a-field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--a-danger);
+}
+
 .a-field + .a-field {
   margin-top: 14px;
 }
@@ -477,6 +492,27 @@
 .a-rte-editable a {
   color: var(--a-accent-fill);
   text-decoration: underline;
+}
+
+.a-rte-editable img {
+  display: block;
+  max-width: 100%;
+  margin: 0 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--a-line);
+}
+
+.a-rte-editable .rt-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.a-rte-editable .rt-gallery img {
+  margin: 0;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 .a-pair {

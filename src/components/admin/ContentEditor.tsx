@@ -513,25 +513,46 @@ function StringList({
     onChange(next);
   };
 
+  // A row is flagged once an *earlier* row already has the same text
+  // (trimmed, case-insensitive) — so typing a fresh duplicate flags the new
+  // row being written, not the original one it now matches.
+  const normalise = (text: string) => text.trim().toLowerCase();
+  const duplicateAt = (index: number) => {
+    if (!field.unique) return false;
+    const text = normalise(value[index]);
+    if (!text) return false;
+    return value.slice(0, index).some((other) => normalise(other) === text);
+  };
+
   return (
     <div className="a-field">
       <label className="a-label">{field.label}</label>
       {field.help ? <p className="a-help" style={{ marginBottom: 6 }}>{field.help}</p> : null}
 
-      {value.map((item, index) => (
-        <div className="a-listrow" key={index}>
-          <textarea
-            className="a-textarea"
-            rows={item.length > 80 ? 2 : 1}
-            style={{ minHeight: 38 }}
-            value={item}
-            placeholder={field.placeholder}
-            onChange={(event) => {
-              const next = [...value];
-              next[index] = event.target.value;
-              onChange(next);
-            }}
-          />
+      {value.map((item, index) => {
+        const duplicate = duplicateAt(index);
+        return (
+        <div className="a-listrow" key={index} style={{ alignItems: "flex-start" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <textarea
+              className="a-textarea"
+              rows={item.length > 80 ? 2 : 1}
+              style={{ minHeight: 38 }}
+              value={item}
+              placeholder={field.placeholder}
+              aria-invalid={duplicate ? "true" : undefined}
+              onChange={(event) => {
+                const next = [...value];
+                next[index] = event.target.value;
+                onChange(next);
+              }}
+            />
+            {duplicate ? (
+              <span className="a-field-error">
+                Already in this list — {field.label.toLowerCase()} can&rsquo;t repeat.
+              </span>
+            ) : null}
+          </div>
           <button
             type="button"
             className="a-btn a-btn--ghost a-btn--sm"
@@ -559,7 +580,8 @@ function StringList({
             ✕
           </button>
         </div>
-      ))}
+        );
+      })}
 
       <div style={{ marginTop: 9 }}>
         <button

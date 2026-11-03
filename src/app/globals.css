@@ -708,6 +708,24 @@ main {
   color: var(--ink);
 }
 
+.prose img {
+  display: block;
+  width: 100%;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+}
+
+.prose .rt-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.prose .rt-gallery img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 .accent-word {
   color: var(--accent);
 }

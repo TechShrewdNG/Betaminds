@@ -82,6 +82,34 @@ export async function changePassword(
 /* -- content --------------------------------------------------------------- */
 
 /**
+ * Server-side safety net for the blog's category list (the schema's one
+ * `unique: true` list field so far): strips an exact repeat — trimmed,
+ * case-insensitive, first occurrence kept — even if the inline warning in
+ * ContentEditor's StringList was ignored, so a duplicate category can never
+ * actually reach the database regardless of what the client sent.
+ */
+function dedupeUniqueLists(id: DocId, data: Record<string, unknown>): void {
+  if (id !== "blog") return;
+  const categories = data.categories;
+  if (!categories || typeof categories !== "object" || Array.isArray(categories)) {
+    return;
+  }
+  const items = (categories as Record<string, unknown>).items;
+  if (!Array.isArray(items)) return;
+
+  const seen = new Set<string>();
+  const deduped = items.filter((item) => {
+    if (typeof item !== "string") return true;
+    const key = item.trim().toLowerCase();
+    if (!key) return true;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  (categories as Record<string, unknown>).items = deduped;
+}
+
+/**
  * Save one content document.
  *
  * The editor keeps the whole document in client state and posts it as JSON, so
@@ -111,6 +139,7 @@ export async function saveContent(
     return { tone: "error", message: "Couldn't read the submitted content." };
   }
 
+  dedupeUniqueLists(id as DocId, data as Record<string, unknown>);
   await saveDoc(id as DocId, data as Record<string, unknown>, session.email);
   revalidatePath("/", "layout");
 

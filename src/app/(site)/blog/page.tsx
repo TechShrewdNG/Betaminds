@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
-import { publishedPosts, postMeta } from "@/lib/blog";
+import { publishedPosts } from "@/lib/blog";
 import { IndexHero, IndexFacts } from "@/components/ui/IndexHero";
-import styles from "@/components/ui/ui.module.css";
+import { BlogGrid } from "@/components/ui/BlogGrid";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("blog");
@@ -56,35 +56,11 @@ export default async function BlogPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid col3 carousel-mobile">
-              {posts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className={styles.tile}
-                >
-                  {post.coverImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={post.coverImage}
-                      alt={post.title}
-                      className={`${styles.tileImg} ratio-4-3`}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div
-                      className="ratio-4-3"
-                      style={{ background: "var(--surface-alt)" }}
-                    />
-                  )}
-                  <div className={styles.workHover}>
-                    <div className={styles.workMeta}>{postMeta(post)}</div>
-                    <div className={styles.workName}>{post.title}</div>
-                    <span className={styles.workView}>{index.readLabel}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <BlogGrid
+              posts={posts}
+              categories={doc.categories.items.filter(Boolean)}
+              readLabel={index.readLabel}
+            />
           )}
         </div>
       </section>

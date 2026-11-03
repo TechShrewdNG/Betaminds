@@ -16,6 +16,7 @@ export type Post = {
   body: string;
   author: string;
   date: string;
+  category: string;
   published: boolean;
 };
 
@@ -48,6 +49,7 @@ function normalise(raw: unknown): Post | null {
     body: str(item.body),
     author: str(item.author),
     date: str(item.date),
+    category: str(item.category),
     // Absent means published — an editor adding a row shouldn't have to opt in.
     published: item.published !== false,
   };

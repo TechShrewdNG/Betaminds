@@ -67,7 +67,14 @@ export default async function BlogPostPage({
             >
               ← {detail.backLabel}
             </Link>
-            <h1 className="h1" style={{ lineHeight: 1.02, marginBottom: 20 }}>
+            {post.category ? (
+              <div className="eyebrow eyebrow--tight mb-18">{post.category}</div>
+            ) : null}
+            {/* Styled at .h2 scale rather than .h1 — a post title is a full
+                sentence an editor writes, not fixed page chrome, and at hero
+                scale a long one read as oversized. Still a real <h1> for
+                document structure. */}
+            <h1 className="h2" style={{ marginBottom: 20 }}>
               {post.title}
             </h1>
             {postMeta(post) ? (
