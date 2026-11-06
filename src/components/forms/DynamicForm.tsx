@@ -1,8 +1,16 @@
 "use client";
 
 import styles from "./form.module.css";
-import { Field, Honeypot, SelectField, TextareaField } from "./Field";
+import {
+  Field,
+  Honeypot,
+  SelectField,
+  TextareaField,
+  RadioGroupField,
+  CheckboxGroupField,
+} from "./Field";
 import type { FormField, FormGroup } from "@/lib/forms/definition";
+import { autocompleteFor } from "@/lib/forms/autocomplete";
 import { held, type FormState } from "@/lib/form-state";
 
 /**
@@ -27,16 +35,24 @@ function FieldControl({
     error: state.errors[field.key],
     placeholder: field.placeholder || undefined,
     defaultValue: held(state, field.key),
+    autoComplete: autocompleteFor(field),
   };
 
   if (field.type === "textarea") {
     return <TextareaField {...shared} rows={3} />;
   }
 
-  if (field.type === "select") {
+  if (
+    field.type === "select" ||
+    field.type === "radio" ||
+    field.type === "multiselect"
+  ) {
     const options = field.options;
-    // A select with nothing to choose from is worse than a text box.
+    // Nothing to choose from is worse than a text box.
     if (options.length === 0) return <Field {...shared} type="text" />;
+    if (field.type === "radio") return <RadioGroupField {...shared} options={options} />;
+    if (field.type === "multiselect")
+      return <CheckboxGroupField {...shared} options={options} />;
     return <SelectField {...shared} options={options} />;
   }
 

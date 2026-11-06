@@ -1,10 +1,14 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { PUBLIC_ROUTES, SITE_URL } from "@/lib/site";
-import { publishedProjects } from "@/lib/projects";
+import { publishedPosts } from "@/lib/blog";
 
 /**
- * Sitemap for the public routes, plus one entry per published case study.
+ * Sitemap for the public routes, plus one entry per published blog post.
+ *
+ * Projects don't get their own sitemap entries — there's no longer a page per
+ * project, only tiles on /projects that link out to an uploaded PDF, which
+ * isn't this site's URL to index.
  *
  * `lastModified` comes from when the page's content document was last saved in
  * the CMS, so editing copy updates the sitemap without a redeploy. Pages nobody
@@ -31,14 +35,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route.priority,
   }));
 
-  // Each published case study is its own indexable page.
-  const projects = await publishedProjects();
-  const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${SITE_URL}/portfolio/${project.slug}`,
-    lastModified: edited.get("projects") ?? fallback,
+  // Each published post is its own indexable page.
+  const posts = await publishedPosts();
+  const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: edited.get("blog") ?? fallback,
     changeFrequency: "yearly",
     priority: 0.6,
   }));
 
-  return [...pages, ...projectPages];
+  return [...pages, ...postPages];
 }

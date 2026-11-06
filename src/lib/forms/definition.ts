@@ -20,6 +20,8 @@ export const FIELD_TYPES = [
   "url",
   "textarea",
   "select",
+  "radio",
+  "multiselect",
 ] as const;
 
 export type FieldType = (typeof FIELD_TYPES)[number];
@@ -28,7 +30,7 @@ export type FormField = {
   key: string;
   label: string;
   type: FieldType;
-  /** Newline- or comma-free entries; only meaningful for `select`. */
+  /** Newline- or comma-free entries; meaningful for `select`, `radio` and `multiselect`. */
   options: string[];
   required: boolean;
   placeholder: string;
@@ -92,8 +94,12 @@ export function normaliseFields(raw: unknown): FormField[] {
     fields.push({
       key,
       label: candidate.label.trim(),
-      // A select with no options can't be answered; treat it as a text field.
-      type: type === "select" && options.length === 0 ? "text" : type,
+      // An options-based field with nothing to choose from yet renders as a
+      // plain text box (see DynamicForm's FieldControl) — kept as-is here
+      // rather than downgraded, so a field whose options are injected later
+      // (plan, course, format) doesn't lose its intended type in the gap
+      // before injection runs.
+      type,
       options,
       required: candidate.required === true,
       placeholder: isNonEmpty(candidate.placeholder)
