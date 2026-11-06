@@ -20,7 +20,10 @@ export default async function AcademyPage() {
     getContent("academy"),
     getSectionOrder("academy"),
   ]);
-  const { groups: applyGroups } = await resolveForm("academy");
+  const [{ groups: applyGroups }, { groups: crashApplyGroups }] = await Promise.all([
+    resolveForm("academy"),
+    resolveForm("academy", { courseScope: "crash" }),
+  ]);
 
   const sections: Record<string, ReactNode> = {};
 
@@ -135,6 +138,7 @@ export default async function AcademyPage() {
             enrolLabel={academy.courses.enrolLabel}
             apply={academy.apply}
             groups={applyGroups ?? []}
+            crashGroups={crashApplyGroups ?? []}
             crash={academy.crashCourses}
           />
         </div>

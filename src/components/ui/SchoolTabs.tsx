@@ -45,6 +45,7 @@ export function SchoolTabs({
   enrolLabel,
   apply,
   groups,
+  crashGroups,
   crash,
 }: {
   heading: string;
@@ -53,12 +54,20 @@ export function SchoolTabs({
   enrolLabel: string;
   apply: Apply;
   groups: FormGroup[];
+  /** Same form, with the course dropdown built from the crash courses
+   *  instead of the schools' — used only when a crash course's own modal is
+   *  open, so that dropdown offers the other crash courses, not every
+   *  school course. */
+  crashGroups: FormGroup[];
   /** Short, standalone sessions shown in their own row below the schools —
    *  not a school of their own, so they skip the tab track entirely. */
   crash?: CrashCourses;
 }) {
   const [active, setActive] = useState(0);
   const [openCourse, setOpenCourse] = useState<Course | null>(null);
+  // Which dropdown the open course's modal should use — set alongside
+  // `openCourse` at each click site below.
+  const [openCourseIsCrash, setOpenCourseIsCrash] = useState(false);
   const [mounted, setMounted] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
@@ -158,6 +167,7 @@ export function SchoolTabs({
             className={styles.courseCard}
             onClick={(event) => {
               openerRef.current = event.currentTarget;
+              setOpenCourseIsCrash(false);
               setOpenCourse(course);
             }}
           >
@@ -200,6 +210,7 @@ export function SchoolTabs({
                 className={styles.crashCard}
                 onClick={(event) => {
                   openerRef.current = event.currentTarget;
+                  setOpenCourseIsCrash(true);
                   setOpenCourse(item);
                 }}
               >
@@ -287,7 +298,7 @@ export function SchoolTabs({
               <Suspense fallback={null}>
                 <AcademyForm
                   apply={apply}
-                  groups={groups}
+                  groups={openCourseIsCrash ? crashGroups : groups}
                   presetCourse={openCourse.name}
                 />
               </Suspense>

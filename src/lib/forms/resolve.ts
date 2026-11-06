@@ -56,7 +56,20 @@ function withFallback(
   return fields.length > 0 ? fields : normalise(fallback);
 }
 
-export async function resolveForm(kind: DynamicKind): Promise<ResolvedForm> {
+export async function resolveForm(
+  kind: DynamicKind,
+  options?: {
+    /**
+     * Academy only. The course dropdown is normally built from the school
+     * courses (the main Apply section, and a regular course's own detail
+     * modal); `"crash"` builds it from the crash courses instead, for that
+     * row's own detail modal — a crash course isn't in any school, so the
+     * default list didn't contain it at all, and the modal's `presetCourse`
+     * couldn't actually select one.
+     */
+    courseScope?: "schools" | "crash";
+  },
+): Promise<ResolvedForm> {
   if (kind === "consultation") {
     const eco = await getContent("ecosystem");
     let groups = normaliseGroups(eco.questionnaire.groups);
@@ -89,9 +102,12 @@ export async function resolveForm(kind: DynamicKind): Promise<ResolvedForm> {
     }
 
     const sources = {
-      course: academy.courses.schools.flatMap((school) =>
-        school.courses.map((course) => course.name),
-      ),
+      course:
+        options?.courseScope === "crash"
+          ? academy.crashCourses.items.map((course) => course.name)
+          : academy.courses.schools.flatMap((school) =>
+              school.courses.map((course) => course.name),
+            ),
       format: academy.hero.formats,
     };
 
