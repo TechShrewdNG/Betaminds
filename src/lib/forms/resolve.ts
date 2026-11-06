@@ -18,7 +18,7 @@ import {
  * duplicated into the field definition.
  */
 
-export type DynamicKind = "consultation" | "academy" | "summit";
+export type DynamicKind = "consultation" | "academy" | "summit" | "brief";
 
 export type ResolvedForm = {
   fields: FormField[];
@@ -117,6 +117,17 @@ export async function resolveForm(
     }));
 
     return { groups: resolved, fields: flattenGroups(resolved) };
+  }
+
+  if (kind === "brief") {
+    const work = await getContent("work");
+    return {
+      fields: withFallback(
+        normaliseFields,
+        work.form.fields,
+        defaults.work.form.fields,
+      ),
+    };
   }
 
   const summit = await getContent("summit");

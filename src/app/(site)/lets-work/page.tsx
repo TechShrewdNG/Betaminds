@@ -6,6 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 import { BriefForm } from "@/components/forms/BriefForm";
 import { IndexHero, IndexContents } from "@/components/ui/IndexHero";
 import { contactHref, withDestination } from "@/lib/contact";
+import { resolveForm } from "@/lib/forms/resolve";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getContent("work");
@@ -44,10 +45,11 @@ function ContactValue({ value }: { value: string }) {
 }
 
 export default async function LetsWorkPage() {
-  const [work, global, order] = await Promise.all([
+  const [work, global, order, { fields: briefFields }] = await Promise.all([
     getContent("work"),
     getGlobal(),
     getSectionOrder("work"),
+    resolveForm("brief"),
   ]);
   const socials = withDestination(global.contact.socials);
 
@@ -146,7 +148,7 @@ export default async function LetsWorkPage() {
                 {work.form.body}
               </p>
               <Suspense fallback={null}>
-                <BriefForm form={work.form} />
+                <BriefForm form={work.form} fields={briefFields} />
               </Suspense>
             </div>
           </div>

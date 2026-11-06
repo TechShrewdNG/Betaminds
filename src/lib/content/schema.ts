@@ -1608,28 +1608,10 @@ export const schemas: DocSchema[] = [
           submitLabel: { kind: "text", label: "Submit button label" },
           successHeading: { kind: "text", label: "Success heading" },
           successBody: { kind: "textarea", label: "Success body", rows: 3 },
-          labels: {
-            kind: "group",
-            label: "Field labels",
-            fields: {
-              name: { kind: "text", label: "Name" },
-              email: { kind: "text", label: "Email" },
-              company: { kind: "text", label: "Company" },
-              need: { kind: "text", label: "Need" },
-              project: { kind: "text", label: "Project" },
-            },
-          },
-          hints: {
-            kind: "group",
-            label: "Field placeholders",
-            fields: {
-              name: { kind: "text", label: "Name" },
-              email: { kind: "text", label: "Email" },
-              company: { kind: "text", label: "Company" },
-              need: { kind: "text", label: "Need" },
-              project: { kind: "text", label: "Project" },
-            },
-          },
+          fields: formFieldsRepeater(
+            "Fields",
+            "The \"need\" field is seeded from Media Services and homepage links (?need=<package>) — keep its key as \"need\" for that to keep working.",
+          ),
         },
       },
     ],

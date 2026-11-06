@@ -1776,21 +1776,26 @@ export const defaults = {
       successHeading: "Brief received.",
       successBody:
         "Thank you. We read every brief ourselves and reply within one working day.",
-      labels: {
-        name: "Your name",
-        email: "Email",
-        company: "Brand / company",
-        need: "What do you need?",
-        project: "Tell us about the project",
-      },
-      hints: {
-        name: "Full name",
-        email: "you@company.com",
-        company: "Brand name",
-        need: "Brand identity, commerce ecosystem, media production…",
-        project:
-          "Where you are now, where you want to be, and by when.",
-      },
+      fields: [
+        f("name", "Your name", "text", {
+          required: true,
+          placeholder: "Full name",
+        }),
+        f("email", "Email", "email", {
+          required: true,
+          placeholder: "you@company.com",
+        }),
+        f("company", "Brand / company", "text", {
+          placeholder: "Brand name",
+        }),
+        f("need", "What do you need?", "text", {
+          placeholder: "Brand identity, commerce ecosystem, media production…",
+        }),
+        f("project", "Tell us about the project", "textarea", {
+          required: true,
+          placeholder: "Where you are now, where you want to be, and by when.",
+        }),
+      ],
     },
   },
 

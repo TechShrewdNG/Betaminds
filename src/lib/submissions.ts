@@ -37,15 +37,6 @@ export type SubmissionStatus = (typeof STATUSES)[number];
 
 /* -- field helpers --------------------------------------------------------- */
 
-const required = (label: string, max = 2000) =>
-  z
-    .string()
-    .trim()
-    .min(1, `${label} is required.`)
-    .max(max, `${label} is too long.`);
-
-const optional = (max = 2000) => z.string().trim().max(max).optional().default("");
-
 const email = z
   .string()
   .trim()
@@ -65,15 +56,6 @@ const honeypot = z
 
 /* -- schemas --------------------------------------------------------------- */
 
-const brief = z.object({
-  _hp: honeypot,
-  name: required("Your name", 160),
-  email,
-  company: optional(160),
-  need: optional(400),
-  project: required("Project details", 5000),
-});
-
 const newsletter = z.object({
   _hp: honeypot,
   email,
@@ -87,19 +69,11 @@ const truncate = (value: string, max = 180) =>
 /**
  * Forms whose shape is fixed in code.
  *
- * The other three (consultation, academy, summit) have CMS-defined fields, so
- * their validation is built at request time from the stored definitions — see
- * lib/forms/validate.ts.
+ * The other four (consultation, academy, summit, brief) have CMS-defined
+ * fields, so their validation is built at request time from the stored
+ * definitions — see lib/forms/validate.ts.
  */
 const definitions = {
-  brief: {
-    schema: brief,
-    digest: (d: z.infer<typeof brief>): Digest => ({
-      name: d.name,
-      email: d.email,
-      summary: truncate(d.need || d.project),
-    }),
-  },
   newsletter: {
     schema: newsletter,
     digest: (d: z.infer<typeof newsletter>): Digest => ({
@@ -113,7 +87,7 @@ const definitions = {
   { schema: z.ZodObject<z.ZodRawShape>; digest: (data: never) => Digest }
 >;
 
-const DYNAMIC_KINDS = ["consultation", "academy", "summit"] as const;
+const DYNAMIC_KINDS = ["consultation", "academy", "summit", "brief"] as const;
 
 type StaticKind = Exclude<SubmissionKind, DynamicKind>;
 

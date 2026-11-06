@@ -120,6 +120,30 @@ function withRetiredFormsCleared(id: string, saved: unknown): unknown {
 }
 
 /**
+ * One-time reconciliation for the Let's Work brief form: rewritten from fixed
+ * name/email/company/need/project fields (with separate `labels`/`hints`
+ * groups) to a CMS-defined field list, the same move already made for the
+ * questionnaire, Academy application and Summit registration forms. A
+ * document saved before the rewrite still carries the old `labels`/`hints`
+ * shape with no `fields` array at all — dropped here so it merges as if it
+ * had never been saved, rather than leaving the form with no field
+ * definitions to render or validate against.
+ */
+function withRetiredBriefForm(id: string, saved: unknown): unknown {
+  if (id !== "work" || !isPlainObject(saved)) return saved;
+  const form = saved.form;
+  if (!isPlainObject(form)) return saved;
+
+  const hasOldShape = isPlainObject(form.labels) || isPlainObject(form.hints);
+  const hasNewShape = Array.isArray(form.fields);
+  if (!hasOldShape || hasNewShape) return saved;
+
+  const rest = { ...saved };
+  delete rest.form;
+  return rest;
+}
+
+/**
  * One-time reconciliation for Summit edition galleries: each time real event
  * photos replace a placeholder or extend an earlier batch, a document saved
  * before that change still carries the old array — replaced here with the
@@ -395,6 +419,7 @@ function reconcileSavedDoc(id: string, saved: unknown): unknown {
   const steps = [
     withoutProjectsLinks,
     withRetiredFormsCleared,
+    withRetiredBriefForm,
     withFreshEditionGalleries,
     withoutProjectsHeroCta,
     withoutPlaceholderProjects,
