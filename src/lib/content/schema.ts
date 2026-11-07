@@ -134,6 +134,29 @@ const formFieldsRepeater = (label: string, help?: string): Field => ({
   help,
 });
 
+/**
+ * The editable definition of one numbered form section: a title, its
+ * questions, and an optional intro paragraph. Reused by every grouped form
+ * (the questionnaire, Academy application) so they share the same controls.
+ */
+const formGroupsRepeater = (help?: string): Field => ({
+  kind: "repeater",
+  label: "Form sections",
+  itemLabel: "Section",
+  titleKey: "title",
+  help,
+  fields: {
+    title: { kind: "text", label: "Section title" },
+    note: {
+      kind: "textarea",
+      label: "Intro text (optional)",
+      rows: 3,
+      help: "Shown above this section's questions as a plain paragraph — not styled like a question, so it's the right place for instructions that don't belong crammed into one field's label (e.g. payment details). Line breaks are kept.",
+    },
+    fields: formFieldsRepeater("Fields"),
+  },
+});
+
 const faqSection = (note: string): SectionSchema => ({
   key: "faq",
   title: "FAQ",
@@ -949,17 +972,9 @@ export const schemas: DocSchema[] = [
           submitLabel: { kind: "text", label: "Submit button label" },
           successHeading: { kind: "text", label: "Success heading" },
           successBody: { kind: "textarea", label: "Success body", rows: 4 },
-          groups: {
-            kind: "repeater",
-            label: "Form sections",
-            itemLabel: "Section",
-            titleKey: "title",
-            help: "These are the actual form fields. The outline shown beside the form is generated from them, so there is nothing to keep in sync.",
-            fields: {
-              title: { kind: "text", label: "Section title" },
-              fields: formFieldsRepeater("Fields"),
-            },
-          },
+          groups: formGroupsRepeater(
+            "These are the actual form fields. The outline shown beside the form is generated from them, so there is nothing to keep in sync.",
+          ),
         },
       },
     ],
@@ -1270,17 +1285,9 @@ export const schemas: DocSchema[] = [
           submitLabel: { kind: "text", label: "Submit button label" },
           successHeading: { kind: "text", label: "Success heading" },
           successBody: { kind: "textarea", label: "Success body", rows: 3 },
-          groups: {
-            kind: "repeater",
-            label: "Form sections",
-            itemLabel: "Section",
-            titleKey: "title",
-            help: "The 'course' and 'format' fields are filled from the Courses section and the hero's learning formats, so you don't list those options twice.",
-            fields: {
-              title: { kind: "text", label: "Section title" },
-              fields: formFieldsRepeater("Fields"),
-            },
-          },
+          groups: formGroupsRepeater(
+            "The 'course' and 'format' fields are filled from the Courses section and the hero's learning formats, so you don't list those options twice.",
+          ),
         },
       },
     ],

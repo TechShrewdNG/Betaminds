@@ -188,6 +188,15 @@
   letter-spacing: -0.02em;
 }
 
+.groupNote {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-74);
+  white-space: pre-line;
+  margin: -6px 0 22px;
+}
+
 .pair {
   display: grid;
   grid-template-columns: 1fr 1fr;

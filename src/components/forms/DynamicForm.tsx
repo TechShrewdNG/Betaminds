@@ -147,6 +147,7 @@ export function DynamicGroups({
             </span>
             <span className={styles.groupTitle}>{group.title}</span>
           </legend>
+          {group.note ? <p className={styles.groupNote}>{group.note}</p> : null}
           <div className={styles.form}>
             <FieldRows
               fields={group.fields}

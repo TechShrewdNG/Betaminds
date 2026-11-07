@@ -1371,6 +1371,7 @@ export const defaults = {
         },
         {
           title: "Payment & enrolment",
+          note: "Make a payment of ₦50,000 into the account below, then send your payment receipt to our WhatsApp.\n\nBank: United Bank of Africa (UBA)\nAccount name: Betaminds Media Service\nAccount number: 1026915679\nWhatsApp: https://wa.me/+2347016952322",
           fields: [
             f(
               "paymentMethod",
