@@ -1299,10 +1299,9 @@ export const schemas: DocSchema[] = [
             help: "Shown after a successful submission anywhere this form appears — the main application below, and a regular or crash course's own pop-up.",
           },
           successBody: {
-            kind: "textarea",
+            kind: "richtext",
             label: "Success body",
-            rows: 3,
-            help: "Shown under the heading above, in the same success screen.",
+            help: "Shown under the heading above, in the same success screen. Formatting (bold, links, lists) carries onto the live page.",
           },
           groups: formGroupsRepeater(
             "The 'course' and 'format' fields are filled from the Courses section and the hero's learning formats, so you don't list those options twice.",

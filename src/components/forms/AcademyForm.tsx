@@ -49,7 +49,11 @@ export function AcademyForm({
 
   if (state.status === "ok") {
     return (
-      <SuccessPanel heading={apply.successHeading} body={apply.successBody} />
+      <SuccessPanel
+        heading={apply.successHeading}
+        body={apply.successBody}
+        bodyIsHtml
+      />
     );
   }
 

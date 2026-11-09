@@ -1280,7 +1280,7 @@ export const defaults = {
       submitLabel: "Submit application →",
       successHeading: "Application received.",
       successBody:
-        "Our admissions team will be in touch within one working day with next steps, fees and start dates. Payment information and prompts will be sent to your email after submission.",
+        "<p>Our admissions team will be in touch within one working day with next steps, fees and start dates. Payment information and prompts will be sent to your email after submission.</p>",
       /**
        * The 'course' and 'format' dropdowns are filled from the Courses
        * section and the hero's learning formats at render time, so adding a
