@@ -37,15 +37,6 @@ export type SubmissionStatus = (typeof STATUSES)[number];
 
 /* -- field helpers --------------------------------------------------------- */
 
-const required = (label: string, max = 2000) =>
-  z
-    .string()
-    .trim()
-    .min(1, `${label} is required.`)
-    .max(max, `${label} is too long.`);
-
-const optional = (max = 2000) => z.string().trim().max(max).optional().default("");
-
 const email = z
   .string()
   .trim()
@@ -65,15 +56,6 @@ const honeypot = z
 
 /* -- schemas --------------------------------------------------------------- */
 
-const brief = z.object({
-  _hp: honeypot,
-  name: required("Your name", 160),
-  email,
-  company: optional(160),
-  need: optional(400),
-  project: required("Project details", 5000),
-});
-
 const newsletter = z.object({
   _hp: honeypot,
   email,
@@ -87,19 +69,11 @@ const truncate = (value: string, max = 180) =>
 /**
  * Forms whose shape is fixed in code.
  *
- * The other three (consultation, academy, summit) have CMS-defined fields, so
- * their validation is built at request time from the stored definitions — see
- * lib/forms/validate.ts.
+ * The other four (consultation, academy, summit, brief) have CMS-defined
+ * fields, so their validation is built at request time from the stored
+ * definitions — see lib/forms/validate.ts.
  */
 const definitions = {
-  brief: {
-    schema: brief,
-    digest: (d: z.infer<typeof brief>): Digest => ({
-      name: d.name,
-      email: d.email,
-      summary: truncate(d.need || d.project),
-    }),
-  },
   newsletter: {
     schema: newsletter,
     digest: (d: z.infer<typeof newsletter>): Digest => ({
@@ -113,7 +87,7 @@ const definitions = {
   { schema: z.ZodObject<z.ZodRawShape>; digest: (data: never) => Digest }
 >;
 
-const DYNAMIC_KINDS = ["consultation", "academy", "summit"] as const;
+const DYNAMIC_KINDS = ["consultation", "academy", "summit", "brief"] as const;
 
 type StaticKind = Exclude<SubmissionKind, DynamicKind>;
 
@@ -150,9 +124,11 @@ function digestFromFields(
   // A one-line preview for the inbox: the chosen options first (required ones
   // lead, since those are the questions that matter), then the first long
   // answer. The detail view carries everything.
+  const isChoice = (f: FormField) =>
+    f.type === "select" || f.type === "radio" || f.type === "multiselect";
   const selects = [
-    ...fields.filter((f) => f.type === "select" && f.required),
-    ...fields.filter((f) => f.type === "select" && !f.required),
+    ...fields.filter((f) => isChoice(f) && f.required),
+    ...fields.filter((f) => isChoice(f) && !f.required),
   ]
     .map((field) => value(field.key))
     .filter(Boolean);
@@ -189,7 +165,15 @@ export async function submit(
   if (isDynamicKind(kind)) {
     // Validated against the same definitions the page rendered from, so a field
     // the studio added in the admin is accepted, and one they removed is not.
-    const { fields } = await resolveForm(kind);
+    // Academy's crash-course modal carries its scope as a hidden field (see
+    // AcademyForm), since the "course" field's valid options differ between
+    // the main application and a crash course's own modal — resolving with
+    // the wrong scope here rejected every crash-course submission.
+    const courseScope = raw._courseScope === "crash" ? "crash" : undefined;
+    const { fields } = await resolveForm(
+      kind,
+      courseScope ? { courseScope } : undefined,
+    );
     const outcome = parseWithFields(fields, raw);
 
     if (!outcome.ok) {

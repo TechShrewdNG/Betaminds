@@ -43,16 +43,25 @@ export function FormNotice({ message }: { message?: string }) {
 export function SuccessPanel({
   heading,
   body,
+  /** True when `body` is admin-authored HTML from a rich text field — see
+   *  AcademyForm, the one caller that currently sets this. Every other
+   *  caller's success body is still plain text, rendered as before. */
+  bodyIsHtml,
   children,
 }: {
   heading: string;
   body: string;
+  bodyIsHtml?: boolean;
   children?: React.ReactNode;
 }) {
   return (
     <div className={styles.success} role="status">
       <h3 className={styles.successHeading}>{heading}</h3>
-      <p className={styles.successBody}>{body}</p>
+      {bodyIsHtml ? (
+        <div className="prose" dangerouslySetInnerHTML={{ __html: body }} />
+      ) : (
+        <p className={styles.successBody}>{body}</p>
+      )}
       {children ? <div className={styles.successActions}>{children}</div> : null}
     </div>
   );

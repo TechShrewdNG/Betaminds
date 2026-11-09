@@ -20,6 +20,8 @@ export const FIELD_TYPES = [
   "url",
   "textarea",
   "select",
+  "radio",
+  "multiselect",
 ] as const;
 
 export type FieldType = (typeof FIELD_TYPES)[number];
@@ -28,7 +30,7 @@ export type FormField = {
   key: string;
   label: string;
   type: FieldType;
-  /** Newline- or comma-free entries; only meaningful for `select`. */
+  /** Newline- or comma-free entries; meaningful for `select`, `radio` and `multiselect`. */
   options: string[];
   required: boolean;
   placeholder: string;
@@ -38,6 +40,13 @@ export type FormField = {
 
 export type FormGroup = {
   title: string;
+  /**
+   * Optional instructional text shown above the group's questions, as a plain
+   * paragraph rather than styled like a question label. For content that
+   * doesn't belong crammed into one field's single-line label (payment
+   * details, a note about what happens next) — line breaks are preserved.
+   */
+  note?: string;
   fields: FormField[];
 };
 
@@ -92,8 +101,12 @@ export function normaliseFields(raw: unknown): FormField[] {
     fields.push({
       key,
       label: candidate.label.trim(),
-      // A select with no options can't be answered; treat it as a text field.
-      type: type === "select" && options.length === 0 ? "text" : type,
+      // An options-based field with nothing to choose from yet renders as a
+      // plain text box (see DynamicForm's FieldControl) — kept as-is here
+      // rather than downgraded, so a field whose options are injected later
+      // (plan, course, format) doesn't lose its intended type in the gap
+      // before injection runs.
+      type,
       options,
       required: candidate.required === true,
       placeholder: isNonEmpty(candidate.placeholder)
@@ -110,9 +123,14 @@ export function normaliseGroups(raw: unknown): FormGroup[] {
   if (!Array.isArray(raw)) return [];
   return raw
     .map((item) => {
-      const candidate = (item ?? {}) as { title?: unknown; fields?: unknown };
+      const candidate = (item ?? {}) as {
+        title?: unknown;
+        note?: unknown;
+        fields?: unknown;
+      };
       return {
         title: isNonEmpty(candidate.title) ? candidate.title.trim() : "",
+        note: isNonEmpty(candidate.note) ? candidate.note.trim() : undefined,
         fields: normaliseFields(candidate.fields),
       };
     })

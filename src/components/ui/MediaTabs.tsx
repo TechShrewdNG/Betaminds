@@ -7,7 +7,9 @@ import styles from "./ui.module.css";
 export type MediaPackage = {
   label: string;
   blurb: string;
+  image?: string;
   items: string[];
+  rateCard?: string;
 };
 
 /**
@@ -17,9 +19,11 @@ export type MediaPackage = {
 export function MediaTabs({
   packages,
   enquireLabel,
+  rateCardLabel,
 }: {
   packages: MediaPackage[];
   enquireLabel: string;
+  rateCardLabel?: string;
 }) {
   const [active, setActive] = useState(0);
   const current = packages[active] ?? packages[0];
@@ -43,6 +47,20 @@ export function MediaTabs({
         ))}
       </div>
 
+      {current.image ? (
+        <div key={current.label} className={styles.pkgBanner}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={current.image}
+            alt=""
+            className={styles.pkgBannerImg}
+            loading="lazy"
+          />
+          <span className={styles.pkgBannerWash} aria-hidden="true" />
+          <span className={styles.pkgBannerName}>{current.label}</span>
+        </div>
+      ) : null}
+
       <div
         id="media-panel"
         role="tabpanel"
@@ -59,12 +77,24 @@ export function MediaTabs({
           >
             {current.blurb}
           </p>
-          <Link
-            href={`/lets-work?need=${encodeURIComponent(current.label)}`}
-            className="pill pill--accent-outline"
-          >
-            {enquireLabel}
-          </Link>
+          <div className="row-wrap" style={{ gap: 14 }}>
+            <Link
+              href={`/lets-work?need=${encodeURIComponent(current.label)}`}
+              className="pill pill--accent-outline"
+            >
+              {enquireLabel}
+            </Link>
+            {current.rateCard ? (
+              <a
+                href={current.rateCard}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="pill pill--accent-outline"
+              >
+                {rateCardLabel}
+              </a>
+            ) : null}
+          </div>
         </div>
 
         <div className="hairline-stack" style={{ borderRadius: 12 }}>
