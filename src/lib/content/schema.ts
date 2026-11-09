@@ -1157,6 +1157,11 @@ export const schemas: DocSchema[] = [
                   },
                   duration: { kind: "text", label: "Duration" },
                   mode: { kind: "text", label: "Format" },
+                  price: {
+                    kind: "text",
+                    label: "Price",
+                    help: "e.g. \"₦150,000\" or \"From ₦80,000\". Leave empty to hide.",
+                  },
                   description: {
                     kind: "textarea",
                     label: "Description",
@@ -1199,6 +1204,11 @@ export const schemas: DocSchema[] = [
               },
               duration: { kind: "text", label: "Duration", help: "e.g. \"2 days\"" },
               mode: { kind: "text", label: "Format" },
+              price: {
+                kind: "text",
+                label: "Price",
+                help: "e.g. \"₦50,000\". Leave empty to hide.",
+              },
               description: {
                 kind: "textarea",
                 label: "Description",
@@ -1283,8 +1293,17 @@ export const schemas: DocSchema[] = [
           heading: { kind: "text", label: "Heading" },
           body: { kind: "textarea", label: "Body", rows: 3 },
           submitLabel: { kind: "text", label: "Submit button label" },
-          successHeading: { kind: "text", label: "Success heading" },
-          successBody: { kind: "textarea", label: "Success body", rows: 3 },
+          successHeading: {
+            kind: "text",
+            label: "Success heading",
+            help: "Shown after a successful submission anywhere this form appears — the main application below, and a regular or crash course's own pop-up.",
+          },
+          successBody: {
+            kind: "textarea",
+            label: "Success body",
+            rows: 3,
+            help: "Shown under the heading above, in the same success screen.",
+          },
           groups: formGroupsRepeater(
             "The 'course' and 'format' fields are filled from the Courses section and the hero's learning formats, so you don't list those options twice.",
           ),

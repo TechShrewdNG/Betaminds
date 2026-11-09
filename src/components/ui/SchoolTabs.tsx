@@ -12,6 +12,7 @@ export type Course = {
   name: string;
   duration: string;
   mode: string;
+  price?: string;
   description?: string;
   icon?: string;
   image?: string;
@@ -188,6 +189,7 @@ export function SchoolTabs({
               </span>
               <div className={styles.courseCardName}>{course.name}</div>
               <div className="row-wrap" style={{ gap: 6 }}>
+                {course.price ? <Chip>{course.price}</Chip> : null}
                 <Chip>{course.duration}</Chip>
                 <Chip>{course.mode}</Chip>
                 <Chip accent>{certificateLabel}</Chip>
@@ -231,6 +233,7 @@ export function SchoolTabs({
                   <span className={styles.crashName}>{item.name}</span>
                   <span className={styles.crashMeta}>
                     {item.duration} · {item.mode}
+                    {item.price ? ` · ${item.price}` : ""}
                   </span>
                 </span>
                 <Icon name="arrow-right" size={16} className={styles.crashArrow} />
@@ -286,6 +289,7 @@ export function SchoolTabs({
                 </p>
               ) : null}
               <div className="row-wrap" style={{ gap: 6, marginBottom: 28 }}>
+                {openCourse.price ? <Chip>{openCourse.price}</Chip> : null}
                 <Chip>{openCourse.duration}</Chip>
                 <Chip>{openCourse.mode}</Chip>
                 <Chip accent>{certificateLabel}</Chip>
@@ -300,6 +304,7 @@ export function SchoolTabs({
                   apply={apply}
                   groups={openCourseIsCrash ? crashGroups : groups}
                   presetCourse={openCourse.name}
+                  courseScope={openCourseIsCrash ? "crash" : "schools"}
                 />
               </Suspense>
             </div>

@@ -16,12 +16,20 @@ export function AcademyForm({
   apply,
   groups,
   presetCourse,
+  courseScope = "schools",
 }: {
   apply: Apply;
   groups: FormGroup[];
   /** Forces the course selection, bypassing the ?course= query param — used
    *  when the form is embedded in a course's own detail modal. */
   presetCourse?: string;
+  /** Which course list `groups` was built from — carried to the server as a
+   *  hidden field so re-validation on submit resolves the "course" field's
+   *  options the same way the page did. Without this, submitting from the
+   *  crash-course modal always failed: the server re-resolved the form with
+   *  the default (school courses) scope, whose options never included the
+   *  crash course the visitor actually picked. */
+  courseScope?: "schools" | "crash";
 }) {
   const [state, action] = useActionState(
     submitAcademyApplication,
@@ -56,6 +64,9 @@ export function AcademyForm({
   return (
     <form action={action} className={styles.form} noValidate>
       <FormNotice message={state.message} />
+      {courseScope === "crash" ? (
+        <input type="hidden" name="_courseScope" value="crash" />
+      ) : null}
       <DynamicGroups groups={groups} state={seeded} />
       <SubmitButton label={apply.submitLabel} pendingLabel="Submitting…" />
     </form>

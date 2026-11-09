@@ -165,7 +165,15 @@ export async function submit(
   if (isDynamicKind(kind)) {
     // Validated against the same definitions the page rendered from, so a field
     // the studio added in the admin is accepted, and one they removed is not.
-    const { fields } = await resolveForm(kind);
+    // Academy's crash-course modal carries its scope as a hidden field (see
+    // AcademyForm), since the "course" field's valid options differ between
+    // the main application and a crash course's own modal — resolving with
+    // the wrong scope here rejected every crash-course submission.
+    const courseScope = raw._courseScope === "crash" ? "crash" : undefined;
+    const { fields } = await resolveForm(
+      kind,
+      courseScope ? { courseScope } : undefined,
+    );
     const outcome = parseWithFields(fields, raw);
 
     if (!outcome.ok) {
